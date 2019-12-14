@@ -30,6 +30,7 @@ class StatCalculator {
 				.build();
 	}
 	
+	
 
 	private int generateStatFromSelection(int selectionIndex) {
 		// TODO
