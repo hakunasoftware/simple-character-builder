@@ -1,6 +1,21 @@
-veryLowMinimum=10
-veryLowMaximum=20
-lowMaximum=30
-averageMaximum=40
-highMaximum=50
-veryHighMaximum=60
+## All generated values will be multiples of this
+multiplier = 5
+
+## Lower Boundaries for regular Stats
+regStat_veryLow	 = 5
+regStat_low		 = 20
+regStat_average	 = 40
+regStat_high	 = 60
+regStat_veryHigh = 80
+regStat_max		 = 99
+
+## Lower boundaries for Beauty
+unattractive = 100
+plain 		 = 200
+normal	 	 = 300
+pretty  	 = 400
+beautiful 	 = 550
+stunning	 = 700
+perfect   	 = 800
+divine    	 = 900
+beauty_max	 = 999

@@ -22,14 +22,12 @@ public final class StatPicker implements CharacterBuilderComponent {
 
 	private final JPanel mainPanel;
 
-	public static final int WIDTH = 4 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH
-			+ StatDisplayPanel.WIDTH;
+	public static final int WIDTH = 4 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH + StatDisplayPanel.WIDTH;
 	public static final int HEIGHT = 2 * GAP_WIDTH + RegularStatSelectionPanel.HEIGHT;
 
 	private StatPicker() {
 		regularStatSelectionPanel = new RegularStatSelectionPanel(GAP_WIDTH, GAP_WIDTH);
-		statDisplayPanel = new StatDisplayPanel(
-				3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH);
+		statDisplayPanel = new StatDisplayPanel(3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH);
 		beautySelectionPanel = new BeautySelectionPanel(2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH);
 		generateButton = createGenerateButton();
 
@@ -78,7 +76,7 @@ public final class StatPicker implements CharacterBuilderComponent {
 	private GenerateButton createGenerateButton() {
 		int x = 2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH;
 		int y = GAP_WIDTH + RegularStatSelectionPanel.HEIGHT - GenerateButton.HEIGHT;
-		return new GenerateButton(x, y, regularStatSelectionPanel, statDisplayPanel);
+		return new GenerateButton(x, y, regularStatSelectionPanel, beautySelectionPanel, statDisplayPanel);
 	}
 
 	@Data

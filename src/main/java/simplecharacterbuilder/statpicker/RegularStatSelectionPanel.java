@@ -69,10 +69,10 @@ class RegularStatSelectionPanel extends JPanel {
 	
 	/**
 	 * Reads and returns the indices (from 1) of the selected buttons.
-	 * @return the indices of the selected buttons. If the Virgin checkBox is selected, returns 0 for sex.
+	 * @return the indices of the selected buttons. If the Virgin checkBox is selected, returns -1 for sex.
 	 */
 	RegularStatSelectionDTO getSelections() {
-		int sexValue = virginCheckBox.isSelected() ? 0 : getValueFromButtonGroup(sexButtons);
+		int sexValue = virginCheckBox.isSelected() ? -1 : getValueFromButtonGroup(sexButtons);
 		
 		return RegularStatSelectionDTO.builder()
 				.constitutionSelection(getValueFromButtonGroup(constitutionButtons))
@@ -124,13 +124,13 @@ class RegularStatSelectionPanel extends JPanel {
 
 
 	private void addRegStatButtons() {
-		constitutionButtons =  buildButtonGroup("Constitution", 0);
-		agilityButtons = buildButtonGroup("Agility", 1);
-		strengthButtons = buildButtonGroup("Strength", 2);
+		constitutionButtons = buildButtonGroup("Constitution", 0);
+		agilityButtons 		= buildButtonGroup("Agility", 1);
+		strengthButtons 	= buildButtonGroup("Strength", 2);
 		intelligenceButtons = buildButtonGroup("Intelligence", 3);
-		charismaButtons = buildButtonGroup("Charisma", 4);
-		obedienceButtons = buildButtonGroup("Obedience", 5);
-		sexButtons = buildButtonGroup("Sex", 6);
+		charismaButtons 	= buildButtonGroup("Charisma", 4);
+		obedienceButtons 	= buildButtonGroup("Obedience", 5);
+		sexButtons 			= buildButtonGroup("Sex", 6);
 	}
 	
 	private ButtonGroup buildButtonGroup(String label, int count) {
@@ -181,7 +181,7 @@ class RegularStatSelectionPanel extends JPanel {
 			for (int i = 0; i < BUTTON_COUNT; i++) {
 				JRadioButton button = new JRadioButton();
 				button.setBounds(shiftedX + (20 + HORIZONTAL_BUTTON_DISTANCE) * i, this.y + 1, 20, 20);
-				button.setActionCommand(String.valueOf(i + 1));
+				button.setActionCommand(String.valueOf(i));
 				
 				this.panel.add(button);
 				buttonGroup.add(button);

@@ -42,7 +42,7 @@ class StatDisplayPanel extends JPanel {
 	void displayStats(StatDTO statDTO) {
 		conDisplay.setValue(statDTO.getConstitution());
 		agiDisplay.setValue(statDTO.getAgility());
-		strDisplay.setValue(statDTO.getIntelligence());
+		strDisplay.setValue(statDTO.getStrength());
 		intDisplay.setValue(statDTO.getIntelligence());
 		chaDisplay.setValue(statDTO.getCharisma());
 		beaDisplay.setValue(statDTO.getBeauty());
@@ -51,15 +51,15 @@ class StatDisplayPanel extends JPanel {
 	}
 
 	StatDTO getStats() {
-		strDisplay.getValue();
-		intDisplay.getValue();
-		chaDisplay.getValue();
-		beaDisplay.getValue();
-		sexDisplay.getValue();
-		obeDisplay.getValue();
 		return StatDTO.builder()
 				.constitution(conDisplay.getValue())
 				.agility(agiDisplay.getValue())
+				.strength(strDisplay.getValue())
+				.intelligence(intDisplay.getValue())
+				.charisma(chaDisplay.getValue())
+				.beauty(beaDisplay.getValue())
+				.sex(sexDisplay.getValue())
+				.obedience(obeDisplay.getValue())
 				.build();
 	}
 

@@ -3,86 +3,77 @@ package simplecharacterbuilder.statpicker;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.Random;
 
-import lombok.Builder;
-import lombok.Data;
 import simplecharacterbuilder.statpicker.RegularStatSelectionPanel.RegularStatSelectionDTO;
-import simplecharacterbuilder.statpicker.StatCalculator.ConfigReader.BoundaryDTO;
+import simplecharacterbuilder.statpicker.StatPicker.StatDTO;
 
 class StatCalculator {
+	private static final String[] CONFIG_REG_STAT_BOUNDARIES = new String[] {"regStat_veryLow", "regStat_low", "regStat_average", "regStat_high", "regStat_veryHigh", "regStat_max"};
+	private static final String[] CONFIG_BEAUTY_BOUNDARIES	 = new String[] {"unattractive", "plain", "normal", "pretty", "beautiful", "stunning", "perfect", "divine", "beauty_max"};
+	
+	private final int[] regularStatBoundaries 	= new int[CONFIG_REG_STAT_BOUNDARIES.length];
+	private final int[] beautyBoundaries 		= new int[CONFIG_BEAUTY_BOUNDARIES.length];
 
-	private final BoundaryDTO boundaries;
+	private Properties prop = new Properties();
+	private Random random 	= new Random();
+	private int multiplier; 
 
 	StatCalculator() {
-		this.boundaries = new ConfigReader().readBoundaries();
+		readConfig();
 	}
 
-	StatPicker.StatDTO generateStats(RegularStatSelectionDTO regularStatsSelectionDTO, int beautySelection) {
+	StatDTO generateStats(RegularStatSelectionDTO regularStatsSelectionDTO, int beautySelection) {
 		return StatPicker.StatDTO.builder()
-				.constitution(generateStatFromSelection(regularStatsSelectionDTO.getConstitutionSelection()))
-				.agility(generateStatFromSelection(regularStatsSelectionDTO.getAgilitySelection()))
-				.strength(generateStatFromSelection(regularStatsSelectionDTO.getStrengthSelection()))
-				.intelligence(generateStatFromSelection(regularStatsSelectionDTO.getIntelligenceSelection()))
-				.charisma(generateStatFromSelection(regularStatsSelectionDTO.getCharismaSelection()))
-				.obedience(generateStatFromSelection(regularStatsSelectionDTO.getObedienceSelection()))
+				.constitution(generateRegStatFromSelection(regularStatsSelectionDTO.getConstitutionSelection()))
+				.agility(generateRegStatFromSelection(regularStatsSelectionDTO.getAgilitySelection()))
+				.strength(generateRegStatFromSelection(regularStatsSelectionDTO.getStrengthSelection()))
+				.intelligence(generateRegStatFromSelection(regularStatsSelectionDTO.getIntelligenceSelection()))
+				.charisma(generateRegStatFromSelection(regularStatsSelectionDTO.getCharismaSelection()))
+				.obedience(generateRegStatFromSelection(regularStatsSelectionDTO.getObedienceSelection()))
 				.sex(generateSexStatFromSelection(regularStatsSelectionDTO.getSexSelection()))
-				.beauty(generateBeautyStatFromSelection(beautySelection))
+				.beauty(generateStatFromBoundariesAndSelection(beautyBoundaries, beautySelection))
 				.build();
 	}
 
-	private int generateStatFromSelection(int selectionIndex) {
-		// TODO
-		return 20 * selectionIndex;
+	private int generateRegStatFromSelection(int selectionIndex) {
+		return generateStatFromBoundariesAndSelection(regularStatBoundaries, selectionIndex);
 	}
 
 	private int generateSexStatFromSelection(int sexSelection) {
-		return sexSelection == 0 ? 0 : generateStatFromSelection(sexSelection);
+		return sexSelection == -1 ? 0 : generateRegStatFromSelection(sexSelection);
 	}
 
-	private int generateBeautyStatFromSelection(int beautySelection) {
-		// TODO
-		return 500;
+	private int generateStatFromBoundariesAndSelection(int[] boundaries, int selectionIndex) {
+		int lowerBoundary = boundaries[selectionIndex];
+		int upperBoundary = boundaries[selectionIndex + 1] - 1;
+		int lowerOffset = (lowerBoundary + (multiplier - 1)) / multiplier;
+		return multiplier * (random.nextInt(upperBoundary / multiplier - lowerOffset + 1) + lowerOffset);
+	}
+
+	private void readConfig() {
+		loadProperty();
+		multiplier = readIntFromProp("multiplier");
+		initializeBoundaries(regularStatBoundaries, CONFIG_REG_STAT_BOUNDARIES);
+		initializeBoundaries(beautyBoundaries, CONFIG_BEAUTY_BOUNDARIES);
 	}
 	
-	static class ConfigReader {
-
-		private Properties prop = new Properties();
-
-		public ConfigReader() {
-			readProperties();
+	private void initializeBoundaries(int[] boundaries, String[] configNames) {
+		for(int i = 0; i < boundaries.length; i++) {
+			boundaries[i] = readIntFromProp(configNames[i]);
 		}
+		boundaries[boundaries.length - 1]++;
+	}
 
-		public BoundaryDTO readBoundaries() {
-			return BoundaryDTO.builder().veryLowMinimum(readIntFromProp("veryLowMinimum"))
-					.veryLowMaximum(readIntFromProp("veryLowMaximum"))
-					.lowMaximum(readIntFromProp("lowMaximum"))
-					.averageMaximum(readIntFromProp("averageMaximum"))
-					.highMaximum(readIntFromProp("highMaximum"))
-					.veryHighMaximum(readIntFromProp("veryHighMaximum"))
-					.build();
+	private void loadProperty() {
+		try (InputStream inputStream = new FileInputStream(StatPicker.CONFIG_PATH)) {
+			this.prop.load(inputStream);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+	}
 
-		private int readIntFromProp(String propName) {
-			return Integer.parseInt(this.prop.getProperty(propName));
-		}
-
-		private void readProperties() {
-			try (InputStream inputStream = new FileInputStream(StatPicker.CONFIG_PATH)) {
-				this.prop.load(inputStream);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		@Data
-		@Builder
-		public static class BoundaryDTO {
-			private int veryLowMinimum;
-			private int veryLowMaximum;
-			private int lowMaximum;
-			private int averageMaximum;
-			private int highMaximum;
-			private int veryHighMaximum;
-		}
+	private int readIntFromProp(String propName) {
+		return Integer.parseInt(this.prop.getProperty(propName));
 	}
 }
