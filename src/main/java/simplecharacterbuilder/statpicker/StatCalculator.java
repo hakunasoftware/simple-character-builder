@@ -29,8 +29,6 @@ class StatCalculator {
 				.beauty(generateBeautyStatFromSelection(beautySelection))
 				.build();
 	}
-	
-	
 
 	private int generateStatFromSelection(int selectionIndex) {
 		// TODO
