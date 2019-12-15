@@ -11,16 +11,17 @@ import simplecharacterbuilder.statpicker.StatPicker.StatDTO;
 class StatCalculator {
 	private static final String[] CONFIG_REG_STAT_BOUNDARIES = new String[] {"regStat_veryLow", "regStat_low", "regStat_average", "regStat_high", "regStat_veryHigh", "regStat_max"};
 	private static final String[] CONFIG_BEAUTY_BOUNDARIES	 = new String[] {"unattractive", "plain", "normal", "pretty", "beautiful", "stunning", "perfect", "divine", "beauty_max"};
-	
+
 	private final int[] regularStatBoundaries 	= new int[CONFIG_REG_STAT_BOUNDARIES.length];
 	private final int[] beautyBoundaries 		= new int[CONFIG_BEAUTY_BOUNDARIES.length];
 
 	private Properties prop = new Properties();
 	private Random random 	= new Random();
 	private int multiplier; 
+	
 
-	StatCalculator() {
-		readConfig();
+	StatCalculator(String configPath) {
+		readConfig(configPath);
 	}
 
 	StatDTO generateStats(RegularStatSelectionDTO regularStatsSelectionDTO, int beautySelection) {
@@ -51,8 +52,8 @@ class StatCalculator {
 		return multiplier * (random.nextInt(upperBoundary / multiplier - lowerOffset + 1) + lowerOffset);
 	}
 
-	private void readConfig() {
-		loadProperty();
+	private void readConfig(String configPath) {
+		loadProperty(configPath);
 		multiplier = readIntFromProp("multiplier");
 		initializeBoundaries(regularStatBoundaries, CONFIG_REG_STAT_BOUNDARIES);
 		initializeBoundaries(beautyBoundaries, CONFIG_BEAUTY_BOUNDARIES);
@@ -65,8 +66,8 @@ class StatCalculator {
 		boundaries[boundaries.length - 1]++;
 	}
 
-	private void loadProperty() {
-		try (InputStream inputStream = new FileInputStream(StatPicker.CONFIG_PATH)) {
+	private void loadProperty(String configPath) {
+		try (InputStream inputStream = new FileInputStream(configPath)) {
 			this.prop.load(inputStream);
 		} catch (Exception e) {
 			e.printStackTrace();

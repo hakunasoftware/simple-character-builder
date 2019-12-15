@@ -15,11 +15,11 @@ class GenerateButton extends JButton {
 	private final StatDisplayPanel statDisplayPanel;
 	private final StatCalculator statCalculator;
 
-	GenerateButton(int x, int y, RegularStatSelectionPanel regularStatSelectionPanel, BeautySelectionPanel beautySelectionPanel, StatDisplayPanel statDisplayPanel) {
+	GenerateButton(int x, int y, String configPath, RegularStatSelectionPanel regularStatSelectionPanel, BeautySelectionPanel beautySelectionPanel, StatDisplayPanel statDisplayPanel) {
 		this.regularStatSelectionPanel = regularStatSelectionPanel;
 		this.beautySelectionPanel = beautySelectionPanel;
 		this.statDisplayPanel = statDisplayPanel;
-		this.statCalculator = new StatCalculator();
+		this.statCalculator = new StatCalculator(configPath);
 		
 		this.setText("Generate Stats");
 		this.setBounds(x, y, WIDTH, HEIGHT);

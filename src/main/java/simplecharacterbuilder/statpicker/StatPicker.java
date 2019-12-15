@@ -11,8 +11,6 @@ import simplecharacterbuilder.start.ApplicationFrame.CharacterBuilderComponent;
 
 public final class StatPicker implements CharacterBuilderComponent {
 	
-	public static final String CONFIG_PATH = "src/main/resources/config";
-	
 	static final int GAP_WIDTH = 15;
 
 	private final RegularStatSelectionPanel regularStatSelectionPanel;
@@ -25,11 +23,11 @@ public final class StatPicker implements CharacterBuilderComponent {
 	public static final int WIDTH = 4 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH + StatDisplayPanel.WIDTH;
 	public static final int HEIGHT = 2 * GAP_WIDTH + RegularStatSelectionPanel.HEIGHT;
 
-	private StatPicker() {
+	private StatPicker(String configPath) {
 		regularStatSelectionPanel = new RegularStatSelectionPanel(GAP_WIDTH, GAP_WIDTH);
 		statDisplayPanel = new StatDisplayPanel(3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH);
 		beautySelectionPanel = new BeautySelectionPanel(2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH);
-		generateButton = createGenerateButton();
+		generateButton = createGenerateButton(configPath);
 
 		mainPanel = new JPanel();
 		mainPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -41,8 +39,8 @@ public final class StatPicker implements CharacterBuilderComponent {
 		mainPanel.add(generateButton);
 	}
 
-	public static StatPicker createInstance() {
-		return new StatPicker();
+	public static StatPicker createInstance(String configPath) {
+		return new StatPicker(configPath);
 	}
 
 	@Override
@@ -73,10 +71,10 @@ public final class StatPicker implements CharacterBuilderComponent {
 		mainPanel.setBorder(border);
 	}
 
-	private GenerateButton createGenerateButton() {
+	private GenerateButton createGenerateButton(String configPath) {
 		int x = 2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH;
 		int y = GAP_WIDTH + RegularStatSelectionPanel.HEIGHT - GenerateButton.HEIGHT;
-		return new GenerateButton(x, y, regularStatSelectionPanel, beautySelectionPanel, statDisplayPanel);
+		return new GenerateButton(x, y, configPath, regularStatSelectionPanel, beautySelectionPanel, statDisplayPanel);
 	}
 
 	@Data
