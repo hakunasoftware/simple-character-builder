@@ -1,4 +1,4 @@
-package simplecharacterbuilder.statpicker;
+package simplecharacterbuilder.statgenerator;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -8,7 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import simplecharacterbuilder.statpicker.StatPicker.StatDTO;
+import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
+import simplecharacterbuilder.statgenerator.StatGenerator.StatDTO;
 
 @SuppressWarnings("serial")
 class StatDisplayPanel extends JPanel {
@@ -32,7 +33,7 @@ class StatDisplayPanel extends JPanel {
 
 	StatDisplayPanel(int xPos, int yPos) {
 		this.setBounds(xPos, yPos, WIDTH, HEIGHT);
-		this.setBorder(RegularStatSelectionPanel.BORDER);
+		this.setBorder(CharacterBuilderComponent.BORDER);
 		this.setLayout(null);
 
 		this.addStatOutput(LEFT_OFFSET, TOP_OFFSET);

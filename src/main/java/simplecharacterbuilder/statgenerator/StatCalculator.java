@@ -1,12 +1,12 @@
-package simplecharacterbuilder.statpicker;
+package simplecharacterbuilder.statgenerator;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Random;
 
-import simplecharacterbuilder.statpicker.RegularStatSelectionPanel.RegularStatSelectionDTO;
-import simplecharacterbuilder.statpicker.StatPicker.StatDTO;
+import simplecharacterbuilder.statgenerator.RegularStatSelectionPanel.RegularStatSelectionDTO;
+import simplecharacterbuilder.statgenerator.StatGenerator.StatDTO;
 
 class StatCalculator {
 	private static final String[] CONFIG_REG_STAT_BOUNDARIES = new String[] {"regStat_veryLow", "regStat_low", "regStat_average", "regStat_high", "regStat_veryHigh", "regStat_max"};
@@ -25,7 +25,7 @@ class StatCalculator {
 	}
 
 	StatDTO generateStats(RegularStatSelectionDTO regularStatsSelectionDTO, int beautySelection) {
-		return StatPicker.StatDTO.builder()
+		return StatGenerator.StatDTO.builder()
 				.constitution(generateRegStatFromSelection(regularStatsSelectionDTO.getConstitutionSelection()))
 				.agility(generateRegStatFromSelection(regularStatsSelectionDTO.getAgilitySelection()))
 				.strength(generateRegStatFromSelection(regularStatsSelectionDTO.getStrengthSelection()))

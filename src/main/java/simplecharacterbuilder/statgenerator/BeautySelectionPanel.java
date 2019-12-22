@@ -1,9 +1,11 @@
-package simplecharacterbuilder.statpicker;
+package simplecharacterbuilder.statgenerator;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
+
+import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 
 
 class BeautySelectionPanel extends JPanel {
@@ -13,13 +15,13 @@ class BeautySelectionPanel extends JPanel {
 	private static final String DEFAULT_OPTION = "Normal";
 
 	static final int WIDTH = 130;
-	static final int HEIGHT = RegularStatSelectionPanel.HEIGHT - GenerateButton.HEIGHT - StatPicker.GAP_WIDTH;
+	static final int HEIGHT = RegularStatSelectionPanel.HEIGHT - GenerateButton.HEIGHT - StatGenerator.GAP_WIDTH;
 	
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 
 	BeautySelectionPanel(int x, int y) {
 		this.setBounds(x, y, WIDTH, HEIGHT);
-		this.setBorder(RegularStatSelectionPanel.BORDER);
+		this.setBorder(CharacterBuilderComponent.BORDER);
 		this.setLayout(null);
 		
 		addCheckBoxes();

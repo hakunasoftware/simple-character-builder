@@ -1,20 +1,19 @@
-package simplecharacterbuilder.statpicker;
+package simplecharacterbuilder.statgenerator;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Enumeration;
 
 import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.border.Border;
 
 import lombok.Builder;
 import lombok.Data;
+import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 
 @SuppressWarnings("serial")
 class RegularStatSelectionPanel extends JPanel {
@@ -36,7 +35,6 @@ class RegularStatSelectionPanel extends JPanel {
 	private static final int LABELS_SECOND_DISTANCE = 65;
 	
 	static final int HEADLINE_OFFSET = 16;
-	static final Border BORDER = BorderFactory.createLineBorder(new Color(200, 200, 200, 255));
 	
 	static final int WIDTH = 285;
 	static final int HEIGHT = 2 * CONTENT_YPOS + HEADLINE_OFFSET + 6 * VERTICAL_BUTTON_DISTANCE + VERTICAL_VIRGIN_CHECKBOX_DISTANCE + 20;
@@ -61,7 +59,7 @@ class RegularStatSelectionPanel extends JPanel {
 	
 	RegularStatSelectionPanel(int xPos, int yPos) {
 		this.setBounds(xPos, yPos, WIDTH, HEIGHT);
-		this.setBorder(BORDER);
+		this.setBorder(CharacterBuilderComponent.BORDER);
 		this.setLayout(null);
 		
 		this.addOptionLabels();

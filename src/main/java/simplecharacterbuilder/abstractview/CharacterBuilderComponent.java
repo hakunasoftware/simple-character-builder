@@ -1,7 +1,11 @@
 package simplecharacterbuilder.abstractview;
 
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 public abstract class CharacterBuilderComponent {
 	
@@ -9,9 +13,11 @@ public abstract class CharacterBuilderComponent {
 	public static final int MAINPANEL_HEIGHT 	= 357;
 	
 	public static final int CONTROLPANEL_WIDTH 	= MAINPANEL_WIDTH;
-	public static final int CONTROLPANEL_HEIGHT = 150;
+	public static final int CONTROLPANEL_HEIGHT = 85;
 
 	public static final int GAP_WIDTH = 15;
+	
+	public static final Border BORDER = BorderFactory.createLineBorder(new Color(200, 200, 200, 255));
 
 	protected JPanel mainPanel;
 

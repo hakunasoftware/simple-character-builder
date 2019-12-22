@@ -1,25 +1,27 @@
-package simplecharacterbuilder.statpicker;
+package simplecharacterbuilder.statgenerator;
 
 import javax.swing.border.Border;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent.CharacterBuilderMainComponent;
 
-public final class StatPicker extends CharacterBuilderMainComponent {
+public final class StatGenerator extends CharacterBuilderMainComponent {
 	private final RegularStatSelectionPanel regularStatSelectionPanel;
-	private final StatDisplayPanel statDisplayPanel;
-	private final BeautySelectionPanel beautySelectionPanel;
-	private final GenerateButton generateButton;
+	private final StatDisplayPanel 			statDisplayPanel;
+	private final BeautySelectionPanel 		beautySelectionPanel;
+	private final GenerateButton 			generateButton;
 
 
-	private StatPicker(int x, int y, String configPath) {
+	private StatGenerator(int x, int y, String configPath) {
 		super(x, y);
 		
-		regularStatSelectionPanel = new RegularStatSelectionPanel(GAP_WIDTH, GAP_WIDTH);
-		statDisplayPanel = new StatDisplayPanel(3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH);
-		beautySelectionPanel = new BeautySelectionPanel(2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH);
-		generateButton = createGenerateButton(configPath);
+		regularStatSelectionPanel 	= new RegularStatSelectionPanel(GAP_WIDTH, GAP_WIDTH);
+		statDisplayPanel 			= new StatDisplayPanel(3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH);
+		beautySelectionPanel 		= new BeautySelectionPanel(2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH);
+		generateButton 				= createGenerateButton(configPath);
 
 		mainPanel.add(regularStatSelectionPanel);
 		mainPanel.add(statDisplayPanel);
@@ -27,8 +29,8 @@ public final class StatPicker extends CharacterBuilderMainComponent {
 		mainPanel.add(generateButton);
 	}
 
-	public static StatPicker createInstance(int x, int y, String configPath) {
-		return new StatPicker(x, y, configPath);
+	public static StatGenerator createInstance(int x, int y, String configPath) {
+		return new StatGenerator(x, y, configPath);
 	}
 
 	public StatDTO getStats() {
@@ -54,7 +56,9 @@ public final class StatPicker extends CharacterBuilderMainComponent {
 		return new GenerateButton(x, y, configPath, regularStatSelectionPanel, beautySelectionPanel, statDisplayPanel);
 	}
 
-	@Data
+	@Getter
+	@EqualsAndHashCode
+	@ToString
 	@Builder
 	public static class StatDTO {
 		private int constitution;

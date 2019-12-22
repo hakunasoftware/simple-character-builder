@@ -1,13 +1,13 @@
-package simplecharacterbuilder.statpicker;
+package simplecharacterbuilder.statgenerator;
 
 import javax.swing.JButton;
 
-import simplecharacterbuilder.statpicker.RegularStatSelectionPanel.RegularStatSelectionDTO;
+import simplecharacterbuilder.statgenerator.RegularStatSelectionPanel.RegularStatSelectionDTO;
 
 @SuppressWarnings("serial")
 class GenerateButton extends JButton {
 
-	static final int WIDTH = BeautySelectionPanel.WIDTH + StatDisplayPanel.WIDTH + StatPicker.GAP_WIDTH;
+	static final int WIDTH = BeautySelectionPanel.WIDTH + StatDisplayPanel.WIDTH + StatGenerator.GAP_WIDTH;
 	static final int HEIGHT = 50;
 
 	private final RegularStatSelectionPanel regularStatSelectionPanel;
