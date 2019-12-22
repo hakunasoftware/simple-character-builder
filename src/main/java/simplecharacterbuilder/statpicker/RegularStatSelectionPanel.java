@@ -2,7 +2,9 @@ package simplecharacterbuilder.statpicker;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Enumeration;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
@@ -148,8 +150,16 @@ class RegularStatSelectionPanel extends JPanel {
 		int y = CONTENT_YPOS + HEADLINE_OFFSET + 6 * VERTICAL_BUTTON_DISTANCE + VERTICAL_VIRGIN_CHECKBOX_DISTANCE;
 		virginCheckBox.setBounds(x, y, 70, 20);
 		
-		virginCheckBox.addItemListener(e -> sexButtons.getElements().asIterator().forEachRemaining(t -> t.setEnabled(!t.isEnabled())));
+		virginCheckBox.addItemListener(e -> disableSexButtons());
 		this.add(virginCheckBox);
+	}
+	
+	private void disableSexButtons() {
+		Enumeration<AbstractButton> sexButtonsElements = sexButtons.getElements();
+		while(sexButtonsElements.hasMoreElements()) {
+			AbstractButton currentButton = sexButtonsElements.nextElement();
+			currentButton.setEnabled(!currentButton.isEnabled());
+		}
 	}
 	
 	
