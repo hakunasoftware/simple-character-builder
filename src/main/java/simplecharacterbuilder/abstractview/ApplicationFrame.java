@@ -1,4 +1,4 @@
-package simplecharacterbuilder.start;
+package simplecharacterbuilder.abstractview;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class ApplicationFrame extends JFrame {
 
-	ApplicationFrame(int width, int height, List<CharacterBuilderComponent> components) {
+	public ApplicationFrame(int width, int height, List<CharacterBuilderComponent> components) {
 		this.setMinimumSize(new Dimension(width + 20, height + 40));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(new GridBagLayout());
@@ -24,8 +24,5 @@ public class ApplicationFrame extends JFrame {
 		this.add(contentPanel);
 	}
 	
-	public interface CharacterBuilderComponent {
-		public CharacterBuilderComponent location(int x, int y);
-		public void addTo(JPanel panel);
-	}
+	
 }

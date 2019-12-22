@@ -1,24 +1,25 @@
-package simplecharacterbuilder.start;
+package simplecharacterbuilder;
 
 import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
 
-import simplecharacterbuilder.start.ApplicationFrame.CharacterBuilderComponent;
+import simplecharacterbuilder.abstractview.ApplicationFrame;
+import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 import simplecharacterbuilder.statpicker.StatPicker;
 
 public class StatPickerStart {
 
-	private static final int WIDTH 	= StatPicker.WIDTH;
-	private static final int HEIGHT = StatPicker.HEIGHT;
+	private static final int WIDTH 	= CharacterBuilderComponent.MAINPANEL_WIDTH;
+	private static final int HEIGHT = CharacterBuilderComponent.MAINPANEL_HEIGHT;
 	
 	private static final String CONFIG_PATH_DEV = "src/main/resources/config";
 	@SuppressWarnings("unused")
-	private static final String CONFIG_PATH_USE = "config";
+	private static final String CONFIG_PATH_USE = "config_test";
 	
 	private static final List<CharacterBuilderComponent> COMPONENTS = new ArrayList<>();
 	static {
-		COMPONENTS.add(StatPicker.createInstance(CONFIG_PATH_DEV).location(0, 0));
+		COMPONENTS.add(StatPicker.createInstance(0, 0, CONFIG_PATH_DEV));
 	}
 
 	public static void main(String[] args) {

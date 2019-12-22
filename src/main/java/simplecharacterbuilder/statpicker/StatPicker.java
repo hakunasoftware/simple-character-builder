@@ -1,37 +1,25 @@
 package simplecharacterbuilder.statpicker;
 
-import java.awt.Dimension;
-
-import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 import lombok.Builder;
 import lombok.Data;
-import simplecharacterbuilder.start.ApplicationFrame.CharacterBuilderComponent;
+import simplecharacterbuilder.abstractview.CharacterBuilderComponent.CharacterBuilderMainComponent;
 
-public final class StatPicker implements CharacterBuilderComponent {
-	
-	static final int GAP_WIDTH = 15;
-
+public final class StatPicker extends CharacterBuilderMainComponent {
 	private final RegularStatSelectionPanel regularStatSelectionPanel;
 	private final StatDisplayPanel statDisplayPanel;
 	private final BeautySelectionPanel beautySelectionPanel;
 	private final GenerateButton generateButton;
 
-	private final JPanel mainPanel;
 
-	public static final int WIDTH = 4 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH + StatDisplayPanel.WIDTH;
-	public static final int HEIGHT = 2 * GAP_WIDTH + RegularStatSelectionPanel.HEIGHT;
-
-	private StatPicker(String configPath) {
+	private StatPicker(int x, int y, String configPath) {
+		super(x, y);
+		
 		regularStatSelectionPanel = new RegularStatSelectionPanel(GAP_WIDTH, GAP_WIDTH);
 		statDisplayPanel = new StatDisplayPanel(3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH);
 		beautySelectionPanel = new BeautySelectionPanel(2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH);
 		generateButton = createGenerateButton(configPath);
-
-		mainPanel = new JPanel();
-		mainPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		mainPanel.setLayout(null);
 
 		mainPanel.add(regularStatSelectionPanel);
 		mainPanel.add(statDisplayPanel);
@@ -39,19 +27,8 @@ public final class StatPicker implements CharacterBuilderComponent {
 		mainPanel.add(generateButton);
 	}
 
-	public static StatPicker createInstance(String configPath) {
-		return new StatPicker(configPath);
-	}
-
-	@Override
-	public CharacterBuilderComponent location(int x, int y) {
-		mainPanel.setBounds(x, y, WIDTH, HEIGHT);
-		return this;
-	}
-
-	@Override
-	public void addTo(JPanel panel) {
-		panel.add(mainPanel);
+	public static StatPicker createInstance(int x, int y, String configPath) {
+		return new StatPicker(x, y, configPath);
 	}
 
 	public StatDTO getStats() {
