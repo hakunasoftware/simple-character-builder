@@ -2,11 +2,18 @@ package simplecharacterbuilder.statgenerator;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 
@@ -20,6 +27,8 @@ class StatDisplayPanel extends JPanel {
 
 	private static final int TOP_OFFSET = 3;
 	private static final int LEFT_OFFSET = 8;
+
+	private static final String TEXTFIELD_REGEX = "^[0-9]{0,3}$";
 
 	private StatDisplay conDisplay;
 	private StatDisplay agiDisplay;
@@ -49,22 +58,15 @@ class StatDisplayPanel extends JPanel {
 		displayValue(sexDisplay, statDTO.getSex());
 		displayValue(obeDisplay, statDTO.getObedience());
 	}
-	
+
 	private void displayValue(StatDisplay statDisplay, int value) {
 		statDisplay.setValue(Math.min(value, 999));
 	}
 
 	StatDTO getStats() {
-		return StatDTO.builder()
-				.constitution(conDisplay.getValue())
-				.agility(agiDisplay.getValue())
-				.strength(strDisplay.getValue())
-				.intelligence(intDisplay.getValue())
-				.charisma(chaDisplay.getValue())
-				.beauty(beaDisplay.getValue())
-				.sex(sexDisplay.getValue())
-				.obedience(obeDisplay.getValue())
-				.build();
+		return StatDTO.builder().constitution(conDisplay.getValue()).agility(agiDisplay.getValue())
+				.strength(strDisplay.getValue()).intelligence(intDisplay.getValue()).charisma(chaDisplay.getValue())
+				.beauty(beaDisplay.getValue()).sex(sexDisplay.getValue()).obedience(obeDisplay.getValue()).build();
 	}
 
 	private void addStatOutput(int x, int y) {
@@ -107,7 +109,7 @@ class StatDisplayPanel extends JPanel {
 
 		private static final int DISTANCE = 37;
 
-		private JTextField textField = new JTextField("0");
+		private JTextField textField;
 
 		StatDisplay(JPanel panel, String statName, int x, int y) {
 			JLabel statNameLabel = new JLabel();
@@ -117,12 +119,22 @@ class StatDisplayPanel extends JPanel {
 			statNameLabel.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
 			panel.add(statNameLabel);
 
+			textField = createFilteredField();
+			textField.setText("0");
 			textField.setBounds(x + DISTANCE, y + 4, 25, 22);
 			textField.setHorizontalAlignment(JLabel.RIGHT);
 			textField.setEditable(false);
 			textField.setBorder(null);
 			textField.setFont(new Font(statNameLabel.getFont().getName(), statNameLabel.getFont().getStyle(), 13));
 			textField.setForeground(Color.BLACK);
+			
+			textField.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					textField.selectAll();
+				}
+			});
+			
 			panel.add(textField);
 		}
 
@@ -131,13 +143,50 @@ class StatDisplayPanel extends JPanel {
 		}
 
 		int getValue() {
-			return Integer.valueOf(textField.getText().trim());
+			String text = textField.getText();
+			if(text == null || text.isEmpty()) {
+				return 0;
+			}
+			return Integer.valueOf(textField.getText());
 		}
 
 		void lock() {
 			textField.setEditable(!textField.isEditable());
 		}
+	}
 
+	private static JTextField createFilteredField() {
+		JTextField field = new JTextField();
+		
+		((AbstractDocument) field.getDocument()).setDocumentFilter(new DocumentFilter() {
+			@Override
+			public void replace(FilterBypass fb, int offs, int length, String str, AttributeSet a)
+					throws BadLocationException {
+
+				String text = fb.getDocument().getText(0, fb.getDocument().getLength());
+				text += str;
+				if (text.matches(TEXTFIELD_REGEX)) {
+					super.replace(fb, offs, length, str, a);
+				} else {
+					Toolkit.getDefaultToolkit().beep();
+				}
+			}
+
+			@Override
+			public void insertString(FilterBypass fb, int offs, String str, AttributeSet a)
+					throws BadLocationException {
+
+				String text = fb.getDocument().getText(0, fb.getDocument().getLength());
+				text += str;
+				if (text.matches(TEXTFIELD_REGEX)) {
+					super.insertString(fb, offs, str, a);
+				} else {
+					Toolkit.getDefaultToolkit().beep();
+				}
+			}
+		});
+
+		return field;
 	}
 
 }
