@@ -9,7 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
-import simplecharacterbuilder.statgenerator.StatGenerator.StatDTO;
 
 @SuppressWarnings("serial")
 class StatDisplayPanel extends JPanel {
@@ -41,14 +40,18 @@ class StatDisplayPanel extends JPanel {
 	}
 
 	void displayStats(StatDTO statDTO) {
-		conDisplay.setValue(statDTO.getConstitution());
-		agiDisplay.setValue(statDTO.getAgility());
-		strDisplay.setValue(statDTO.getStrength());
-		intDisplay.setValue(statDTO.getIntelligence());
-		chaDisplay.setValue(statDTO.getCharisma());
-		beaDisplay.setValue(statDTO.getBeauty());
-		sexDisplay.setValue(statDTO.getSex());
-		obeDisplay.setValue(statDTO.getObedience());
+		displayValue(conDisplay, statDTO.getConstitution());
+		displayValue(agiDisplay, statDTO.getAgility());
+		displayValue(strDisplay, statDTO.getStrength());
+		displayValue(intDisplay, statDTO.getIntelligence());
+		displayValue(chaDisplay, statDTO.getCharisma());
+		displayValue(beaDisplay, statDTO.getBeauty());
+		displayValue(sexDisplay, statDTO.getSex());
+		displayValue(obeDisplay, statDTO.getObedience());
+	}
+	
+	private void displayValue(StatDisplay statDisplay, int value) {
+		statDisplay.setValue(Math.min(value, 999));
 	}
 
 	StatDTO getStats() {

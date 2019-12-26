@@ -10,12 +10,14 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class ApplicationFrame extends JFrame {
 
-	public ApplicationFrame(int width, int height, List<CharacterBuilderComponent> components) {
+	public ApplicationFrame(int width, int height, String title, List<CharacterBuilderComponent> components) {
 		this.setMinimumSize(new Dimension(width + 10, height + 30));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(new GridBagLayout());
 		this.setResizable(false);
 		this.setVisible(true);
+		this.setLocationRelativeTo(null);
+		this.setTitle(title);
 		
 		JPanel contentPanel = new JPanel();
 		contentPanel.setLayout(null);

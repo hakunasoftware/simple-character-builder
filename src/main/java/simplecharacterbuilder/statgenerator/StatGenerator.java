@@ -2,26 +2,25 @@ package simplecharacterbuilder.statgenerator;
 
 import javax.swing.border.Border;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent.CharacterBuilderMainComponent;
 
 public final class StatGenerator extends CharacterBuilderMainComponent {
 	private final RegularStatSelectionPanel regularStatSelectionPanel;
-	private final StatDisplayPanel 			statDisplayPanel;
-	private final BeautySelectionPanel 		beautySelectionPanel;
-	private final GenerateButton 			generateButton;
-
+	private final StatDisplayPanel          statDisplayPanel;
+	private final BeautySelectionPanel      beautySelectionPanel;
+	private final GenerateButton            generateButton;
+	
+	private final StatCalculator statcalculator;
 
 	private StatGenerator(int x, int y, String configPath) {
 		super(x, y);
+
+		statcalculator = new StatCalculator(configPath);
 		
-		regularStatSelectionPanel 	= new RegularStatSelectionPanel(GAP_WIDTH, GAP_WIDTH);
-		statDisplayPanel 			= new StatDisplayPanel(3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH);
-		beautySelectionPanel 		= new BeautySelectionPanel(2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH);
-		generateButton 				= createGenerateButton(configPath);
+		regularStatSelectionPanel   = new RegularStatSelectionPanel(GAP_WIDTH, GAP_WIDTH);
+		statDisplayPanel            = new StatDisplayPanel(3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH);
+		beautySelectionPanel        = new BeautySelectionPanel(2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH);
+		generateButton              = createGenerateButton(statcalculator);
 
 		mainPanel.add(regularStatSelectionPanel);
 		mainPanel.add(statDisplayPanel);
@@ -39,7 +38,8 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 
 	public void setStats(StatDTO statDTO) {
 		statDisplayPanel.displayStats(statDTO);
-		// TODO integrate selections
+		beautySelectionPanel.setSelection(statcalculator.generateBeautySelection(statDTO));
+		regularStatSelectionPanel.setSelection(statcalculator.generateRegularStatSelectionDTO(statDTO));
 	}
 
 	public void setVisible(boolean aFlag) {
@@ -50,24 +50,9 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 		mainPanel.setBorder(border);
 	}
 
-	private GenerateButton createGenerateButton(String configPath) {
+	private GenerateButton createGenerateButton(StatCalculator statCalculator) {
 		int x = 2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH;
 		int y = GAP_WIDTH + RegularStatSelectionPanel.HEIGHT - GenerateButton.HEIGHT;
-		return new GenerateButton(x, y, configPath, regularStatSelectionPanel, beautySelectionPanel, statDisplayPanel);
-	}
-
-	@Getter
-	@EqualsAndHashCode
-	@ToString
-	@Builder
-	public static class StatDTO {
-		private int constitution;
-		private int agility;
-		private int strength;
-		private int intelligence;
-		private int charisma;
-		private int obedience;
-		private int sex;
-		private int beauty;
+		return new GenerateButton(x, y, statCalculator, regularStatSelectionPanel, beautySelectionPanel, statDisplayPanel);
 	}
 }

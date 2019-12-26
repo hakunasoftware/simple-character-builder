@@ -30,7 +30,11 @@ class BeautySelectionPanel extends JPanel {
 	int getSelection() {
 		return Integer.parseInt(buttonGroup.getSelection().getActionCommand());
 	}
-
+	
+	void setSelection(int selectionIndex) {
+		RegularStatSelectionPanel.setSelectionForButtonGroup(this.buttonGroup, selectionIndex);
+	}
+	
 	private void addCheckBoxes() {
 		for (int i = 0; i < BEAUTY_OPTIONS.length; i++) {
 			JToggleButton checkBox = new JRadioButton(BEAUTY_OPTIONS[i]);

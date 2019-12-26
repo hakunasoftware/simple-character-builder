@@ -13,7 +13,7 @@ public abstract class CharacterBuilderComponent {
 	public static final int MAINPANEL_HEIGHT 	= 357;
 	
 	public static final int CONTROLPANEL_WIDTH 	= MAINPANEL_WIDTH;
-	public static final int CONTROLPANEL_HEIGHT = 85;
+	public static final int CONTROLPANEL_HEIGHT = 75;
 
 	public static final int GAP_WIDTH = 15;
 	

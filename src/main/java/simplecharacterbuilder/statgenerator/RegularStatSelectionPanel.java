@@ -75,14 +75,44 @@ class RegularStatSelectionPanel extends JPanel {
 		int sexValue = virginCheckBox.isSelected() ? -1 : getValueFromButtonGroup(sexButtons);
 		
 		return RegularStatSelectionDTO.builder()
-				.constitutionSelection(getValueFromButtonGroup(constitutionButtons))
-				.agilitySelection(getValueFromButtonGroup(agilityButtons))
-				.strengthSelection(getValueFromButtonGroup(strengthButtons))
-				.intelligenceSelection(getValueFromButtonGroup(intelligenceButtons))
-				.charismaSelection(getValueFromButtonGroup(charismaButtons))
-				.obedienceSelection(getValueFromButtonGroup(obedienceButtons))
+				.constitutionSelection( getValueFromButtonGroup(constitutionButtons))
+				.agilitySelection(      getValueFromButtonGroup(agilityButtons))
+				.strengthSelection(     getValueFromButtonGroup(strengthButtons))
+				.intelligenceSelection( getValueFromButtonGroup(intelligenceButtons))
+				.charismaSelection(     getValueFromButtonGroup(charismaButtons))
+				.obedienceSelection(    getValueFromButtonGroup(obedienceButtons))
 				.sexSelection(sexValue)
 				.build();
+	}
+	
+	void setSelection(RegularStatSelectionDTO regularStatSelectionDTO) {
+		setSelectionForButtonGroup(constitutionButtons, regularStatSelectionDTO.getConstitutionSelection());
+		setSelectionForButtonGroup(agilityButtons,      regularStatSelectionDTO.getAgilitySelection());
+		setSelectionForButtonGroup(strengthButtons,     regularStatSelectionDTO.getStrengthSelection());
+		setSelectionForButtonGroup(intelligenceButtons, regularStatSelectionDTO.getIntelligenceSelection());
+		setSelectionForButtonGroup(charismaButtons,     regularStatSelectionDTO.getCharismaSelection());
+		setSelectionForButtonGroup(obedienceButtons,    regularStatSelectionDTO.getObedienceSelection());
+		
+		int sexSelection = regularStatSelectionDTO.getSexSelection();
+		if(sexSelection == -1) {
+			setSelectionForButtonGroup(sexButtons, 0);
+			if(!virginCheckBox.isSelected()) {
+				virginCheckBox.setSelected(true);
+			}
+		} else {
+			setSelectionForButtonGroup(sexButtons, regularStatSelectionDTO.getSexSelection());
+		}
+	}
+	
+	static void setSelectionForButtonGroup(ButtonGroup buttonGroup, int selectionIndex) {
+		Enumeration<AbstractButton> buttons = buttonGroup.getElements();
+		while(buttons.hasMoreElements()) {
+			AbstractButton currentButton = buttons.nextElement();
+			if(Integer.parseInt(currentButton.getActionCommand()) == selectionIndex) {
+				currentButton.setSelected(true);
+				return;
+			}
+		}
 	}
 	
 	@Data
@@ -125,12 +155,12 @@ class RegularStatSelectionPanel extends JPanel {
 
 	private void addRegStatButtons() {
 		constitutionButtons = buildButtonGroup("Constitution", 0);
-		agilityButtons 		= buildButtonGroup("Agility", 1);
-		strengthButtons 	= buildButtonGroup("Strength", 2);
+		agilityButtons      = buildButtonGroup("Agility", 1);
+		strengthButtons     = buildButtonGroup("Strength", 2);
 		intelligenceButtons = buildButtonGroup("Intelligence", 3);
-		charismaButtons 	= buildButtonGroup("Charisma", 4);
-		obedienceButtons 	= buildButtonGroup("Obedience", 5);
-		sexButtons 			= buildButtonGroup("Sex", 6);
+		charismaButtons     = buildButtonGroup("Charisma", 4);
+		obedienceButtons    = buildButtonGroup("Obedience", 5);
+		sexButtons          = buildButtonGroup("Sex", 6);
 	}
 	
 	private ButtonGroup buildButtonGroup(String label, int count) {

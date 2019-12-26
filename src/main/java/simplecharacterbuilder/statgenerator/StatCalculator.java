@@ -6,7 +6,6 @@ import java.util.Properties;
 import java.util.Random;
 
 import simplecharacterbuilder.statgenerator.RegularStatSelectionPanel.RegularStatSelectionDTO;
-import simplecharacterbuilder.statgenerator.StatGenerator.StatDTO;
 
 class StatCalculator {
 	private static final String[] CONFIG_REG_STAT_BOUNDARIES = new String[] {"regStat_veryLow", "regStat_low", "regStat_average", "regStat_high", "regStat_veryHigh", "regStat_max"};
@@ -15,8 +14,9 @@ class StatCalculator {
 	private final int[] regularStatBoundaries 	= new int[CONFIG_REG_STAT_BOUNDARIES.length];
 	private final int[] beautyBoundaries 		= new int[CONFIG_BEAUTY_BOUNDARIES.length];
 
-	private Properties prop = new Properties();
-	private Random random 	= new Random();
+	private Properties prop   = new Properties();
+	private Random     random = new Random();
+	
 	private int multiplier; 
 	
 
@@ -25,18 +25,51 @@ class StatCalculator {
 	}
 
 	StatDTO generateStats(RegularStatSelectionDTO regularStatsSelectionDTO, int beautySelection) {
-		return StatGenerator.StatDTO.builder()
-				.constitution(generateRegStatFromSelection(regularStatsSelectionDTO.getConstitutionSelection()))
-				.agility(generateRegStatFromSelection(regularStatsSelectionDTO.getAgilitySelection()))
-				.strength(generateRegStatFromSelection(regularStatsSelectionDTO.getStrengthSelection()))
-				.intelligence(generateRegStatFromSelection(regularStatsSelectionDTO.getIntelligenceSelection()))
-				.charisma(generateRegStatFromSelection(regularStatsSelectionDTO.getCharismaSelection()))
-				.obedience(generateRegStatFromSelection(regularStatsSelectionDTO.getObedienceSelection()))
-				.sex(generateSexStatFromSelection(regularStatsSelectionDTO.getSexSelection()))
-				.beauty(generateStatFromBoundariesAndSelection(beautyBoundaries, beautySelection))
+		return StatDTO.builder()
+				.constitution( generateRegStatFromSelection(regularStatsSelectionDTO.getConstitutionSelection()))
+				.agility(      generateRegStatFromSelection(regularStatsSelectionDTO.getAgilitySelection()))
+				.strength(     generateRegStatFromSelection(regularStatsSelectionDTO.getStrengthSelection()))
+				.intelligence( generateRegStatFromSelection(regularStatsSelectionDTO.getIntelligenceSelection()))
+				.charisma(     generateRegStatFromSelection(regularStatsSelectionDTO.getCharismaSelection()))
+				.obedience(    generateRegStatFromSelection(regularStatsSelectionDTO.getObedienceSelection()))
+				.beauty(       generateStatFromBoundariesAndSelection(beautyBoundaries, beautySelection))
+				.sex(          generateSexStatFromSelection(regularStatsSelectionDTO.getSexSelection()))
 				.build();
 	}
-
+	
+	RegularStatSelectionDTO generateRegularStatSelectionDTO(StatDTO statDTO) {
+		return RegularStatSelectionDTO.builder()
+				.sexSelection(          getIndexForSexStat(statDTO.getSex()))
+				.constitutionSelection( getIndexForRegStat(statDTO.getConstitution()))
+				.agilitySelection(      getIndexForRegStat(statDTO.getAgility()))
+				.strengthSelection(     getIndexForRegStat(statDTO.getStrength()))
+				.intelligenceSelection( getIndexForRegStat(statDTO.getIntelligence()))
+				.charismaSelection(     getIndexForRegStat(statDTO.getCharisma()))
+				.obedienceSelection(    getIndexForRegStat(statDTO.getObedience()))
+				.build();
+	}
+	
+	private int getIndexForRegStat(int regStat) {
+		return getIndexFromBoundaries(regularStatBoundaries, regStat);
+	}
+	
+	int generateBeautySelection(StatDTO statDTO) {
+		return getIndexFromBoundaries(beautyBoundaries, statDTO.getBeauty());
+	}
+	
+	private int getIndexForSexStat(int sexStat) {
+		return sexStat == 0 || sexStat == 1 ? -1 : getIndexForRegStat(sexStat);
+	}
+	
+	private int getIndexFromBoundaries(int[] boundaries, int stat) {
+		for(int i = 1; i < boundaries.length; i++) {
+			if(stat < boundaries[i]) {
+				return i - 1;
+			}
+		}
+		return boundaries.length - 1;
+	}
+	
 	private int generateRegStatFromSelection(int selectionIndex) {
 		return generateStatFromBoundariesAndSelection(regularStatBoundaries, selectionIndex);
 	}
@@ -49,7 +82,8 @@ class StatCalculator {
 		int lowerBoundary = boundaries[selectionIndex];
 		int upperBoundary = boundaries[selectionIndex + 1] - 1;
 		int lowerOffset = (lowerBoundary + (multiplier - 1)) / multiplier;
-		return multiplier * (random.nextInt(upperBoundary / multiplier - lowerOffset + 1) + lowerOffset);
+		int result = multiplier * (random.nextInt(upperBoundary / multiplier - lowerOffset + 1) + lowerOffset);
+		return Math.min(result, 999);
 	}
 
 	private void readConfig(String configPath) {
