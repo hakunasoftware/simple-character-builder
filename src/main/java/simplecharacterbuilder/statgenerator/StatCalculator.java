@@ -19,9 +19,14 @@ class StatCalculator {
 	
 	private int multiplier; 
 	
+	final int averageRegStat;
+	final int averageBeauty;
 
 	StatCalculator(String configPath) {
 		readConfig(configPath);
+		
+		averageRegStat = (regularStatBoundaries[3] + regularStatBoundaries[2]) / 2;
+		averageBeauty  = (beautyBoundaries[3] + beautyBoundaries[2]) / 2;
 	}
 
 	StatDTO generateStats(RegularStatSelectionDTO regularStatsSelectionDTO, int beautySelection) {
@@ -53,8 +58,8 @@ class StatCalculator {
 		return getIndexFromBoundaries(regularStatBoundaries, regStat);
 	}
 	
-	int generateBeautySelection(StatDTO statDTO) {
-		return getIndexFromBoundaries(beautyBoundaries, statDTO.getBeauty());
+	int generateBeautySelection(int beauty) {
+		return getIndexFromBoundaries(beautyBoundaries, beauty);
 	}
 	
 	private int getIndexForSexStat(int sexStat) {
@@ -67,7 +72,15 @@ class StatCalculator {
 				return i - 1;
 			}
 		}
-		return boundaries.length - 1;
+		return boundaries.length - 2;
+	}
+	
+	public int getAverageRegStat() {
+		return averageRegStat;
+	}
+
+	public int getAverageBeauty() {
+		return averageBeauty;
 	}
 	
 	private int generateRegStatFromSelection(int selectionIndex) {

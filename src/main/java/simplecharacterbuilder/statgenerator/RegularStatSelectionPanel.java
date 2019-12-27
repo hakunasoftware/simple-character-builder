@@ -22,7 +22,6 @@ class RegularStatSelectionPanel extends JPanel {
 	private static final int CONTENT_YPOS = 13;
 
 	private static final int BUTTON_COUNT = 5;
-	private static final int DEFAULT_BUTTON_SELECTION = 3;
 	
 	private static final int HORIZONTAL_BUTTON_DISTANCE = 15;
 	private static final int VERTICAL_BUTTON_DISTANCE = 40;
@@ -223,10 +222,6 @@ class RegularStatSelectionPanel extends JPanel {
 				
 				this.panel.add(button);
 				buttonGroup.add(button);
-				
-				if(i == DEFAULT_BUTTON_SELECTION - 1) {
-					button.setSelected(true);
-				}
 			}
 			
 			return buttonGroup;

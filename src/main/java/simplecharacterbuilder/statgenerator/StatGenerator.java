@@ -38,8 +38,6 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 
 	public void setStats(StatDTO statDTO) {
 		statDisplayPanel.displayStats(statDTO);
-		beautySelectionPanel.setSelection(statCalculator.generateBeautySelection(statDTO));
-		regularStatSelectionPanel.setSelection(statCalculator.generateRegularStatSelectionDTO(statDTO));
 	}
 
 	public void setVisible(boolean aFlag) {

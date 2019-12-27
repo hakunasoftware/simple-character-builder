@@ -32,7 +32,7 @@ class StatDisplayPanel extends JPanel {
 
 	private static final String TEXTFIELD_REGEX = "^[0-9]{1,3}$";
 
-	private final RegularStatSelectionPanel regularStatSelectionPanel;
+	private final RegularStatSelectionPanel regStatSelectionPanel;
 	private final BeautySelectionPanel beautySelectionPanel;
 	private final StatCalculator statCalculator;
 
@@ -46,7 +46,7 @@ class StatDisplayPanel extends JPanel {
 	private StatDisplay beaDisplay;
 
 	StatDisplayPanel(int xPos, int yPos, StatCalculator statCalculator, RegularStatSelectionPanel regularStatSelectionPanel, BeautySelectionPanel beautySelectionPanel) {
-		this.regularStatSelectionPanel = regularStatSelectionPanel;
+		this.regStatSelectionPanel = regularStatSelectionPanel;
 		this.beautySelectionPanel      = beautySelectionPanel;
 		this.statCalculator            = statCalculator;
 		
@@ -56,6 +56,8 @@ class StatDisplayPanel extends JPanel {
 
 		this.addStatOutput(LEFT_OFFSET, TOP_OFFSET);
 		this.addDisplayLock(LEFT_OFFSET + 1, 2 * TOP_OFFSET + 8 * VERTICAL_DISPLAY_DISTANCE);
+		
+		this.setDefaultValues();
 	}
 
 	void displayStats(StatDTO statDTO) {
@@ -67,10 +69,17 @@ class StatDisplayPanel extends JPanel {
 		displayValue(beaDisplay, statDTO.getBeauty());
 		displayValue(sexDisplay, statDTO.getSex());
 		displayValue(obeDisplay, statDTO.getObedience());
+		
+		displayStatsOnSelectionPanels();
+	}
+	
+	private void displayStatsOnSelectionPanels() {
+		beautySelectionPanel .setSelection(statCalculator.generateBeautySelection(beaDisplay.getValue()));
+		regStatSelectionPanel.setSelection(statCalculator.generateRegularStatSelectionDTO(getStats()));
 	}
 	
 	void displaySelectedStats() {
-		RegularStatSelectionDTO regularStatSelectionDTO = regularStatSelectionPanel.getSelections();
+		RegularStatSelectionDTO regularStatSelectionDTO = regStatSelectionPanel.getSelections();
 		int beautySelection = beautySelectionPanel.getSelection();
 		displayStats(statCalculator.generateStats(regularStatSelectionDTO, beautySelection));
 	}
@@ -128,7 +137,7 @@ class StatDisplayPanel extends JPanel {
 		obeDisplay.lock();
 	}
 
-	private static class StatDisplay {
+	private class StatDisplay {
 
 		private static final int DISTANCE = 37;
 
@@ -179,48 +188,59 @@ class StatDisplayPanel extends JPanel {
 			textField.setEditable(!textField.isEditable());
 		}
 		
-		private static class RegexDocumentFilter extends DocumentFilter {
+		private class RegexDocumentFilter extends DocumentFilter {
 			@Override
 			public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet a) throws BadLocationException {
-				if(checkRegexMatch(fb, offset, length, str, a)) {
-					super.replace(fb, offset, length, str, a);
-				} 
+				modifyText(fb, offset, length, str, null);
+				StatDisplayPanel.this.displayStatsOnSelectionPanels();
 			}
 
 			@Override
 			public void insertString(FilterBypass fb, int offset, String str, AttributeSet a) throws BadLocationException {
-				if(checkRegexMatch(fb, offset, 0, str, null)) {
-					super.insertString(fb, offset, str, a);
-				}
+				modifyText(fb, offset, 0, str, null);
+				StatDisplayPanel.this.displayStatsOnSelectionPanels();
 			}
 			
 			@Override
 			 public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-				if(checkRegexMatch(fb, offset, length, "", null)) {
-					super.remove(fb, offset, length);
-				}
+				modifyText(fb, offset, length, "", null);
+				StatDisplayPanel.this.displayStatsOnSelectionPanels();
 			}
 			
-			private String getNewText(FilterBypass fb, int lengthToBeRemoved, String stringToBeAdded) throws BadLocationException {
+			private void modifyText(FilterBypass fb, int offset, int length, String str, AttributeSet a) throws BadLocationException {
 				String text =  fb.getDocument().getText(0, fb.getDocument().getLength());
-				text = text.substring(0, text.length() - lengthToBeRemoved);
-				return text + stringToBeAdded;
-			}
-			
-			private boolean checkRegexMatch(FilterBypass fb, int offset, int length, String str, AttributeSet a) throws BadLocationException {
-				String text = getNewText(fb, length, str);
+				
+				if("0".equals(text) && str != null && str.length() != 0 && str.matches(TEXTFIELD_REGEX)) {
+					fb.replace(0, 1, str, a); 
+					return;
+				}
+				
+				text = text.substring(0, text.length() - length) + str;
 				
 				if(text == null || text.isEmpty()) {
-					super.replace(fb, offset, length, "0", a);
-					return false;
+					fb.replace(offset, length, "0", a); 
+					return;
 				}
 				
-				boolean matches = text.matches(TEXTFIELD_REGEX);
-				if(!matches) {
+				if(text.matches(TEXTFIELD_REGEX)) {
+					fb.replace(offset, length, str, a);
+				} else {
 					Toolkit.getDefaultToolkit().beep();
 				}
-				return matches;
 			}
 		}
+	}
+
+	private void setDefaultValues() {
+		displayValue(conDisplay, statCalculator.getAverageRegStat());
+		displayValue(agiDisplay, statCalculator.getAverageRegStat());
+		displayValue(strDisplay, statCalculator.getAverageRegStat());
+		displayValue(intDisplay, statCalculator.getAverageRegStat());
+		displayValue(chaDisplay, statCalculator.getAverageRegStat());
+		displayValue(sexDisplay, 0);
+		displayValue(obeDisplay, statCalculator.getAverageRegStat());
+		displayValue(beaDisplay, statCalculator.getAverageBeauty());
+		
+		displayStatsOnSelectionPanels();
 	}
 }
