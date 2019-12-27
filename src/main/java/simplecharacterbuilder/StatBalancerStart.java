@@ -11,7 +11,7 @@ import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 import simplecharacterbuilder.statgenerator.StatGenerator;
 import simplecharacterbuilder.statgenerator.xmlreaderwriter.StatGeneratorXmlReaderWriterView;
 
-public class StatGeneratorStart {
+public class StatBalancerStart {
 
 	private static final int WIDTH 	= CharacterBuilderComponent.MAINPANEL_WIDTH;
 	private static final int HEIGHT = CharacterBuilderComponent.MAINPANEL_HEIGHT + CharacterBuilderComponent.CONTROLPANEL_HEIGHT;
@@ -33,6 +33,6 @@ public class StatGeneratorStart {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		EventQueue.invokeLater(() -> new ApplicationFrame(WIDTH, HEIGHT, "SB2R StatGenerator", COMPONENTS));
+		EventQueue.invokeLater(() -> new ApplicationFrame(WIDTH, HEIGHT, "SB2R StatBalancer", COMPONENTS));
 	}
 }
