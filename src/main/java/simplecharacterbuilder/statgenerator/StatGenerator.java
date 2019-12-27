@@ -10,17 +10,17 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 	private final BeautySelectionPanel      beautySelectionPanel;
 	private final GenerateButton            generateButton;
 	
-	private final StatCalculator statcalculator;
+	private final StatCalculator statCalculator;
 
 	private StatGenerator(int x, int y, String configPath) {
 		super(x, y);
 
-		statcalculator = new StatCalculator(configPath);
+		statCalculator = new StatCalculator(configPath);
 		
 		regularStatSelectionPanel   = new RegularStatSelectionPanel(GAP_WIDTH, GAP_WIDTH);
-		statDisplayPanel            = new StatDisplayPanel(3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH);
 		beautySelectionPanel        = new BeautySelectionPanel(2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH);
-		generateButton              = createGenerateButton(statcalculator);
+		statDisplayPanel            = createStatDisplayPanel();
+		generateButton              = createGenerateButton();
 
 		mainPanel.add(regularStatSelectionPanel);
 		mainPanel.add(statDisplayPanel);
@@ -38,8 +38,8 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 
 	public void setStats(StatDTO statDTO) {
 		statDisplayPanel.displayStats(statDTO);
-		beautySelectionPanel.setSelection(statcalculator.generateBeautySelection(statDTO));
-		regularStatSelectionPanel.setSelection(statcalculator.generateRegularStatSelectionDTO(statDTO));
+		beautySelectionPanel.setSelection(statCalculator.generateBeautySelection(statDTO));
+		regularStatSelectionPanel.setSelection(statCalculator.generateRegularStatSelectionDTO(statDTO));
 	}
 
 	public void setVisible(boolean aFlag) {
@@ -49,10 +49,16 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 	public void setBorder(Border border) {
 		mainPanel.setBorder(border);
 	}
+	
+	private StatDisplayPanel createStatDisplayPanel() {
+		int x = 3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH;
+		int y = GAP_WIDTH;
+		return new StatDisplayPanel(x, y, statCalculator, regularStatSelectionPanel, beautySelectionPanel);
+	}
 
-	private GenerateButton createGenerateButton(StatCalculator statCalculator) {
+	private GenerateButton createGenerateButton() {
 		int x = 2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH;
 		int y = GAP_WIDTH + RegularStatSelectionPanel.HEIGHT - GenerateButton.HEIGHT;
-		return new GenerateButton(x, y, statCalculator, regularStatSelectionPanel, beautySelectionPanel, statDisplayPanel);
+		return new GenerateButton(x, y, statDisplayPanel);
 	}
 }

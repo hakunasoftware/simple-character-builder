@@ -17,6 +17,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
+import simplecharacterbuilder.statgenerator.RegularStatSelectionPanel.RegularStatSelectionDTO;
 
 @SuppressWarnings("serial")
 class StatDisplayPanel extends JPanel {
@@ -31,6 +32,10 @@ class StatDisplayPanel extends JPanel {
 
 	private static final String TEXTFIELD_REGEX = "^[0-9]{1,3}$";
 
+	private final RegularStatSelectionPanel regularStatSelectionPanel;
+	private final BeautySelectionPanel beautySelectionPanel;
+	private final StatCalculator statCalculator;
+
 	private StatDisplay conDisplay;
 	private StatDisplay agiDisplay;
 	private StatDisplay strDisplay;
@@ -40,7 +45,11 @@ class StatDisplayPanel extends JPanel {
 	private StatDisplay sexDisplay;
 	private StatDisplay beaDisplay;
 
-	StatDisplayPanel(int xPos, int yPos) {
+	StatDisplayPanel(int xPos, int yPos, StatCalculator statCalculator, RegularStatSelectionPanel regularStatSelectionPanel, BeautySelectionPanel beautySelectionPanel) {
+		this.regularStatSelectionPanel = regularStatSelectionPanel;
+		this.beautySelectionPanel      = beautySelectionPanel;
+		this.statCalculator            = statCalculator;
+		
 		this.setBounds(xPos, yPos, WIDTH, HEIGHT);
 		this.setBorder(CharacterBuilderComponent.BORDER);
 		this.setLayout(null);
@@ -58,6 +67,12 @@ class StatDisplayPanel extends JPanel {
 		displayValue(beaDisplay, statDTO.getBeauty());
 		displayValue(sexDisplay, statDTO.getSex());
 		displayValue(obeDisplay, statDTO.getObedience());
+	}
+	
+	void displaySelectedStats() {
+		RegularStatSelectionDTO regularStatSelectionDTO = regularStatSelectionPanel.getSelections();
+		int beautySelection = beautySelectionPanel.getSelection();
+		displayStats(statCalculator.generateStats(regularStatSelectionDTO, beautySelection));
 	}
 
 	private void displayValue(StatDisplay statDisplay, int value) {
@@ -127,7 +142,7 @@ class StatDisplayPanel extends JPanel {
 			statNameLabel.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
 			panel.add(statNameLabel);
 
-			textField = createFilteredField();
+			textField = new JTextField();
 			textField.setText("0");
 			textField.setBounds(x + DISTANCE, y + 4, 25, 22);
 			textField.setHorizontalAlignment(JLabel.RIGHT);
@@ -135,6 +150,8 @@ class StatDisplayPanel extends JPanel {
 			textField.setBorder(null);
 			textField.setFont(new Font(statNameLabel.getFont().getName(), statNameLabel.getFont().getStyle(), 13));
 			textField.setForeground(Color.BLACK);
+			
+			((AbstractDocument) textField.getDocument()).setDocumentFilter(new RegexDocumentFilter());
 			
 			textField.addFocusListener(new FocusAdapter() {
 				@Override
@@ -161,40 +178,49 @@ class StatDisplayPanel extends JPanel {
 		void lock() {
 			textField.setEditable(!textField.isEditable());
 		}
-	}
-
-	private static JTextField createFilteredField() {
-		JTextField field = new JTextField();
 		
-		((AbstractDocument) field.getDocument()).setDocumentFilter(new DocumentFilter() {
+		private static class RegexDocumentFilter extends DocumentFilter {
 			@Override
-			public void replace(FilterBypass fb, int offs, int length, String str, AttributeSet a)
-					throws BadLocationException {
-
-				String text = fb.getDocument().getText(0, fb.getDocument().getLength());
-				text = text.substring(0, text.length() - length) + str;
-				if (text.matches(TEXTFIELD_REGEX)) {
-					super.replace(fb, offs, length, str, a);
-				} else {
-					Toolkit.getDefaultToolkit().beep();
-				}
+			public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet a) throws BadLocationException {
+				if(checkRegexMatch(fb, offset, length, str, a)) {
+					super.replace(fb, offset, length, str, a);
+				} 
 			}
 
 			@Override
-			public void insertString(FilterBypass fb, int offs, String str, AttributeSet a)
-					throws BadLocationException {
-
-				String text = fb.getDocument().getText(0, fb.getDocument().getLength());
-				text += str;
-				if (text.matches(TEXTFIELD_REGEX)) {
-					super.insertString(fb, offs, str, a);
-				} else {
-					Toolkit.getDefaultToolkit().beep();
+			public void insertString(FilterBypass fb, int offset, String str, AttributeSet a) throws BadLocationException {
+				if(checkRegexMatch(fb, offset, 0, str, null)) {
+					super.insertString(fb, offset, str, a);
 				}
 			}
-		});
-
-		return field;
+			
+			@Override
+			 public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+				if(checkRegexMatch(fb, offset, length, "", null)) {
+					super.remove(fb, offset, length);
+				}
+			}
+			
+			private String getNewText(FilterBypass fb, int lengthToBeRemoved, String stringToBeAdded) throws BadLocationException {
+				String text =  fb.getDocument().getText(0, fb.getDocument().getLength());
+				text = text.substring(0, text.length() - lengthToBeRemoved);
+				return text + stringToBeAdded;
+			}
+			
+			private boolean checkRegexMatch(FilterBypass fb, int offset, int length, String str, AttributeSet a) throws BadLocationException {
+				String text = getNewText(fb, length, str);
+				
+				if(text == null || text.isEmpty()) {
+					super.replace(fb, offset, length, "0", a);
+					return false;
+				}
+				
+				boolean matches = text.matches(TEXTFIELD_REGEX);
+				if(!matches) {
+					Toolkit.getDefaultToolkit().beep();
+				}
+				return matches;
+			}
+		}
 	}
-
 }
