@@ -3,8 +3,11 @@ package simplecharacterbuilder.statgenerator.xmlreaderwriter;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -19,6 +22,16 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 	
 	private final StatGenerator statGenerator;
 	
+	private static final String PARENT_DIR = ".";
+	private static final String PARENT_DIR_ABS;
+	static {
+		try {
+			PARENT_DIR_ABS = new File(PARENT_DIR).getCanonicalPath();
+		} catch (IOException e) {
+			throw new IllegalArgumentException(); 
+		}
+	}
+	
 	public StatGeneratorXmlReaderWriterView(int x, int y, StatGenerator statGenerator) {
 		super(x, y);
 		
@@ -30,13 +43,42 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 		innerPanel.setBounds(GAP_WIDTH, 0, CONTROLPANEL_WIDTH - 2 * GAP_WIDTH, CONTROLPANEL_HEIGHT - GAP_WIDTH);
 		mainPanel.add(innerPanel);
 		
-		this.textField = new JTextField("src/main/resources/Info.xml");
+		this.textField = new JTextField();
 		formatPathTextField();
 		
 		String selectXml = "<html>Select<br>Info.xml</html>";
-		innerPanel.add(new ControlButton(selectXml, 285, (e -> System.out.println(1))));
+		innerPanel.add(new ControlButton(selectXml, 285, (e -> selectPath())));
 		innerPanel.add(new ControlButton("Load", 365, (e -> loadFromXml())));
 		innerPanel.add(new ControlButton("Save", 445, (e -> saveToXml())));
+	}
+
+	private void selectPath() {
+		JFileChooser chooser = new JFileChooser();
+		try{
+			 chooser.setCurrentDirectory(new File(PARENT_DIR));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (chooser.showOpenDialog(mainPanel.getParent()) == JFileChooser.APPROVE_OPTION) {
+			String relativePath = determineRelativePath(chooser.getSelectedFile());
+			if(relativePath.endsWith("Info.xml")) {
+				this.textField.setText(relativePath);
+			}
+		}
+	}
+
+	private String determineRelativePath(File file) {
+		try {
+			String path = file.getCanonicalPath();
+			if(path.startsWith(PARENT_DIR_ABS + "\\")) {
+				path = path.replace(PARENT_DIR_ABS + "\\", "");
+				path = path.replace("\\", "/");
+				return path;
+			}
+			throw new IllegalArgumentException(path);
+		} catch (IOException e) {
+			throw new IllegalArgumentException(file.getAbsolutePath());
+		}
 	}
 
 	private void formatPathTextField() {
@@ -50,11 +92,17 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 	}
 
 	private void loadFromXml() {
-		statGenerator.setStats(createStatXmlReaderWriter().readDTOFromXml());
+		try {
+			statGenerator.setStats(createStatXmlReaderWriter().readDTOFromXml());
+		} catch(Exception e) {
+		}
 	}
 	
 	private void saveToXml() {
-		createStatXmlReaderWriter().updateXmlFromDTO(statGenerator.getStats());
+		try {
+			createStatXmlReaderWriter().updateXmlFromDTO(statGenerator.getStats());
+		} catch(Exception e) {
+		}
 	}
 	
 	private StatXmlReaderWriter createStatXmlReaderWriter() {

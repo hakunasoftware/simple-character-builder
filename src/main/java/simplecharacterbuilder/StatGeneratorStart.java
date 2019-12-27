@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.UIManager;
+
 import simplecharacterbuilder.abstractview.ApplicationFrame;
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 import simplecharacterbuilder.statgenerator.StatGenerator;
@@ -22,13 +24,15 @@ public class StatGeneratorStart {
 	static {
 		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, CONFIG_PATH_DEV);
 		COMPONENTS.add(statGenerator);
-//		COMPONENTS.add(new TestMainPanel(0, 0));
 		COMPONENTS.add(new StatGeneratorXmlReaderWriterView(0, CharacterBuilderComponent.MAINPANEL_HEIGHT, statGenerator));
 	}
 
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		EventQueue.invokeLater(() -> new ApplicationFrame(WIDTH, HEIGHT, "SB2R StatGenerator", COMPONENTS));
 	}
-	
-	//TODO only allow numbers (up to 3) for textfield
 }
