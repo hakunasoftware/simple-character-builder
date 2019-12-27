@@ -69,7 +69,7 @@ class StatDisplayPanel extends JPanel {
 		displayValue(beaDisplay, statDTO.getBeauty());
 		displayValue(sexDisplay, statDTO.getSex());
 		displayValue(obeDisplay, statDTO.getObedience());
-		
+
 		displayStatsOnSelectionPanels();
 	}
 	

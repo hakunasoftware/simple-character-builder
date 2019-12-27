@@ -100,6 +100,9 @@ class RegularStatSelectionPanel extends JPanel {
 			}
 		} else {
 			setSelectionForButtonGroup(sexButtons, regularStatSelectionDTO.getSexSelection());
+			if(virginCheckBox.isSelected()) {
+				virginCheckBox.setSelected(false);
+			}
 		}
 	}
 	
