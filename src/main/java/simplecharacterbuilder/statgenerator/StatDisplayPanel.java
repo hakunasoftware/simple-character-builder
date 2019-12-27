@@ -3,13 +3,14 @@ package simplecharacterbuilder.statgenerator;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -28,7 +29,7 @@ class StatDisplayPanel extends JPanel {
 	private static final int TOP_OFFSET = 3;
 	private static final int LEFT_OFFSET = 8;
 
-	private static final String TEXTFIELD_REGEX = "^[0-9]{0,3}$";
+	private static final String TEXTFIELD_REGEX = "^[0-9]{1,3}$";
 
 	private StatDisplay conDisplay;
 	private StatDisplay agiDisplay;
@@ -64,9 +65,16 @@ class StatDisplayPanel extends JPanel {
 	}
 
 	StatDTO getStats() {
-		return StatDTO.builder().constitution(conDisplay.getValue()).agility(agiDisplay.getValue())
-				.strength(strDisplay.getValue()).intelligence(intDisplay.getValue()).charisma(chaDisplay.getValue())
-				.beauty(beaDisplay.getValue()).sex(sexDisplay.getValue()).obedience(obeDisplay.getValue()).build();
+		return StatDTO.builder()
+				.constitution( conDisplay.getValue())
+				.agility(      agiDisplay.getValue())
+				.strength(     strDisplay.getValue())
+				.intelligence( intDisplay.getValue())
+				.charisma(     chaDisplay.getValue())
+				.beauty(       beaDisplay.getValue())
+				.sex(          sexDisplay.getValue())
+				.obedience(    obeDisplay.getValue())
+				.build();
 	}
 
 	private void addStatOutput(int x, int y) {
@@ -128,11 +136,11 @@ class StatDisplayPanel extends JPanel {
 			textField.setFont(new Font(statNameLabel.getFont().getName(), statNameLabel.getFont().getStyle(), 13));
 			textField.setForeground(Color.BLACK);
 			
-			textField.addMouseListener(new MouseAdapter() {
+			textField.addFocusListener(new FocusAdapter() {
 				@Override
-				public void mouseClicked(MouseEvent e) {
-					textField.selectAll();
-				}
+			    public void focusGained(FocusEvent evt) {
+			        SwingUtilities.invokeLater(() -> textField.selectAll());
+			    }
 			});
 			
 			panel.add(textField);
@@ -164,7 +172,7 @@ class StatDisplayPanel extends JPanel {
 					throws BadLocationException {
 
 				String text = fb.getDocument().getText(0, fb.getDocument().getLength());
-				text += str;
+				text = text.substring(0, text.length() - length) + str;
 				if (text.matches(TEXTFIELD_REGEX)) {
 					super.replace(fb, offs, length, str, a);
 				} else {
