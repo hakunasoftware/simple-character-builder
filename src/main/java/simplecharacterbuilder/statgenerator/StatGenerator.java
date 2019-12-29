@@ -1,5 +1,8 @@
 package simplecharacterbuilder.statgenerator;
 
+import java.util.List;
+
+import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent.CharacterBuilderMainComponent;
@@ -46,6 +49,23 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 
 	public void setBorder(Border border) {
 		mainPanel.setBorder(border);
+	}
+	
+	public boolean confirmIntentIfWarningsExist() {
+		List<String> warnings = statDisplayPanel.getEvaluationWarnings();
+		if(warnings.isEmpty()) {
+			return true;
+		} 
+		
+		StringBuilder dialogueText = new StringBuilder("The following values don't comply with the configured settings: \n\n");
+		warnings.stream().forEach(warning -> dialogueText.append("- ").append(warning).append("\n"));
+		dialogueText.append("\nAre you sure that you want to proceed?");
+		
+		return JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(
+			    mainPanel.getParent(),
+			    dialogueText.toString(),
+			    "Are you sure?",
+			    JOptionPane.OK_CANCEL_OPTION);
 	}
 	
 	private StatDisplayPanel createStatDisplayPanel() {

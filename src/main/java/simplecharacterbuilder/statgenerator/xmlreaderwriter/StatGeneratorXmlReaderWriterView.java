@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -63,6 +64,8 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 			String relativePath = determineRelativePath(chooser.getSelectedFile());
 			if(relativePath.endsWith("Info.xml")) {
 				this.textField.setText(relativePath);
+			} else {
+				displayErrorSelectInfoXml();
 			}
 		}
 	}
@@ -95,18 +98,27 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 		try {
 			statGenerator.setStats(createStatXmlReaderWriter().readDTOFromXml());
 		} catch(Exception e) {
+			displayErrorSelectInfoXml();
 		}
 	}
 	
 	private void saveToXml() {
+		if(!statGenerator.confirmIntentIfWarningsExist()) {
+			return;
+		}
 		try {
 			createStatXmlReaderWriter().updateXmlFromDTO(statGenerator.getStats());
 		} catch(Exception e) {
+			displayErrorSelectInfoXml();
 		}
 	}
 	
 	private StatXmlReaderWriter createStatXmlReaderWriter() {
 		return new StatXmlReaderWriter(textField.getText());
+	}
+	
+	private void displayErrorSelectInfoXml() {
+		JOptionPane.showMessageDialog(mainPanel.getParent(), "Select a valid Info.xml", "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	@SuppressWarnings("serial")

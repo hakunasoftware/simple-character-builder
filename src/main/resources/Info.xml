@@ -18,14 +18,14 @@
 	</Source>
 
 	<Stats>
-		<Con>15</Con>
-		<Agi>10</Agi>
-		<Str>15</Str>
-		<Int>15</Int>
+		<Con>60</Con>
+		<Agi>45</Agi>
+		<Str>80</Str>
+		<Int>55</Int>
 		<Sex>0</Sex>
-		<Beauty>605</Beauty>
-		<Charisma>15</Charisma>
-		<Obedience>10</Obedience>
+		<Beauty>820</Beauty>
+		<Charisma>60</Charisma>
+		<Obedience>13</Obedience>
 	</Stats>
 
 	<Skills>

@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -47,16 +49,16 @@ class StatDisplayPanel extends JPanel {
 
 	StatDisplayPanel(int xPos, int yPos, StatCalculator statCalculator, RegularStatSelectionPanel regularStatSelectionPanel, BeautySelectionPanel beautySelectionPanel) {
 		this.regStatSelectionPanel = regularStatSelectionPanel;
-		this.beautySelectionPanel      = beautySelectionPanel;
-		this.statCalculator            = statCalculator;
-		
+		this.beautySelectionPanel  = beautySelectionPanel;
+		this.statCalculator        = statCalculator;
+
 		this.setBounds(xPos, yPos, WIDTH, HEIGHT);
 		this.setBorder(CharacterBuilderComponent.BORDER);
 		this.setLayout(null);
 
 		this.addStatOutput(LEFT_OFFSET, TOP_OFFSET);
 		this.addDisplayLock(LEFT_OFFSET + 1, 2 * TOP_OFFSET + 8 * VERTICAL_DISPLAY_DISTANCE);
-		
+
 		this.setDefaultValues();
 	}
 
@@ -72,12 +74,12 @@ class StatDisplayPanel extends JPanel {
 
 		displayStatsOnSelectionPanels();
 	}
-	
+
 	private void displayStatsOnSelectionPanels() {
 		beautySelectionPanel .setSelection(statCalculator.generateBeautySelection(beaDisplay.getValue()));
 		regStatSelectionPanel.setSelection(statCalculator.generateRegularStatSelectionDTO(getStats()));
 	}
-	
+
 	void displaySelectedStats() {
 		RegularStatSelectionDTO regularStatSelectionDTO = regStatSelectionPanel.getSelections();
 		int beautySelection = beautySelectionPanel.getSelection();
@@ -90,15 +92,28 @@ class StatDisplayPanel extends JPanel {
 
 	StatDTO getStats() {
 		return StatDTO.builder()
-				.constitution( conDisplay.getValue())
-				.agility(      agiDisplay.getValue())
-				.strength(     strDisplay.getValue())
-				.intelligence( intDisplay.getValue())
-				.charisma(     chaDisplay.getValue())
-				.beauty(       beaDisplay.getValue())
-				.sex(          sexDisplay.getValue())
-				.obedience(    obeDisplay.getValue())
+				.constitution(conDisplay.getValue())
+				.agility(agiDisplay.getValue())
+				.strength(strDisplay.getValue())
+				.intelligence(intDisplay.getValue())
+				.charisma(chaDisplay.getValue())
+				.beauty(beaDisplay.getValue())
+				.sex(sexDisplay.getValue())
+				.obedience(obeDisplay.getValue())
 				.build();
+	}
+	
+	List<String> getEvaluationWarnings(){
+		List<String> warnings = new ArrayList<>();
+		warnings.addAll(conDisplay.getEvaluationWarnings());
+		warnings.addAll(agiDisplay.getEvaluationWarnings());
+		warnings.addAll(strDisplay.getEvaluationWarnings());
+		warnings.addAll(intDisplay.getEvaluationWarnings());
+		warnings.addAll(chaDisplay.getEvaluationWarnings());
+		warnings.addAll(beaDisplay.getEvaluationWarnings());
+		warnings.addAll(sexDisplay.getEvaluationWarnings());
+		warnings.addAll(obeDisplay.getEvaluationWarnings());
+		return warnings;
 	}
 
 	private void addStatOutput(int x, int y) {
@@ -121,8 +136,7 @@ class StatDisplayPanel extends JPanel {
 		checkBox.addItemListener(e -> lockDisplays());
 		checkBox.setBounds(x, y, 70, 20);
 		checkBox.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
-		checkBox.setFont(new Font(RegularStatSelectionPanel.HEADLINE_FONT.getName(),
-				RegularStatSelectionPanel.HEADLINE_FONT.getStyle(), 11));
+		checkBox.setFont(new Font(RegularStatSelectionPanel.HEADLINE_FONT.getName(), RegularStatSelectionPanel.HEADLINE_FONT.getStyle(), 11));
 		this.add(checkBox);
 	}
 
@@ -136,14 +150,25 @@ class StatDisplayPanel extends JPanel {
 		sexDisplay.lock();
 		obeDisplay.lock();
 	}
-
+	
 	private class StatDisplay {
 
 		private static final int DISTANCE = 37;
 
 		private JTextField textField;
 
+		private final int minValue;
+		private final int maxValue;
+
+		private final String statName;
+
 		StatDisplay(JPanel panel, String statName, int x, int y) {
+			this.statName = statName;
+
+			minValue = statName == "BEA" ? statCalculator.getMinBeauty()
+					: statName == "SEX" ? 0 : statCalculator.getMinRegStat();
+			maxValue = statName == "BEA" ? statCalculator.getMaxBeauty() : statCalculator.getMaxRegStat();
+
 			JLabel statNameLabel = new JLabel();
 			statNameLabel.setText(statName + ":");
 			statNameLabel.setBounds(x, y, 35, 30);
@@ -159,17 +184,59 @@ class StatDisplayPanel extends JPanel {
 			textField.setBorder(null);
 			textField.setFont(new Font(statNameLabel.getFont().getName(), statNameLabel.getFont().getStyle(), 13));
 			textField.setForeground(Color.BLACK);
-			
+
 			((AbstractDocument) textField.getDocument()).setDocumentFilter(new RegexDocumentFilter());
-			
+
 			textField.addFocusListener(new FocusAdapter() {
 				@Override
-			    public void focusGained(FocusEvent evt) {
-			        SwingUtilities.invokeLater(() -> textField.selectAll());
-			    }
+				public void focusGained(FocusEvent evt) {
+					SwingUtilities.invokeLater(() -> textField.selectAll());
+				}
 			});
-			
+
 			panel.add(textField);
+		}
+
+		private boolean isValidValue(int value) {
+			return value % statCalculator.getMultiplier() == 0 
+					&& value >= minValue 
+					&& value <= maxValue;
+		}
+
+		List<String> getEvaluationWarnings() {
+			List<String> warnings = new ArrayList<>();
+
+			int currentValue = Integer.parseInt(textField.getText());
+
+			if (currentValue < minValue) {
+				warnings.add(new StringBuilder("Value ")
+						.append(currentValue)
+						.append(" is under the minimal ")
+						.append(statName)
+						.append(" value of ")
+						.append(minValue)
+						.toString());
+			}
+			if (currentValue > maxValue) {
+				warnings.add(new StringBuilder("Value ")
+						.append(currentValue)
+						.append(" exceeds the maximal ")
+						.append(statName)
+						.append(" value of ")
+						.append(maxValue)
+						.toString());
+			}
+			if (currentValue % statCalculator.getMultiplier() != 0) {
+				warnings.add(new StringBuilder("Value ")
+						.append(currentValue)
+						.append(" for ")
+						.append(statName)
+						.append(" is not a multiple of ")
+						.append(statCalculator.getMultiplier())
+						.toString());
+			}
+
+			return warnings;
 		}
 
 		void setValue(int value) {
@@ -178,7 +245,7 @@ class StatDisplayPanel extends JPanel {
 
 		int getValue() {
 			String text = textField.getText();
-			if(text == null || text.isEmpty()) {
+			if (text == null || text.isEmpty()) {
 				return 0;
 			}
 			return Integer.valueOf(textField.getText());
@@ -187,7 +254,7 @@ class StatDisplayPanel extends JPanel {
 		void lock() {
 			textField.setEditable(!textField.isEditable());
 		}
-		
+
 		private class RegexDocumentFilter extends DocumentFilter {
 			@Override
 			public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet a) throws BadLocationException {
@@ -200,32 +267,46 @@ class StatDisplayPanel extends JPanel {
 				modifyText(fb, offset, 0, str, null);
 				StatDisplayPanel.this.displayStatsOnSelectionPanels();
 			}
-			
+
 			@Override
-			 public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+			public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
 				modifyText(fb, offset, length, "", null);
 				StatDisplayPanel.this.displayStatsOnSelectionPanels();
 			}
-			
+
 			private void modifyText(FilterBypass fb, int offset, int length, String str, AttributeSet a) throws BadLocationException {
-				String text =  fb.getDocument().getText(0, fb.getDocument().getLength());
-				
-				if("0".equals(text) && str != null && str.length() != 0 && str.matches(TEXTFIELD_REGEX)) {
-					fb.replace(0, 1, str, a); 
+				String text = fb.getDocument().getText(0, fb.getDocument().getLength());
+
+				text = new StringBuilder(text.substring(0, offset)).append(str)
+						.append(text.substring(offset + length, text.length())).toString();
+
+				if (text == null || text.isEmpty()) {
+					fb.replace(offset, length, "0", a);
+					checkBoundsAndMultiplier("0");
 					return;
 				}
-				
-				text = text.substring(0, text.length() - length) + str;
-				
-				if(text == null || text.isEmpty()) {
-					fb.replace(offset, length, "0", a); 
+
+				if (text.startsWith("0") && str != null && str.length() != 0 && str.matches(TEXTFIELD_REGEX)) {
+					fb.replace(0, 1, str, a);
+					checkBoundsAndMultiplier(str);
 					return;
 				}
-				
-				if(text.matches(TEXTFIELD_REGEX)) {
-					fb.replace(offset, length, str, a);
-				} else {
+
+				if (!text.matches(TEXTFIELD_REGEX)) {
 					Toolkit.getDefaultToolkit().beep();
+					return;
+				}
+
+				fb.replace(offset, length, str, a);
+				checkBoundsAndMultiplier(text);
+			}
+
+			private void checkBoundsAndMultiplier(String text) {
+				int newValue = Integer.parseInt(text);
+				if (!isValidValue(newValue)) {
+					textField.setForeground(Color.RED);
+				} else {
+					textField.setForeground(Color.BLACK);
 				}
 			}
 		}
@@ -240,7 +321,7 @@ class StatDisplayPanel extends JPanel {
 		displayValue(sexDisplay, 0);
 		displayValue(obeDisplay, statCalculator.getAverageRegStat());
 		displayValue(beaDisplay, statCalculator.getAverageBeauty());
-		
+
 		displayStatsOnSelectionPanels();
 	}
 }

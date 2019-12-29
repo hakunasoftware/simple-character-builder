@@ -18,15 +18,9 @@ class StatCalculator {
 	private Random     random = new Random();
 	
 	private int multiplier; 
-	
-	final int averageRegStat;
-	final int averageBeauty;
 
 	StatCalculator(String configPath) {
 		readConfig(configPath);
-		
-		averageRegStat = (regularStatBoundaries[3] + regularStatBoundaries[2]) / 2;
-		averageBeauty  = (beautyBoundaries[3] + beautyBoundaries[2]) / 2;
 	}
 
 	StatDTO generateStats(RegularStatSelectionDTO regularStatsSelectionDTO, int beautySelection) {
@@ -75,12 +69,32 @@ class StatCalculator {
 		return boundaries.length - 2;
 	}
 	
-	public int getAverageRegStat() {
-		return averageRegStat;
+	int getAverageRegStat() {
+		return (regularStatBoundaries[3] + regularStatBoundaries[2]) / 2;
 	}
 
-	public int getAverageBeauty() {
-		return averageBeauty;
+	int getAverageBeauty() {
+		return (beautyBoundaries[3] + beautyBoundaries[2]) / 2;
+	}
+
+	int getMinRegStat() {
+		return regularStatBoundaries[0];
+	}
+
+	int getMaxRegStat() {
+		return regularStatBoundaries[regularStatBoundaries.length - 1] - 1;
+	}
+
+	int getMinBeauty() {
+		return beautyBoundaries[0];
+	}
+
+	int getMaxBeauty() {
+		return beautyBoundaries[beautyBoundaries.length - 1] - 1;
+	}
+	
+	int getMultiplier() {
+		return multiplier;
 	}
 	
 	private int generateRegStatFromSelection(int selectionIndex) {
@@ -117,6 +131,7 @@ class StatCalculator {
 		try (InputStream inputStream = new FileInputStream(configPath)) {
 			this.prop.load(inputStream);
 		} catch (Exception e) {
+			System.err.println("Error loading config");
 			e.printStackTrace();
 		}
 	}
