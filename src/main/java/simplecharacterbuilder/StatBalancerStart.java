@@ -16,13 +16,13 @@ public class StatBalancerStart {
 	private static final int WIDTH 	= CharacterBuilderComponent.MAINPANEL_WIDTH;
 	private static final int HEIGHT = CharacterBuilderComponent.MAINPANEL_HEIGHT + CharacterBuilderComponent.CONTROLPANEL_HEIGHT;
 	
-	private static final String CONFIG_PATH_DEV = "src/main/resources/config";
+	private static final String CONFIG_PATH_USE = "config/statgenerator.config";
 	@SuppressWarnings("unused")
-	private static final String CONFIG_PATH_USE = "config_test";
+	private static final String CONFIG_PATH_DEV = "src/main/resources/config";
 	
 	private static final List<CharacterBuilderComponent> COMPONENTS = new ArrayList<>();
 	static {
-		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, CONFIG_PATH_DEV);
+		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, CONFIG_PATH_USE);
 		COMPONENTS.add(statGenerator);
 		COMPONENTS.add(new StatGeneratorXmlReaderWriterView(0, CharacterBuilderComponent.MAINPANEL_HEIGHT, statGenerator));
 	}

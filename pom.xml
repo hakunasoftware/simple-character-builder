@@ -34,7 +34,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>simplecharacterbuilder.start.StatPickerStart</mainClass>
+							<mainClass>simplecharacterbuilder.StatBalancerStart</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

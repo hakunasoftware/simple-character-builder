@@ -28,7 +28,7 @@ public abstract class InfoXmlReaderWriter<E extends DTO> {
 	public abstract void updateXmlFromDTO(E dto);
 
 	protected InfoXmlReaderWriter(String xmlURI) {
-		if (!xmlURI.endsWith("/Info.xml")) {
+		if (!xmlURI.endsWith("Info.xml")) {
 			throw new IllegalArgumentException("The URI " + xmlURI + " is not a valid path");
 		}
 		this.xmlFile = new File(xmlURI);

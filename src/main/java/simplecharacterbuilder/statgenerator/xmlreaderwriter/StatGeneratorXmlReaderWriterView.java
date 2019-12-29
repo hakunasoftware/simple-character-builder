@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -12,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileFilter;
 
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent.CharacterBuilderControlComponent;
 import simplecharacterbuilder.statgenerator.StatGenerator;
@@ -23,15 +23,7 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 	
 	private final StatGenerator statGenerator;
 	
-	private static final String PARENT_DIR = ".";
-	private static final String PARENT_DIR_ABS;
-	static {
-		try {
-			PARENT_DIR_ABS = new File(PARENT_DIR).getCanonicalPath();
-		} catch (IOException e) {
-			throw new IllegalArgumentException(); 
-		}
-	}
+	private static final String ACTORS_DIR = "../Data/Battlers/Actors";
 	
 	public StatGeneratorXmlReaderWriterView(int x, int y, StatGenerator statGenerator) {
 		super(x, y);
@@ -55,32 +47,32 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 
 	private void selectPath() {
 		JFileChooser chooser = new JFileChooser();
+		chooser.setDialogTitle("Select Info.xml");
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		chooser.setFileFilter(new FileFilter(){
+		    @Override
+		    public boolean accept(File file){
+		        return file.isDirectory() || file.getName().equals("Info.xml");
+		    }
+		    @Override
+		    public String getDescription() {
+		        return "Folders and Info.xml";
+		    }
+		});
+		
 		try{
-			 chooser.setCurrentDirectory(new File(PARENT_DIR));
+			 chooser.setCurrentDirectory(new File(ACTORS_DIR));
+		
+			if (chooser.showOpenDialog(mainPanel.getParent()) == JFileChooser.APPROVE_OPTION) {
+				String filePath = chooser.getSelectedFile().getCanonicalPath().replace("\\", "\\\\");
+				if(filePath.endsWith("Info.xml")) {
+					this.textField.setText(filePath);
+				} else {
+					displayErrorSelectInfoXml();
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		if (chooser.showOpenDialog(mainPanel.getParent()) == JFileChooser.APPROVE_OPTION) {
-			String relativePath = determineRelativePath(chooser.getSelectedFile());
-			if(relativePath.endsWith("Info.xml")) {
-				this.textField.setText(relativePath);
-			} else {
-				displayErrorSelectInfoXml();
-			}
-		}
-	}
-
-	private String determineRelativePath(File file) {
-		try {
-			String path = file.getCanonicalPath();
-			if(path.startsWith(PARENT_DIR_ABS + "\\")) {
-				path = path.replace(PARENT_DIR_ABS + "\\", "");
-				path = path.replace("\\", "/");
-				return path;
-			}
-			throw new IllegalArgumentException(path);
-		} catch (IOException e) {
-			throw new IllegalArgumentException(file.getAbsolutePath());
 		}
 	}
 
