@@ -18,13 +18,15 @@ public class StatBalancerStart {
 	
 	private static final String CONFIG_PATH_USE = "config/statgenerator.config";
 	@SuppressWarnings("unused")
-	private static final String CONFIG_PATH_DEV = "src/main/resources/config";
+	private static final String CONFIG_PATH_DEV = "src/main/resources/statgenerator.config";
+	
+	private static final String CONFIG_PATH_CURRENT = CONFIG_PATH_USE;
 	
 	private static final List<CharacterBuilderComponent> COMPONENTS = new ArrayList<>();
 	static {
-		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, CONFIG_PATH_USE);
+		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, CONFIG_PATH_CURRENT);
 		COMPONENTS.add(statGenerator);
-		COMPONENTS.add(new StatGeneratorXmlReaderWriterView(0, CharacterBuilderComponent.MAINPANEL_HEIGHT, statGenerator));
+		COMPONENTS.add(new StatGeneratorXmlReaderWriterView(0, CharacterBuilderComponent.MAINPANEL_HEIGHT, statGenerator, CONFIG_PATH_CURRENT));
 	}
 
 	public static void main(String[] args) {

@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -21,14 +24,13 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 	private final JPanel innerPanel;
 	private final JTextField textField;
 	
-	private final StatGenerator statGenerator;
+	private final StatGenerator STAT_GENERATOR;
+	private final String ACTORS_DIRECTORY;
 	
-	private static final String ACTORS_DIR = "../Data/Battlers/Actors";
-	
-	public StatGeneratorXmlReaderWriterView(int x, int y, StatGenerator statGenerator) {
+	public StatGeneratorXmlReaderWriterView(int x, int y, StatGenerator statGenerator, String configPath) {
 		super(x, y);
-		
-		this.statGenerator = statGenerator;
+		this.STAT_GENERATOR = statGenerator;
+		this.ACTORS_DIRECTORY = determineActorsDirectory(configPath);
 		
 		innerPanel = new JPanel();
 		innerPanel.setLayout(null);
@@ -61,7 +63,7 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 		});
 		
 		try{
-			 chooser.setCurrentDirectory(new File(ACTORS_DIR));
+			 chooser.setCurrentDirectory(new File(ACTORS_DIRECTORY));
 		
 			if (chooser.showOpenDialog(mainPanel.getParent()) == JFileChooser.APPROVE_OPTION) {
 				String filePath = chooser.getSelectedFile().getCanonicalPath().replace("\\", "\\\\");
@@ -88,18 +90,18 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 
 	private void loadFromXml() {
 		try {
-			statGenerator.setStats(createStatXmlReaderWriter().readDTOFromXml());
+			STAT_GENERATOR.setStats(createStatXmlReaderWriter().readDTOFromXml());
 		} catch(Exception e) {
 			displayErrorSelectInfoXml();
 		}
 	}
 	
 	private void saveToXml() {
-		if(!statGenerator.confirmIntentIfWarningsExist()) {
+		if(!STAT_GENERATOR.confirmIntentIfWarningsExist()) {
 			return;
 		}
 		try {
-			createStatXmlReaderWriter().updateXmlFromDTO(statGenerator.getStats());
+			createStatXmlReaderWriter().updateXmlFromDTO(STAT_GENERATOR.getStats());
 		} catch(Exception e) {
 			displayErrorSelectInfoXml();
 		}
@@ -111,6 +113,17 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 	
 	private void displayErrorSelectInfoXml() {
 		JOptionPane.showMessageDialog(mainPanel.getParent(), "Select a valid Info.xml", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	private String determineActorsDirectory(String configPath) {
+		Properties prop   = new Properties();
+		try (InputStream inputStream = new FileInputStream(configPath)) {
+			prop.load(inputStream);
+			String rootDirectory = prop.getProperty("root_directory").trim();
+			return rootDirectory + "/Data/Battlers/Actors";
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Error loading config");
+		}
 	}
 
 	@SuppressWarnings("serial")
