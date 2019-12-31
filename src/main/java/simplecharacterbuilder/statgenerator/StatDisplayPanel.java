@@ -68,17 +68,26 @@ class StatDisplayPanel extends JPanel {
 
 	void displayStats(Map<Stat, Integer> stats) {
 		stats.keySet().stream().forEach(stat -> displayStat(stat, stats.get(stat)));
-		displayStatsOnSelectionPanels();
+//		displayStatsOnSelectionPanels();
 	}
 
 	void displayStat(Stat stat, int value) {
 		getStatDisplayPanel(stat).setValue(Math.min(value, 999));
+		displayStatOnSelectionPanel(stat);
 	}
 	
 
 	private void displayStatsOnSelectionPanels() {
 		beautySelectionPanel.setSelection(statCalculator.generateSelection(Stat.BEAUTY, getStatDisplayPanel(Stat.BEAUTY).getValue()));
 		regStatSelectionPanel.setSelections(statCalculator.generateSelections(getRegStats()));
+	}
+	
+	private void displayStatOnSelectionPanel(Stat stat) {
+		if(stat.equals(Stat.BEAUTY)) { 
+			beautySelectionPanel.setSelection(statCalculator.generateSelection(Stat.BEAUTY, getStatDisplayPanel(Stat.BEAUTY).getValue()));
+		} else { 
+			regStatSelectionPanel.setSelections(statCalculator.generateSelections(getRegStats()));
+		}
 	}
 
 	void displaySelectedStats() {
@@ -140,6 +149,7 @@ class StatDisplayPanel extends JPanel {
 			textField.setBorder(null);
 			textField.setFont(new Font(statNameLabel.getFont().getName(), statNameLabel.getFont().getStyle(), 13));
 			textField.setForeground(Color.BLACK);
+			textField.setBackground(statNameLabel.getBackground());
 
 			((AbstractDocument) textField.getDocument()).setDocumentFilter(new RegexDocumentFilter());
 
@@ -215,19 +225,19 @@ class StatDisplayPanel extends JPanel {
 			@Override
 			public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet a) throws BadLocationException {
 				modifyText(fb, offset, length, str, null);
-				StatDisplayPanel.this.displayStatsOnSelectionPanels();
+				StatDisplayPanel.this.displayStatOnSelectionPanel(StatDisplay.this.stat);
 			}
 
 			@Override
 			public void insertString(FilterBypass fb, int offset, String str, AttributeSet a) throws BadLocationException {
 				modifyText(fb, offset, 0, str, null);
-				StatDisplayPanel.this.displayStatsOnSelectionPanels();
+				StatDisplayPanel.this.displayStatOnSelectionPanel(StatDisplay.this.stat);
 			}
 
 			@Override
 			public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
 				modifyText(fb, offset, length, "", null);
-				StatDisplayPanel.this.displayStatsOnSelectionPanels();
+				StatDisplayPanel.this.displayStatOnSelectionPanel(StatDisplay.this.stat);
 			}
 
 			private void modifyText(FilterBypass fb, int offset, int length, String str, AttributeSet a) throws BadLocationException {
