@@ -239,18 +239,19 @@ class StatDisplayPanel extends JPanel {
 
 			private void modifyText(FilterBypass fb, int offset, int length, String str, AttributeSet a) throws BadLocationException {
 				String text = fb.getDocument().getText(0, fb.getDocument().getLength());
+				int currentTextLength = text.length();
 
 				text = new StringBuilder(text.substring(0, offset)).append(str)
 						.append(text.substring(offset + length, text.length())).toString();
 
-				if (text == null || text.isEmpty()) {
-					fb.replace(offset, length, "0", a);
+				if (text.isEmpty() || text.equals("0")) {
+					fb.replace(0, currentTextLength, "0", a);
 					checkBoundsAndMultiplier("0");
 					return;
 				}
 
 				if (text.startsWith("0") && str != null && str.length() != 0 && str.matches(TEXTFIELD_REGEX)) {
-					fb.replace(0, 1, str, a); //here's an issue
+					fb.replace(0, 1, str, a);
 					checkBoundsAndMultiplier(str);
 					return;
 				}
