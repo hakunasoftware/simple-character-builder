@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import lombok.Getter;
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 
 @SuppressWarnings("serial")
@@ -48,7 +49,7 @@ class RegularStatSelectionPanel extends JPanel {
 		HEADLINE_FONT = new Font(label.getFont().getName(), label.getFont().getStyle(), 10);
 	}
 	
-	private final List<RegStatButtonLine> buttonLines = new ArrayList<>();
+	private final List<StatButtonGroup> buttonGroups = new ArrayList<>();
 	
 	private JCheckBox virginCheckBox;
 	
@@ -70,44 +71,33 @@ class RegularStatSelectionPanel extends JPanel {
 		Map<Stat, Integer> regStats = new HashMap<>();
 		Stat.getAll().stream()
 			.filter(stat -> !stat.equals(Stat.BEAUTY))
-			.forEach(stat -> regStats.put(stat, getSelectionFromButtons(stat)));
+			.forEach(stat -> regStats.put(stat, getSelection(stat)));
 		return regStats;
 	}
 	
 	void setSelection(Map<Stat, Integer> selections) {
 		Stat.getRegStats().stream().filter(stat -> !stat.equals(Stat.SEX))
-			.forEach(stat -> setSelectionForButtonGroup(getButtonLine(stat).getButtonGroup(), selections.get(stat)));
+			.forEach(stat -> getButtonGroup(stat).setSelection(selections.get(stat)));
 		
 		int sexSelection = selections.get(Stat.SEX);
 		if(sexSelection == -1) {
-			setSelectionForButtonGroup(getButtonLine(Stat.SEX).getButtonGroup(), 0);
+			getButtonGroup(Stat.SEX).setSelection(0);
 			if(!virginCheckBox.isSelected()) {
 				virginCheckBox.setSelected(true);
 			}
 		} else {
-			setSelectionForButtonGroup(getButtonLine(Stat.SEX).getButtonGroup(), sexSelection);
+			getButtonGroup(Stat.SEX).setSelection(sexSelection);
 			if(virginCheckBox.isSelected()) {
 				virginCheckBox.setSelected(false);
 			}
 		}
 	}
 	
-	static void setSelectionForButtonGroup(ButtonGroup buttonGroup, int selectionIndex) {
-		Enumeration<AbstractButton> buttons = buttonGroup.getElements();
-		while(buttons.hasMoreElements()) {
-			AbstractButton currentButton = buttons.nextElement();
-			if(Integer.parseInt(currentButton.getActionCommand()) == selectionIndex) {
-				currentButton.setSelected(true);
-				return;
-			}
-		}
-	}
-	
-	private int getSelectionFromButtons(Stat stat) {
+	private int getSelection(Stat stat) {
 		if(stat.equals(Stat.SEX) && virginCheckBox.isSelected()) {
 			return -1;
 		}
-		return Integer.parseInt(getButtonLine(stat).getButtonGroup().getSelection().getActionCommand());
+		return Integer.parseInt(getButtonGroup(stat).getSelection().getActionCommand());
 	}
 	
 	private void addOptionLabels() {
@@ -135,14 +125,12 @@ class RegularStatSelectionPanel extends JPanel {
 		Stat.forRegStats(stat -> buildButtonGroup(stat));
 	}
 	
-	private RegStatButtonLine getButtonLine(Stat stat) {
-		return buttonLines.stream().filter(b -> b.regStat.equals(stat)).findFirst().get();
+	private StatButtonGroup getButtonGroup(Stat stat) {
+		return buttonGroups.stream().filter(b -> b.getStat().equals(stat)).findFirst().get();
 	}
 	
 	private void buildButtonGroup(Stat regStat) {
-		new RegStatButtonLine(regStat)
-			.location(CONTENT_XPOS, CONTENT_YPOS + HEADLINE_OFFSET + VERTICAL_BUTTON_DISTANCE * buttonLines.size())
-			.buildAndAdd();
+		addStatNameLabelAndButtons(regStat, CONTENT_XPOS, CONTENT_YPOS + HEADLINE_OFFSET + VERTICAL_BUTTON_DISTANCE * buttonGroups.size());
 	}
 	
 	private void addVirginCheckbox() {
@@ -159,61 +147,56 @@ class RegularStatSelectionPanel extends JPanel {
 	}
 	
 	private void disableSexButtons() {
-		Enumeration<AbstractButton> sexButtonsElements = getButtonLine(Stat.SEX).getButtonGroup().getElements();
+		Enumeration<AbstractButton> sexButtonsElements = getButtonGroup(Stat.SEX).getElements();
 		while(sexButtonsElements.hasMoreElements()) {
 			AbstractButton currentButton = sexButtonsElements.nextElement();
 			currentButton.setEnabled(!currentButton.isEnabled());
 		}
 	}
 	
+	private void addStatNameLabelAndButtons(Stat stat, int x, int y) {
+		this.add(createStatNameLabel(stat, x, y));
+		buttonGroups.add(createRegStatButtonGroup(stat, x + STAT_NAME_LABEL_LENGTH + 12, y));
+	}
 	
-	private class RegStatButtonLine {
-		private final Stat regStat;
-		private final ButtonGroup buttonGroup;
-		
-		private int x;
-		private int y;
-
-		RegStatButtonLine(Stat regStat) {
-			this.regStat = regStat;
+	private JLabel createStatNameLabel(Stat stat, int x, int y) {
+		JLabel label = new JLabel(stat.getName() + ":");
+		label.setBounds(x, y, STAT_NAME_LABEL_LENGTH, 20);
+		label.setVerticalAlignment(JLabel.CENTER);
+		label.setHorizontalAlignment(JLabel.RIGHT);
+		label.setFont(new Font(label.getFont().getName(), label.getFont().getStyle(), 12));
+		return label;
+	}
+	
+	private StatButtonGroup createRegStatButtonGroup(Stat stat, int x, int y) {
+		StatButtonGroup buttonGroup = new StatButtonGroup(stat);
+		for (int i = 0; i < BUTTON_COUNT; i++) {
+			JRadioButton button = new JRadioButton();
+			button.setBounds(x + (20 + HORIZONTAL_BUTTON_DISTANCE) * i, y + 1, 20, 20);
+			button.setActionCommand(String.valueOf(i));
 			
-			this.buttonGroup = new ButtonGroup();
+			this.add(button);
+			buttonGroup.add(button);
+		}
+		return buttonGroup;
+	}
+	
+	@Getter
+	static class StatButtonGroup extends ButtonGroup {
+		private final Stat stat;
+		StatButtonGroup(Stat stat) {
+			this.stat = stat;
 		}
 
-		RegStatButtonLine location(int x, int y) {
-			this.x = x;
-			this.y = y;
-			return this;
-		}
-
-		RegStatButtonLine buildAndAdd() {
-			RegularStatSelectionPanel.this.add(createStatNameLabel(regStat, x, y));
-			
-			int shiftedX = this.x + STAT_NAME_LABEL_LENGTH + 12;
-			
-			for (int i = 0; i < BUTTON_COUNT; i++) {
-				JRadioButton button = new JRadioButton();
-				button.setBounds(shiftedX + (20 + HORIZONTAL_BUTTON_DISTANCE) * i, this.y + 1, 20, 20);
-				button.setActionCommand(String.valueOf(i));
-				
-				RegularStatSelectionPanel.this.add(button);
-				buttonGroup.add(button);
+		void setSelection(int selectionIndex) {
+			Enumeration<AbstractButton> buttons = this.getElements();
+			while(buttons.hasMoreElements()) {
+				AbstractButton currentButton = buttons.nextElement();
+				if(Integer.parseInt(currentButton.getActionCommand()) == selectionIndex) {
+					currentButton.setSelected(true);
+					return;
+				}
 			}
-			buttonLines.add(this);
-			return this;
-		}
-
-		private JLabel createStatNameLabel(Stat stat, int x, int y) {
-			JLabel label = new JLabel(stat.getName() + ":");
-			label.setBounds(x, y, STAT_NAME_LABEL_LENGTH, 20);
-			label.setVerticalAlignment(JLabel.CENTER);
-			label.setHorizontalAlignment(JLabel.RIGHT);
-			label.setFont(new Font(label.getFont().getName(), label.getFont().getStyle(), 12));
-			return label;
-		}
-		
-		ButtonGroup getButtonGroup() {
-			return this.buttonGroup;
 		}
 	}
 }
