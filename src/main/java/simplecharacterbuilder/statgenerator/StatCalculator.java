@@ -77,7 +77,7 @@ class StatCalculator {
 		return multiplier;
 	}
 	
-	private int generateStatFromSelection(Stat stat, int selectionIndex) {
+	int generateStatFromSelection(Stat stat, int selectionIndex) {
 		switch(stat) {
 			case BEAUTY: return generateStatFromBoundariesAndSelection(beautyBoundaries, selectionIndex);
 			case SEX: if(selectionIndex == -1) return 0;

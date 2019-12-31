@@ -41,10 +41,10 @@ class StatDisplayPanel extends JPanel {
 	
 	private final List<StatDisplay> statDisplays = new ArrayList<>();
 
-	StatDisplayPanel(int xPos, int yPos, StatCalculator statCalculator, RegularStatSelectionPanel regularStatSelectionPanel, BeautySelectionPanel beautySelectionPanel) {
-		this.regStatSelectionPanel = regularStatSelectionPanel;
-		this.beautySelectionPanel  = beautySelectionPanel;
-		this.statCalculator        = statCalculator;
+	StatDisplayPanel(StatGenerator statGenerator, int xPos, int yPos) {
+		this.regStatSelectionPanel = statGenerator.getRegularStatSelectionPanel();
+		this.beautySelectionPanel  = statGenerator.getBeautySelectionPanel();
+		this.statCalculator        = statGenerator.getStatCalculator();
 
 		this.setBounds(xPos, yPos, WIDTH, HEIGHT);
 		this.setBorder(CharacterBuilderComponent.BORDER);

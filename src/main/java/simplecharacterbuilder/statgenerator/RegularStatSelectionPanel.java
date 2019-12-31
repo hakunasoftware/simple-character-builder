@@ -2,11 +2,13 @@ package simplecharacterbuilder.statgenerator;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.IntSupplier;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -50,10 +52,13 @@ class RegularStatSelectionPanel extends JPanel {
 	}
 	
 	private final List<StatButtonGroup> buttonGroups = new ArrayList<>();
+	private final StatGenerator statGenerator;
 	
 	private JCheckBox virginCheckBox;
 	
-	RegularStatSelectionPanel(int xPos, int yPos) {
+	RegularStatSelectionPanel(StatGenerator statGenerator, int xPos, int yPos) {
+		this.statGenerator = statGenerator;
+		
 		this.setBounds(xPos, yPos, WIDTH, HEIGHT);
 		this.setBorder(CharacterBuilderComponent.BORDER);
 		this.setLayout(null);
@@ -144,6 +149,9 @@ class RegularStatSelectionPanel extends JPanel {
 		virginCheckBox.setBounds(x, y, 70, 20);
 		
 		virginCheckBox.addItemListener(e -> disableSexButtons());
+		virginCheckBox.addActionListener(StatButtonGroup.createDisplayActionListener(statGenerator, Stat.SEX, 
+				() -> virginCheckBox.isSelected() ? -1 : getButtonGroup(Stat.SEX).getSelectionIndex()));
+				
 		this.add(virginCheckBox);
 	}
 	
@@ -175,6 +183,8 @@ class RegularStatSelectionPanel extends JPanel {
 			JRadioButton button = new JRadioButton();
 			button.setBounds(x + (20 + HORIZONTAL_BUTTON_DISTANCE) * i, y + 1, 20, 20);
 			button.setActionCommand(String.valueOf(i));
+			button.addActionListener(StatButtonGroup.createDisplayActionListener(statGenerator, stat, 
+					() -> Integer.valueOf(button.getActionCommand())));
 			this.add(button);
 			buttonGroup.add(button);
 		}
@@ -197,6 +207,22 @@ class RegularStatSelectionPanel extends JPanel {
 					return;
 				}
 			}
+		}
+		
+		int getSelectionIndex() {
+			Enumeration<AbstractButton> buttons = this.getElements();
+			while(buttons.hasMoreElements()) {
+				AbstractButton currentButton = buttons.nextElement();
+				if(currentButton.isSelected()) {
+					return Integer.parseInt(currentButton.getActionCommand());
+				}
+			}
+			throw new IllegalArgumentException();
+		}
+		
+		static ActionListener createDisplayActionListener(StatGenerator statGenerator, Stat stat, IntSupplier supplier) {
+			return e -> statGenerator.getStatDisplayPanel().displayStat(stat, 
+					statGenerator.getStatCalculator().generateStatFromSelection(stat, supplier.getAsInt()));
 		}
 	}
 }
