@@ -52,8 +52,6 @@ class StatDisplayPanel extends JPanel {
 		
 		this.createStatDisplays();
 		this.setDefaultValues();
-
-		this.addDisplayLock(LEFT_OFFSET + 1, 2 * TOP_OFFSET + 8 * VERTICAL_DISPLAY_DISTANCE);
 	}
 
 	private void createStatDisplays() {
@@ -79,8 +77,8 @@ class StatDisplayPanel extends JPanel {
 	
 
 	private void displayStatsOnSelectionPanels() {
-		beautySelectionPanel  .setSelection(statCalculator.generateSelection(Stat.BEAUTY, getStatDisplayPanel(Stat.BEAUTY).getValue()));
-		regStatSelectionPanel .setSelections(statCalculator.generateSelections(getRegStats()));
+		beautySelectionPanel.setSelection(statCalculator.generateSelection(Stat.BEAUTY, getStatDisplayPanel(Stat.BEAUTY).getValue()));
+		regStatSelectionPanel.setSelections(statCalculator.generateSelections(getRegStats()));
 	}
 
 	void displaySelectedStats() {
@@ -107,16 +105,7 @@ class StatDisplayPanel extends JPanel {
 		return warnings;
 	}
 
-	private void addDisplayLock(int x, int y) {
-		JCheckBox checkBox = new JCheckBox("Unlock");
-		checkBox.addItemListener(e -> lockDisplays());
-		checkBox.setBounds(x, y, 70, 20);
-		checkBox.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
-		checkBox.setFont(new Font(RegularStatSelectionPanel.HEADLINE_FONT.getName(), RegularStatSelectionPanel.HEADLINE_FONT.getStyle(), 11));
-		this.add(checkBox);
-	}
-
-	private void lockDisplays() {
+	void lockDisplays() {
 		statDisplays.stream().forEach(display -> display.lock());
 	}
 	
@@ -148,7 +137,6 @@ class StatDisplayPanel extends JPanel {
 			textField.setText("0");
 			textField.setBounds(x + DISTANCE, y + 4, 25, 22);
 			textField.setHorizontalAlignment(JLabel.RIGHT);
-			textField.setEditable(false);
 			textField.setBorder(null);
 			textField.setFont(new Font(statNameLabel.getFont().getName(), statNameLabel.getFont().getStyle(), 13));
 			textField.setForeground(Color.BLACK);
