@@ -80,7 +80,7 @@ class StatDisplayPanel extends JPanel {
 
 	private void displayStatsOnSelectionPanels() {
 		beautySelectionPanel  .setSelection(statCalculator.generateBeautySelection(getStatDisplayPanel(Stat.BEAUTY).getValue()));
-		regStatSelectionPanel .setSelection(statCalculator.generateRegularStatSelections(getStats()));
+		regStatSelectionPanel .setSelections(statCalculator.generateRegularStatSelections(getStats()));
 	}
 
 	void displaySelectedStats() {

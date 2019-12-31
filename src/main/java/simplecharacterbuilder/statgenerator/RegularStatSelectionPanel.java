@@ -63,37 +63,38 @@ class RegularStatSelectionPanel extends JPanel {
 		this.addVirginCheckbox();
 	}
 	
-	/**
-	 * Reads and returns the indices (from 1) of the selected buttons.
-	 * @return the indices of the selected buttons. If the Virgin checkBox is selected, returns -1 for sex.
-	 */
 	Map<Stat, Integer> getSelections() {
 		Map<Stat, Integer> regStats = new HashMap<>();
-		Stat.getAll().stream()
-			.filter(stat -> !stat.equals(Stat.BEAUTY))
-			.forEach(stat -> regStats.put(stat, getSelection(stat)));
+		Stat.forRegStats(stat -> regStats.put(stat, getSelection(stat)));
 		return regStats;
 	}
+
+	void setSelections(Map<Stat, Integer> selections) {
+		selections.keySet().stream().forEach(stat -> setSelection(stat, selections.get(stat)));
+	}
 	
-	void setSelection(Map<Stat, Integer> selections) {
-		Stat.getRegStats().stream().filter(stat -> !stat.equals(Stat.SEX))
-			.forEach(stat -> getButtonGroup(stat).setSelection(selections.get(stat)));
-		
-		int sexSelection = selections.get(Stat.SEX);
-		if(sexSelection == -1) {
+	void setSelection(Stat stat, int selection) {
+		if(stat.equals(Stat.BEAUTY)) {
+			throw new IllegalArgumentException("Beauty can't be displayed on the RegStatPanel");
+		}
+		if(!stat.equals(Stat.SEX)) {
+			getButtonGroup(stat).setSelection(selection);
+			return;
+		}
+		if(selection == -1) {
 			getButtonGroup(Stat.SEX).setSelection(0);
 			if(!virginCheckBox.isSelected()) {
 				virginCheckBox.setSelected(true);
 			}
 		} else {
-			getButtonGroup(Stat.SEX).setSelection(sexSelection);
+			getButtonGroup(Stat.SEX).setSelection(selection);
 			if(virginCheckBox.isSelected()) {
 				virginCheckBox.setSelected(false);
 			}
 		}
 	}
 	
-	private int getSelection(Stat stat) {
+	int getSelection(Stat stat) {
 		if(stat.equals(Stat.SEX) && virginCheckBox.isSelected()) {
 			return -1;
 		}
@@ -120,13 +121,13 @@ class RegularStatSelectionPanel extends JPanel {
 			this.setFont(HEADLINE_FONT);
 		}
 	}
-
-	private void addRegStatButtons() {
-		Stat.forRegStats(stat -> buildButtonGroup(stat));
-	}
 	
 	private StatButtonGroup getButtonGroup(Stat stat) {
 		return buttonGroups.stream().filter(b -> b.getStat().equals(stat)).findFirst().get();
+	}
+
+	private void addRegStatButtons() {
+		Stat.forRegStats(stat -> buildButtonGroup(stat));
 	}
 	
 	private void buildButtonGroup(Stat regStat) {
@@ -174,7 +175,6 @@ class RegularStatSelectionPanel extends JPanel {
 			JRadioButton button = new JRadioButton();
 			button.setBounds(x + (20 + HORIZONTAL_BUTTON_DISTANCE) * i, y + 1, 20, 20);
 			button.setActionCommand(String.valueOf(i));
-			
 			this.add(button);
 			buttonGroup.add(button);
 		}
