@@ -66,7 +66,7 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 			 chooser.setCurrentDirectory(new File(ACTORS_DIRECTORY));
 		
 			if (chooser.showOpenDialog(mainPanel.getParent()) == JFileChooser.APPROVE_OPTION) {
-				String filePath = chooser.getSelectedFile().getCanonicalPath().replace("\\", "\\\\");
+				String filePath = chooser.getSelectedFile().getCanonicalPath().replace("\\", "/");
 				if(filePath.endsWith("Info.xml")) {
 					this.textField.setText(filePath);
 				} else {
@@ -90,7 +90,7 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 
 	private void loadFromXml() {
 		try {
-			STAT_GENERATOR.setStats(createStatXmlReaderWriter().readDTOFromXml());
+			STAT_GENERATOR.setStats(createStatXmlReaderWriter().readStatsFromXml());
 		} catch(Exception e) {
 			displayErrorSelectInfoXml();
 		}
@@ -101,7 +101,7 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 			return;
 		}
 		try {
-			createStatXmlReaderWriter().updateXmlFromDTO(STAT_GENERATOR.getStats());
+			createStatXmlReaderWriter().updateXmlFromStats(STAT_GENERATOR.getStats());
 		} catch(Exception e) {
 			displayErrorSelectInfoXml();
 		}
@@ -119,8 +119,7 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 		Properties prop   = new Properties();
 		try (InputStream inputStream = new FileInputStream(configPath)) {
 			prop.load(inputStream);
-			String rootDirectory = prop.getProperty("root_directory").trim();
-			return rootDirectory + "/Data/Battlers/Actors";
+			return prop.getProperty("chooser_default_directory").trim();
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Error loading config");
 		}

@@ -2,7 +2,11 @@ package simplecharacterbuilder.statgenerator;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -11,8 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import lombok.Builder;
-import lombok.Data;
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 
 @SuppressWarnings("serial")
@@ -46,13 +48,7 @@ class RegularStatSelectionPanel extends JPanel {
 		HEADLINE_FONT = new Font(label.getFont().getName(), label.getFont().getStyle(), 10);
 	}
 	
-	private ButtonGroup constitutionButtons;
-	private ButtonGroup agilityButtons;
-	private ButtonGroup strengthButtons;	
-	private ButtonGroup intelligenceButtons;
-	private ButtonGroup charismaButtons;
-	private ButtonGroup obedienceButtons;
-	private ButtonGroup sexButtons;
+	private final List<RegStatButtonLine> buttonLines = new ArrayList<>();
 	
 	private JCheckBox virginCheckBox;
 	
@@ -70,36 +66,26 @@ class RegularStatSelectionPanel extends JPanel {
 	 * Reads and returns the indices (from 1) of the selected buttons.
 	 * @return the indices of the selected buttons. If the Virgin checkBox is selected, returns -1 for sex.
 	 */
-	RegularStatSelectionDTO getSelections() {
-		int sexValue = virginCheckBox.isSelected() ? -1 : getValueFromButtonGroup(sexButtons);
-		
-		return RegularStatSelectionDTO.builder()
-				.constitutionSelection( getValueFromButtonGroup(constitutionButtons))
-				.agilitySelection(      getValueFromButtonGroup(agilityButtons))
-				.strengthSelection(     getValueFromButtonGroup(strengthButtons))
-				.intelligenceSelection( getValueFromButtonGroup(intelligenceButtons))
-				.charismaSelection(     getValueFromButtonGroup(charismaButtons))
-				.obedienceSelection(    getValueFromButtonGroup(obedienceButtons))
-				.sexSelection(sexValue)
-				.build();
+	Map<Stat, Integer> getSelections() {
+		Map<Stat, Integer> regStats = new HashMap<>();
+		Stat.getAll().stream()
+			.filter(stat -> !stat.equals(Stat.BEAUTY))
+			.forEach(stat -> regStats.put(stat, getSelectionFromButtons(stat)));
+		return regStats;
 	}
 	
-	void setSelection(RegularStatSelectionDTO regularStatSelectionDTO) {
-		setSelectionForButtonGroup(constitutionButtons, regularStatSelectionDTO.getConstitutionSelection());
-		setSelectionForButtonGroup(agilityButtons,      regularStatSelectionDTO.getAgilitySelection());
-		setSelectionForButtonGroup(strengthButtons,     regularStatSelectionDTO.getStrengthSelection());
-		setSelectionForButtonGroup(intelligenceButtons, regularStatSelectionDTO.getIntelligenceSelection());
-		setSelectionForButtonGroup(charismaButtons,     regularStatSelectionDTO.getCharismaSelection());
-		setSelectionForButtonGroup(obedienceButtons,    regularStatSelectionDTO.getObedienceSelection());
+	void setSelection(Map<Stat, Integer> selections) {
+		Stat.getRegStats().stream().filter(stat -> !stat.equals(Stat.SEX))
+			.forEach(stat -> setSelectionForButtonGroup(getButtonLine(stat).getButtonGroup(), selections.get(stat)));
 		
-		int sexSelection = regularStatSelectionDTO.getSexSelection();
+		int sexSelection = selections.get(Stat.SEX);
 		if(sexSelection == -1) {
-			setSelectionForButtonGroup(sexButtons, 0);
+			setSelectionForButtonGroup(getButtonLine(Stat.SEX).getButtonGroup(), 0);
 			if(!virginCheckBox.isSelected()) {
 				virginCheckBox.setSelected(true);
 			}
 		} else {
-			setSelectionForButtonGroup(sexButtons, regularStatSelectionDTO.getSexSelection());
+			setSelectionForButtonGroup(getButtonLine(Stat.SEX).getButtonGroup(), sexSelection);
 			if(virginCheckBox.isSelected()) {
 				virginCheckBox.setSelected(false);
 			}
@@ -117,20 +103,11 @@ class RegularStatSelectionPanel extends JPanel {
 		}
 	}
 	
-	@Data
-	@Builder
-	static class RegularStatSelectionDTO {
-		private int constitutionSelection;
-		private int agilitySelection;
-		private int strengthSelection;
-		private int intelligenceSelection;
-		private int charismaSelection;
-		private int obedienceSelection;
-		private int sexSelection;
-	}
-	
-	private int getValueFromButtonGroup(ButtonGroup buttonGroup) {
-		return Integer.parseInt(buttonGroup.getSelection().getActionCommand());
+	private int getSelectionFromButtons(Stat stat) {
+		if(stat.equals(Stat.SEX) && virginCheckBox.isSelected()) {
+			return -1;
+		}
+		return Integer.parseInt(getButtonLine(stat).getButtonGroup().getSelection().getActionCommand());
 	}
 	
 	private void addOptionLabels() {
@@ -154,21 +131,18 @@ class RegularStatSelectionPanel extends JPanel {
 		}
 	}
 
-
 	private void addRegStatButtons() {
-		constitutionButtons = buildButtonGroup("Constitution", 0);
-		agilityButtons      = buildButtonGroup("Agility", 1);
-		strengthButtons     = buildButtonGroup("Strength", 2);
-		intelligenceButtons = buildButtonGroup("Intelligence", 3);
-		charismaButtons     = buildButtonGroup("Charisma", 4);
-		obedienceButtons    = buildButtonGroup("Obedience", 5);
-		sexButtons          = buildButtonGroup("Sex", 6);
+		Stat.forRegStats(stat -> buildButtonGroup(stat));
 	}
 	
-	private ButtonGroup buildButtonGroup(String label, int count) {
-		return new ButtonGroupBuilder(this, label)
-				.location(CONTENT_XPOS, CONTENT_YPOS + HEADLINE_OFFSET + count * VERTICAL_BUTTON_DISTANCE)
-				.buildAndAdd();
+	private RegStatButtonLine getButtonLine(Stat stat) {
+		return buttonLines.stream().filter(b -> b.regStat.equals(stat)).findFirst().get();
+	}
+	
+	private void buildButtonGroup(Stat regStat) {
+		new RegStatButtonLine(regStat)
+			.location(CONTENT_XPOS, CONTENT_YPOS + HEADLINE_OFFSET + VERTICAL_BUTTON_DISTANCE * buttonLines.size())
+			.buildAndAdd();
 	}
 	
 	private void addVirginCheckbox() {
@@ -185,7 +159,7 @@ class RegularStatSelectionPanel extends JPanel {
 	}
 	
 	private void disableSexButtons() {
-		Enumeration<AbstractButton> sexButtonsElements = sexButtons.getElements();
+		Enumeration<AbstractButton> sexButtonsElements = getButtonLine(Stat.SEX).getButtonGroup().getElements();
 		while(sexButtonsElements.hasMoreElements()) {
 			AbstractButton currentButton = sexButtonsElements.nextElement();
 			currentButton.setEnabled(!currentButton.isEnabled());
@@ -193,50 +167,53 @@ class RegularStatSelectionPanel extends JPanel {
 	}
 	
 	
-	private static class ButtonGroupBuilder {
-		private JPanel panel;
-		private String statName;
+	private class RegStatButtonLine {
+		private final Stat regStat;
+		private final ButtonGroup buttonGroup;
 		
 		private int x;
 		private int y;
 
-		ButtonGroupBuilder(JPanel panel, String statName) {
-			this.panel = panel;
-			this.statName = statName;
+		RegStatButtonLine(Stat regStat) {
+			this.regStat = regStat;
+			
+			this.buttonGroup = new ButtonGroup();
 		}
 
-		ButtonGroupBuilder location(int x, int y) {
+		RegStatButtonLine location(int x, int y) {
 			this.x = x;
 			this.y = y;
 			return this;
 		}
 
-		ButtonGroup buildAndAdd() {
-			this.panel.add(createStatNameLabel(statName, x, y));
+		RegStatButtonLine buildAndAdd() {
+			RegularStatSelectionPanel.this.add(createStatNameLabel(regStat, x, y));
 			
 			int shiftedX = this.x + STAT_NAME_LABEL_LENGTH + 12;
-			
-			ButtonGroup buttonGroup = new ButtonGroup();
 			
 			for (int i = 0; i < BUTTON_COUNT; i++) {
 				JRadioButton button = new JRadioButton();
 				button.setBounds(shiftedX + (20 + HORIZONTAL_BUTTON_DISTANCE) * i, this.y + 1, 20, 20);
 				button.setActionCommand(String.valueOf(i));
 				
-				this.panel.add(button);
+				RegularStatSelectionPanel.this.add(button);
 				buttonGroup.add(button);
 			}
-			
-			return buttonGroup;
+			buttonLines.add(this);
+			return this;
 		}
 
-		private JLabel createStatNameLabel(String statName, int x, int y) {
-			JLabel label = new JLabel(statName + ":");
+		private JLabel createStatNameLabel(Stat stat, int x, int y) {
+			JLabel label = new JLabel(stat.getName() + ":");
 			label.setBounds(x, y, STAT_NAME_LABEL_LENGTH, 20);
 			label.setVerticalAlignment(JLabel.CENTER);
 			label.setHorizontalAlignment(JLabel.RIGHT);
 			label.setFont(new Font(label.getFont().getName(), label.getFont().getStyle(), 12));
 			return label;
+		}
+		
+		ButtonGroup getButtonGroup() {
+			return this.buttonGroup;
 		}
 	}
 }

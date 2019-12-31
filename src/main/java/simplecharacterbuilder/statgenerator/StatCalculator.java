@@ -2,10 +2,10 @@ package simplecharacterbuilder.statgenerator;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-
-import simplecharacterbuilder.statgenerator.RegularStatSelectionPanel.RegularStatSelectionDTO;
 
 class StatCalculator {
 	private static final String[] CONFIG_REG_STAT_BOUNDARIES = new String[] {"regStat_veryLow", "regStat_low", "regStat_average", "regStat_high", "regStat_veryHigh", "regStat_max"};
@@ -23,41 +23,31 @@ class StatCalculator {
 		readConfig(configPath);
 	}
 
-	StatDTO generateStats(RegularStatSelectionDTO regularStatsSelectionDTO, int beautySelection) {
-		return StatDTO.builder()
-				.constitution( generateRegStatFromSelection(regularStatsSelectionDTO.getConstitutionSelection()))
-				.agility(      generateRegStatFromSelection(regularStatsSelectionDTO.getAgilitySelection()))
-				.strength(     generateRegStatFromSelection(regularStatsSelectionDTO.getStrengthSelection()))
-				.intelligence( generateRegStatFromSelection(regularStatsSelectionDTO.getIntelligenceSelection()))
-				.charisma(     generateRegStatFromSelection(regularStatsSelectionDTO.getCharismaSelection()))
-				.obedience(    generateRegStatFromSelection(regularStatsSelectionDTO.getObedienceSelection()))
-				.beauty(       generateStatFromBoundariesAndSelection(beautyBoundaries, beautySelection))
-				.sex(          generateSexStatFromSelection(regularStatsSelectionDTO.getSexSelection()))
-				.build();
+	//TODO fuse
+	Map<Stat, Integer> generateStats(Map<Stat, Integer> regularStatsSelections, int beautySelection) {
+		Map<Stat, Integer> stats = new HashMap<>();
+		Stat.forRegStats(stat -> stats.put(stat, generateRegStatFromSelection(stat, regularStatsSelections.get(stat))));
+		stats.put(Stat.BEAUTY, generateStatFromBoundariesAndSelection(beautyBoundaries, beautySelection));
+
+	
+		return stats;
 	}
 	
-	RegularStatSelectionDTO generateRegularStatSelectionDTO(StatDTO statDTO) {
-		return RegularStatSelectionDTO.builder()
-				.sexSelection(          getIndexForSexStat(statDTO.getSex()))
-				.constitutionSelection( getIndexForRegStat(statDTO.getConstitution()))
-				.agilitySelection(      getIndexForRegStat(statDTO.getAgility()))
-				.strengthSelection(     getIndexForRegStat(statDTO.getStrength()))
-				.intelligenceSelection( getIndexForRegStat(statDTO.getIntelligence()))
-				.charismaSelection(     getIndexForRegStat(statDTO.getCharisma()))
-				.obedienceSelection(    getIndexForRegStat(statDTO.getObedience()))
-				.build();
+	Map<Stat, Integer> generateRegularStatSelections(Map<Stat, Integer> stats) {
+		Map<Stat, Integer> selections = new HashMap<Stat, Integer>();
+		Stat.getRegStats().stream().forEach(stat -> selections.put(stat, getIndexForStat(stat, stats.get(stat))));
+		return selections;
 	}
 	
-	private int getIndexForRegStat(int regStat) {
-		return getIndexFromBoundaries(regularStatBoundaries, regStat);
+	private int getIndexForStat(Stat stat, int value) {
+		switch(stat) {
+			case SEX: if(value == 0 || value == 1) return -1;
+			default: return getIndexFromBoundaries(regularStatBoundaries, value);
+		}
 	}
 	
 	int generateBeautySelection(int beauty) {
 		return getIndexFromBoundaries(beautyBoundaries, beauty);
-	}
-	
-	private int getIndexForSexStat(int sexStat) {
-		return sexStat == 0 || sexStat == 1 ? -1 : getIndexForRegStat(sexStat);
 	}
 	
 	private int getIndexFromBoundaries(int[] boundaries, int stat) {
@@ -97,12 +87,12 @@ class StatCalculator {
 		return multiplier;
 	}
 	
-	private int generateRegStatFromSelection(int selectionIndex) {
-		return generateStatFromBoundariesAndSelection(regularStatBoundaries, selectionIndex);
-	}
-
-	private int generateSexStatFromSelection(int sexSelection) {
-		return sexSelection == -1 ? 0 : generateRegStatFromSelection(sexSelection);
+	private int generateRegStatFromSelection(Stat stat, int selectionIndex) {
+		switch(stat) {
+		case SEX: if(selectionIndex == -1) return 0;
+		default: return generateStatFromBoundariesAndSelection(regularStatBoundaries, selectionIndex);
+		}
+		
 	}
 
 	private int generateStatFromBoundariesAndSelection(int[] boundaries, int selectionIndex) {

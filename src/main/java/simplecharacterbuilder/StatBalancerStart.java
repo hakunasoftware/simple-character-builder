@@ -16,11 +16,11 @@ public class StatBalancerStart {
 	private static final int WIDTH 	= CharacterBuilderComponent.MAINPANEL_WIDTH;
 	private static final int HEIGHT = CharacterBuilderComponent.MAINPANEL_HEIGHT + CharacterBuilderComponent.CONTROLPANEL_HEIGHT;
 	
-	private static final String CONFIG_PATH_USE = "config/statgenerator.config";
 	@SuppressWarnings("unused")
+	private static final String CONFIG_PATH_USE = "config/statgenerator.config";
 	private static final String CONFIG_PATH_DEV = "src/main/resources/statgenerator.config";
 	
-	private static final String CONFIG_PATH_CURRENT = CONFIG_PATH_USE;
+	private static final String CONFIG_PATH_CURRENT = CONFIG_PATH_DEV;
 	
 	private static final List<CharacterBuilderComponent> COMPONENTS = new ArrayList<>();
 	static {

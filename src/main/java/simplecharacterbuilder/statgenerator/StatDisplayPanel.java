@@ -6,7 +6,9 @@ import java.awt.Toolkit;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -19,33 +21,25 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
-import simplecharacterbuilder.statgenerator.RegularStatSelectionPanel.RegularStatSelectionDTO;
 
 @SuppressWarnings("serial")
 class StatDisplayPanel extends JPanel {
 
-	static final int WIDTH = 80;
+	static final int WIDTH  = 80;
 	static final int HEIGHT = BeautySelectionPanel.HEIGHT;
 
 	private static final int VERTICAL_DISPLAY_DISTANCE = 28;
 
-	private static final int TOP_OFFSET = 3;
+	private static final int TOP_OFFSET  = 3;
 	private static final int LEFT_OFFSET = 8;
 
 	private static final String TEXTFIELD_REGEX = "^[0-9]{1,3}$";
 
 	private final RegularStatSelectionPanel regStatSelectionPanel;
-	private final BeautySelectionPanel beautySelectionPanel;
-	private final StatCalculator statCalculator;
-
-	private StatDisplay conDisplay;
-	private StatDisplay agiDisplay;
-	private StatDisplay strDisplay;
-	private StatDisplay intDisplay;
-	private StatDisplay chaDisplay;
-	private StatDisplay obeDisplay;
-	private StatDisplay sexDisplay;
-	private StatDisplay beaDisplay;
+	private final BeautySelectionPanel      beautySelectionPanel;
+	private final StatCalculator            statCalculator;
+	
+	private final List<StatDisplay> statDisplays = new ArrayList<>();
 
 	StatDisplayPanel(int xPos, int yPos, StatCalculator statCalculator, RegularStatSelectionPanel regularStatSelectionPanel, BeautySelectionPanel beautySelectionPanel) {
 		this.regStatSelectionPanel = regularStatSelectionPanel;
@@ -55,80 +49,56 @@ class StatDisplayPanel extends JPanel {
 		this.setBounds(xPos, yPos, WIDTH, HEIGHT);
 		this.setBorder(CharacterBuilderComponent.BORDER);
 		this.setLayout(null);
-
-		this.addStatOutput(LEFT_OFFSET, TOP_OFFSET);
-		this.addDisplayLock(LEFT_OFFSET + 1, 2 * TOP_OFFSET + 8 * VERTICAL_DISPLAY_DISTANCE);
-
+		
+		this.createStatDisplays();
 		this.setDefaultValues();
+
+		this.addDisplayLock(LEFT_OFFSET + 1, 2 * TOP_OFFSET + 8 * VERTICAL_DISPLAY_DISTANCE);
 	}
 
-	void displayStats(StatDTO statDTO) {
-		displayValue(conDisplay, statDTO.getConstitution());
-		displayValue(agiDisplay, statDTO.getAgility());
-		displayValue(strDisplay, statDTO.getStrength());
-		displayValue(intDisplay, statDTO.getIntelligence());
-		displayValue(chaDisplay, statDTO.getCharisma());
-		displayValue(beaDisplay, statDTO.getBeauty());
-		displayValue(sexDisplay, statDTO.getSex());
-		displayValue(obeDisplay, statDTO.getObedience());
+	private void createStatDisplays() {
+		Stat.forAll(stat -> createStatDisplay(stat));
+	}
+	
+	private void createStatDisplay(Stat stat) {
+		statDisplays.add(new StatDisplay(stat, LEFT_OFFSET, TOP_OFFSET + VERTICAL_DISPLAY_DISTANCE * statDisplays.size()));
+	}
+	
+	private StatDisplay getStatDisplayPanel(Stat stat) {
+		return statDisplays.stream().filter(display -> display.stat.equals(stat)).findFirst().get();
+	}
 
+	void displayStats(Map<Stat, Integer> stats) {
+		Stat.forAll(stat -> displayValue(stat, stats.get(stat)));
 		displayStatsOnSelectionPanels();
 	}
 
+	private void displayValue(Stat stat, int value) {
+		getStatDisplayPanel(stat).setValue(Math.min(value, 999));
+	}
+	
+
 	private void displayStatsOnSelectionPanels() {
-		beautySelectionPanel .setSelection(statCalculator.generateBeautySelection(beaDisplay.getValue()));
-		regStatSelectionPanel.setSelection(statCalculator.generateRegularStatSelectionDTO(getStats()));
+		beautySelectionPanel  .setSelection(statCalculator.generateBeautySelection(getStatDisplayPanel(Stat.BEAUTY).getValue()));
+		regStatSelectionPanel .setSelection(statCalculator.generateRegularStatSelections(getStats()));
 	}
 
 	void displaySelectedStats() {
-		RegularStatSelectionDTO regularStatSelectionDTO = regStatSelectionPanel.getSelections();
+		Map<Stat, Integer> regularStatSelections = regStatSelectionPanel.getSelections();
 		int beautySelection = beautySelectionPanel.getSelection();
-		displayStats(statCalculator.generateStats(regularStatSelectionDTO, beautySelection));
+		displayStats(statCalculator.generateStats(regularStatSelections, beautySelection));
 	}
 
-	private void displayValue(StatDisplay statDisplay, int value) {
-		statDisplay.setValue(Math.min(value, 999));
-	}
-
-	StatDTO getStats() {
-		return StatDTO.builder()
-				.constitution(conDisplay.getValue())
-				.agility(agiDisplay.getValue())
-				.strength(strDisplay.getValue())
-				.intelligence(intDisplay.getValue())
-				.charisma(chaDisplay.getValue())
-				.beauty(beaDisplay.getValue())
-				.sex(sexDisplay.getValue())
-				.obedience(obeDisplay.getValue())
-				.build();
+	Map<Stat, Integer> getStats() {
+		Map<Stat, Integer> stats = new HashMap<>();
+		Stat.forAll(stat -> stats.put(stat, getStatDisplayPanel(stat).getValue()));
+		return stats;
 	}
 	
 	List<String> getEvaluationWarnings(){
 		List<String> warnings = new ArrayList<>();
-		warnings.addAll(conDisplay.getEvaluationWarnings());
-		warnings.addAll(agiDisplay.getEvaluationWarnings());
-		warnings.addAll(strDisplay.getEvaluationWarnings());
-		warnings.addAll(intDisplay.getEvaluationWarnings());
-		warnings.addAll(chaDisplay.getEvaluationWarnings());
-		warnings.addAll(beaDisplay.getEvaluationWarnings());
-		warnings.addAll(sexDisplay.getEvaluationWarnings());
-		warnings.addAll(obeDisplay.getEvaluationWarnings());
+		Stat.forAll(stat -> warnings.addAll(getStatDisplayPanel(stat).getEvaluationWarnings()));
 		return warnings;
-	}
-
-	private void addStatOutput(int x, int y) {
-		conDisplay = createStatDisplay("CON", 0);
-		agiDisplay = createStatDisplay("AGI", 1);
-		strDisplay = createStatDisplay("STR", 2);
-		intDisplay = createStatDisplay("INT", 3);
-		chaDisplay = createStatDisplay("CHA", 4);
-		obeDisplay = createStatDisplay("OBE", 5);
-		sexDisplay = createStatDisplay("SEX", 6);
-		beaDisplay = createStatDisplay("BEA", 7);
-	}
-
-	private StatDisplay createStatDisplay(String statName, int count) {
-		return new StatDisplay(this, statName, LEFT_OFFSET, TOP_OFFSET + count * VERTICAL_DISPLAY_DISTANCE);
 	}
 
 	private void addDisplayLock(int x, int y) {
@@ -141,14 +111,7 @@ class StatDisplayPanel extends JPanel {
 	}
 
 	private void lockDisplays() {
-		conDisplay.lock();
-		agiDisplay.lock();
-		strDisplay.lock();
-		intDisplay.lock();
-		chaDisplay.lock();
-		beaDisplay.lock();
-		sexDisplay.lock();
-		obeDisplay.lock();
+		statDisplays.stream().forEach(display -> display.lock());
 	}
 	
 	private class StatDisplay {
@@ -160,21 +123,21 @@ class StatDisplayPanel extends JPanel {
 		private final int minValue;
 		private final int maxValue;
 
-		private final String statName;
+		private final Stat stat;
 
-		StatDisplay(JPanel panel, String statName, int x, int y) {
-			this.statName = statName;
+		StatDisplay(Stat stat, int x, int y) {
+			this.stat = stat;
 
-			minValue = statName == "BEA" ? statCalculator.getMinBeauty()
-					: statName == "SEX" ? 0 : statCalculator.getMinRegStat();
-			maxValue = statName == "BEA" ? statCalculator.getMaxBeauty() : statCalculator.getMaxRegStat();
+			minValue = stat.equals(Stat.BEAUTY) ? statCalculator.getMinBeauty()
+					: stat.equals(Stat.SEX) ? 0 : statCalculator.getMinRegStat();
+			maxValue = stat.equals(Stat.BEAUTY) ? statCalculator.getMaxBeauty() : statCalculator.getMaxRegStat();
 
 			JLabel statNameLabel = new JLabel();
-			statNameLabel.setText(statName + ":");
+			statNameLabel.setText(stat.getAbbreviation() + ":");
 			statNameLabel.setBounds(x, y, 35, 30);
 			statNameLabel.setHorizontalAlignment(JLabel.RIGHT);
 			statNameLabel.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
-			panel.add(statNameLabel);
+			StatDisplayPanel.this.add(statNameLabel);
 
 			textField = new JTextField();
 			textField.setText("0");
@@ -194,7 +157,7 @@ class StatDisplayPanel extends JPanel {
 				}
 			});
 
-			panel.add(textField);
+			StatDisplayPanel.this.add(textField);
 		}
 
 		private boolean isValidValue(int value) {
@@ -212,7 +175,7 @@ class StatDisplayPanel extends JPanel {
 				warnings.add(new StringBuilder("Value ")
 						.append(currentValue)
 						.append(" is under the minimal ")
-						.append(statName)
+						.append(stat.getName())
 						.append(" value of ")
 						.append(minValue)
 						.toString());
@@ -221,7 +184,7 @@ class StatDisplayPanel extends JPanel {
 				warnings.add(new StringBuilder("Value ")
 						.append(currentValue)
 						.append(" exceeds the maximal ")
-						.append(statName)
+						.append(stat.getName())
 						.append(" value of ")
 						.append(maxValue)
 						.toString());
@@ -230,7 +193,7 @@ class StatDisplayPanel extends JPanel {
 				warnings.add(new StringBuilder("Value ")
 						.append(currentValue)
 						.append(" for ")
-						.append(statName)
+						.append(stat.getName())
 						.append(" is not a multiple of ")
 						.append(statCalculator.getMultiplier())
 						.toString());
@@ -287,7 +250,7 @@ class StatDisplayPanel extends JPanel {
 				}
 
 				if (text.startsWith("0") && str != null && str.length() != 0 && str.matches(TEXTFIELD_REGEX)) {
-					fb.replace(0, 1, str, a);
+					fb.replace(0, 1, str, a); //here's an issue
 					checkBoundsAndMultiplier(str);
 					return;
 				}
@@ -313,15 +276,14 @@ class StatDisplayPanel extends JPanel {
 	}
 
 	private void setDefaultValues() {
-		displayValue(conDisplay, statCalculator.getAverageRegStat());
-		displayValue(agiDisplay, statCalculator.getAverageRegStat());
-		displayValue(strDisplay, statCalculator.getAverageRegStat());
-		displayValue(intDisplay, statCalculator.getAverageRegStat());
-		displayValue(chaDisplay, statCalculator.getAverageRegStat());
-		displayValue(sexDisplay, 0);
-		displayValue(obeDisplay, statCalculator.getAverageRegStat());
-		displayValue(beaDisplay, statCalculator.getAverageBeauty());
-
+		Stat.forAll(stat -> displayValue(stat, getDefault(stat)));
 		displayStatsOnSelectionPanels();
+	}
+	private int getDefault(Stat stat) {
+		switch(stat) {
+			case SEX:    return 0;
+			case BEAUTY: return statCalculator.getAverageBeauty();
+			default:     return statCalculator.getAverageRegStat();
+		}
 	}
 }

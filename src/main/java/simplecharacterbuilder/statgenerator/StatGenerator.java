@@ -1,6 +1,7 @@
 package simplecharacterbuilder.statgenerator;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
@@ -35,12 +36,12 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 		return new StatGenerator(x, y, configPath);
 	}
 
-	public StatDTO getStats() {
+	public Map<Stat, Integer> getStats() {
 		return statDisplayPanel.getStats();
 	}
 
-	public void setStats(StatDTO statDTO) {
-		statDisplayPanel.displayStats(statDTO);
+	public void setStats(Map<Stat, Integer> stats) {
+		statDisplayPanel.displayStats(stats);
 	}
 
 	public void setVisible(boolean aFlag) {

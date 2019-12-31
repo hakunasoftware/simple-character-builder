@@ -1,39 +1,28 @@
 package simplecharacterbuilder.statgenerator.xmlreaderwriter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import simplecharacterbuilder.InfoXmlReaderWriter;
-import simplecharacterbuilder.statgenerator.StatDTO;
+import simplecharacterbuilder.statgenerator.Stat;
 
-public class StatXmlReaderWriter extends InfoXmlReaderWriter<StatDTO>{
+public class StatXmlReaderWriter {
+	
+	private final InfoXmlReaderWriter xmlReader;
+	
 	StatXmlReaderWriter(String xmlURI){
-		super(xmlURI);
+		xmlReader = new InfoXmlReaderWriter(xmlURI);
 	}
 
-	@Override
-	public StatDTO readDTOFromXml() {
-		return StatDTO.builder()
-				.constitution (readIntegerFromUniqueTagPath("Stats/Con"))
-				.agility      (readIntegerFromUniqueTagPath("Stats/Agi"))
-				.strength     (readIntegerFromUniqueTagPath("Stats/Str"))
-				.intelligence (readIntegerFromUniqueTagPath("Stats/Int"))
-				.sex          (readIntegerFromUniqueTagPath("Stats/Sex"))
-				.beauty       (readIntegerFromUniqueTagPath("Stats/Beauty"))
-				.charisma     (readIntegerFromUniqueTagPath("Stats/Charisma"))
-				.obedience    (readIntegerFromUniqueTagPath("Stats/Obedience"))
-				.build();
+	public Map<Stat, Integer> readStatsFromXml() {
+		Map<Stat, Integer> stats = new HashMap<>();
+		Stat.forAll(stat -> stats.put(stat, xmlReader.readIntegerFromUniqueTagPath("Stats/" + stat.getInfoXmlTag())));
+		return stats;
 	}
 
-	@Override
-	public void updateXmlFromDTO(StatDTO dto) {
-		writeIntToUniqueTagPath("Stats/Con",       dto.getConstitution());
-		writeIntToUniqueTagPath("Stats/Agi",       dto.getAgility());
-		writeIntToUniqueTagPath("Stats/Str",       dto.getStrength());
-		writeIntToUniqueTagPath("Stats/Int",       dto.getIntelligence());
-		writeIntToUniqueTagPath("Stats/Sex",       dto.getSex());
-		writeIntToUniqueTagPath("Stats/Beauty",    dto.getBeauty());
-		writeIntToUniqueTagPath("Stats/Charisma",  dto.getCharisma());
-		writeIntToUniqueTagPath("Stats/Obedience", dto.getObedience());
-		
-		persistChangesToDocument();
+	public void updateXmlFromStats(Map<Stat, Integer> stats) {
+		Stat.forAll(stat -> xmlReader.writeIntToUniqueTagPath("Stats/" + stat.getInfoXmlTag(), stats.get(stat)));
+		xmlReader.persistChangesToDocument();
 	}
 	
 }

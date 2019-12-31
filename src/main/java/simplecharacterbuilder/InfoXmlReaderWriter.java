@@ -19,15 +19,11 @@ import org.w3c.dom.NodeList;
 
 import lombok.Getter;
 
-public abstract class InfoXmlReaderWriter<E extends DTO> {
+public class InfoXmlReaderWriter{
 	private final File xmlFile;
 	private final Document doc;
 
-	public abstract E readDTOFromXml();
-
-	public abstract void updateXmlFromDTO(E dto);
-
-	protected InfoXmlReaderWriter(String xmlURI) {
+	public InfoXmlReaderWriter(String xmlURI) {
 		if (!xmlURI.endsWith("Info.xml")) {
 			throw new IllegalArgumentException("The URI " + xmlURI + " is not a valid path");
 		}
@@ -38,11 +34,11 @@ public abstract class InfoXmlReaderWriter<E extends DTO> {
 		this.doc = getDocumentFromFile();
 	}
 	
-	protected String readStringFromUniqueTagPath(String tagPath) {
+	public String readStringFromUniqueTagPath(String tagPath) {
 		return findNodesFromTagWithUniqueParents(new Tag(tagPath)).get(0).getTextContent();
 	}
 	
-	protected Integer readIntegerFromUniqueTagPath(String tagPath) {
+	public Integer readIntegerFromUniqueTagPath(String tagPath) {
 		return Integer.valueOf(readStringFromUniqueTagPath(tagPath));
 	}
 
@@ -51,7 +47,7 @@ public abstract class InfoXmlReaderWriter<E extends DTO> {
 	 * @param tagPath
 	 * @param newContent
 	 */
-	protected void writeStringToUniqueTagPath(String tagPath, String newContent) {
+	public void writeStringToUniqueTagPath(String tagPath, String newContent) {
 		findNodesFromTagWithUniqueParents(new Tag(tagPath)).get(0).setTextContent(newContent);
 	}
 	
@@ -60,11 +56,11 @@ public abstract class InfoXmlReaderWriter<E extends DTO> {
 	 * @param tagPath
 	 * @param newContent
 	 */
-	protected void writeIntToUniqueTagPath(String tagPath, int newContent) {
+	public void writeIntToUniqueTagPath(String tagPath, int newContent) {
 		writeStringToUniqueTagPath(tagPath, String.valueOf(newContent));
 	}
 
-	protected void persistChangesToDocument() {
+	public void persistChangesToDocument() {
 		try {
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
