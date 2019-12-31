@@ -9,10 +9,10 @@ import java.util.Random;
 
 class StatCalculator {
 	private static final String[] CONFIG_REG_STAT_BOUNDARIES = new String[] {"regStat_veryLow", "regStat_low", "regStat_average", "regStat_high", "regStat_veryHigh", "regStat_max"};
-	private static final String[] CONFIG_BEAUTY_BOUNDARIES	 = new String[] {"unattractive", "plain", "normal", "pretty", "beautiful", "stunning", "perfect", "divine", "beauty_max"};
+	private static final String[] CONFIG_BEAUTY_BOUNDARIES   = new String[] {"unattractive", "plain", "normal", "pretty", "beautiful", "stunning", "perfect", "divine", "beauty_max"};
 
-	private final int[] regularStatBoundaries 	= new int[CONFIG_REG_STAT_BOUNDARIES.length];
-	private final int[] beautyBoundaries 		= new int[CONFIG_BEAUTY_BOUNDARIES.length];
+	private final int[] regularStatBoundaries   = new int[CONFIG_REG_STAT_BOUNDARIES.length];
+	private final int[] beautyBoundaries        = new int[CONFIG_BEAUTY_BOUNDARIES.length];
 
 	private Properties prop   = new Properties();
 	private Random     random = new Random();
@@ -30,22 +30,19 @@ class StatCalculator {
 		return stats;
 	}
 	
-	Map<Stat, Integer> generateRegularStatSelections(Map<Stat, Integer> stats) {
+	Map<Stat, Integer> generateSelections(Map<Stat, Integer> stats) {
 		Map<Stat, Integer> selections = new HashMap<Stat, Integer>();
-		Stat.getRegStats().stream()
-			.forEach(stat -> selections.put(stat, getIndexForStat(stat, stats.get(stat))));
+		stats.keySet().stream()
+			.forEach(stat -> selections.put(stat, generateSelection(stat, stats.get(stat))));
 		return selections;
 	}
 	
-	private int getIndexForStat(Stat stat, int value) {
+	int generateSelection(Stat stat, int value) {
 		switch(stat) {
+			case BEAUTY: return getIndexFromBoundaries(beautyBoundaries, value);
 			case SEX: if(value == 0 || value == 1) return -1;
 			default: return getIndexFromBoundaries(regularStatBoundaries, value);
 		}
-	}
-	
-	int generateBeautySelection(int beauty) {
-		return getIndexFromBoundaries(beautyBoundaries, beauty);
 	}
 	
 	private int getIndexFromBoundaries(int[] boundaries, int stat) {
