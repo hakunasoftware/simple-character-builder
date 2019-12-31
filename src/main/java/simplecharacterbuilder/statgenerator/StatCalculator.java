@@ -54,28 +54,23 @@ class StatCalculator {
 		return boundaries.length - 2;
 	}
 	
-	int getAverageRegStat() {
-		return (regularStatBoundaries[3] + regularStatBoundaries[2]) / 2;
+	int[] getBoundaries(Stat stat) {
+		return stat.equals(Stat.BEAUTY) ? beautyBoundaries : regularStatBoundaries;
 	}
-
-	int getAverageBeauty() {
-		return (beautyBoundaries[3] + beautyBoundaries[2]) / 2;
+	
+	int getAverage(Stat stat) {
+		int[] boundaries =  getBoundaries(stat);
+		return (boundaries[3] + boundaries[2]) / 2;
 	}
-
-	int getMinRegStat() {
-		return regularStatBoundaries[0];
+	
+	int getMin(Stat stat) {
+		int[] boundaries =  getBoundaries(stat);
+		return boundaries[0];
 	}
-
-	int getMaxRegStat() {
-		return regularStatBoundaries[regularStatBoundaries.length - 1] - 1;
-	}
-
-	int getMinBeauty() {
-		return beautyBoundaries[0];
-	}
-
-	int getMaxBeauty() {
-		return beautyBoundaries[beautyBoundaries.length - 1] - 1;
+	
+	int getMax(Stat stat) {
+		int[] boundaries =  getBoundaries(stat);
+		return boundaries[boundaries.length - 1] - 1;
 	}
 	
 	int getMultiplier() {

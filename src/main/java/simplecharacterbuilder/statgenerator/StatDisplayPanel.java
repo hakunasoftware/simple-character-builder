@@ -134,9 +134,8 @@ class StatDisplayPanel extends JPanel {
 		StatDisplay(Stat stat, int x, int y) {
 			this.stat = stat;
 
-			minValue = stat.equals(Stat.BEAUTY) ? statCalculator.getMinBeauty()
-					: stat.equals(Stat.SEX) ? 0 : statCalculator.getMinRegStat();
-			maxValue = stat.equals(Stat.BEAUTY) ? statCalculator.getMaxBeauty() : statCalculator.getMaxRegStat();
+			minValue = stat.equals(Stat.SEX) ? 0 : statCalculator.getMin(stat);
+			maxValue = statCalculator.getMax(stat);
 
 			JLabel statNameLabel = new JLabel();
 			statNameLabel.setText(stat.getAbbreviation() + ":");
@@ -289,8 +288,7 @@ class StatDisplayPanel extends JPanel {
 	private int getDefault(Stat stat) {
 		switch(stat) {
 			case SEX:    return 0;
-			case BEAUTY: return statCalculator.getAverageBeauty();
-			default:     return statCalculator.getAverageRegStat();
+			default:     return statCalculator.getAverage(stat);
 		}
 	}
 }
