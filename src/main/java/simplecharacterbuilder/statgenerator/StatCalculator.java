@@ -23,19 +23,17 @@ class StatCalculator {
 		readConfig(configPath);
 	}
 
-	//TODO fuse
-	Map<Stat, Integer> generateStats(Map<Stat, Integer> regularStatsSelections, int beautySelection) {
+	Map<Stat, Integer> generateStats(Map<Stat, Integer> selections) {
 		Map<Stat, Integer> stats = new HashMap<>();
-		Stat.forRegStats(stat -> stats.put(stat, generateRegStatFromSelection(stat, regularStatsSelections.get(stat))));
-		stats.put(Stat.BEAUTY, generateStatFromBoundariesAndSelection(beautyBoundaries, beautySelection));
-
-	
+		selections.keySet().stream()
+			.forEach(stat -> stats.put(stat, generateStatFromSelection(stat, selections.get(stat))));
 		return stats;
 	}
 	
 	Map<Stat, Integer> generateRegularStatSelections(Map<Stat, Integer> stats) {
 		Map<Stat, Integer> selections = new HashMap<Stat, Integer>();
-		Stat.getRegStats().stream().forEach(stat -> selections.put(stat, getIndexForStat(stat, stats.get(stat))));
+		Stat.getRegStats().stream()
+			.forEach(stat -> selections.put(stat, getIndexForStat(stat, stats.get(stat))));
 		return selections;
 	}
 	
@@ -87,10 +85,11 @@ class StatCalculator {
 		return multiplier;
 	}
 	
-	private int generateRegStatFromSelection(Stat stat, int selectionIndex) {
+	private int generateStatFromSelection(Stat stat, int selectionIndex) {
 		switch(stat) {
-		case SEX: if(selectionIndex == -1) return 0;
-		default: return generateStatFromBoundariesAndSelection(regularStatBoundaries, selectionIndex);
+			case BEAUTY: return generateStatFromBoundariesAndSelection(beautyBoundaries, selectionIndex);
+			case SEX: if(selectionIndex == -1) return 0;
+			default: return generateStatFromBoundariesAndSelection(regularStatBoundaries, selectionIndex);
 		}
 		
 	}

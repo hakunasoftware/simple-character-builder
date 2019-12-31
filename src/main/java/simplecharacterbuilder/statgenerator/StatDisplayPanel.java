@@ -69,11 +69,11 @@ class StatDisplayPanel extends JPanel {
 	}
 
 	void displayStats(Map<Stat, Integer> stats) {
-		Stat.forAll(stat -> displayValue(stat, stats.get(stat)));
+		stats.keySet().stream().forEach(stat -> displayStat(stat, stats.get(stat)));
 		displayStatsOnSelectionPanels();
 	}
 
-	private void displayValue(Stat stat, int value) {
+	void displayStat(Stat stat, int value) {
 		getStatDisplayPanel(stat).setValue(Math.min(value, 999));
 	}
 	
@@ -84,9 +84,9 @@ class StatDisplayPanel extends JPanel {
 	}
 
 	void displaySelectedStats() {
-		Map<Stat, Integer> regularStatSelections = regStatSelectionPanel.getSelections();
-		int beautySelection = beautySelectionPanel.getSelection();
-		displayStats(statCalculator.generateStats(regularStatSelections, beautySelection));
+		Map<Stat, Integer> statSelections = regStatSelectionPanel.getSelections();
+		statSelections.put(Stat.BEAUTY, beautySelectionPanel.getSelection());
+		displayStats(statCalculator.generateStats(statSelections));
 	}
 
 	Map<Stat, Integer> getStats() {
@@ -277,7 +277,7 @@ class StatDisplayPanel extends JPanel {
 	}
 
 	private void setDefaultValues() {
-		Stat.forAll(stat -> displayValue(stat, getDefault(stat)));
+		Stat.forAll(stat -> displayStat(stat, getDefault(stat)));
 		displayStatsOnSelectionPanels();
 	}
 	private int getDefault(Stat stat) {
