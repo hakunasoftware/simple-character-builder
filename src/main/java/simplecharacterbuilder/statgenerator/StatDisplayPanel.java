@@ -24,13 +24,13 @@ import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 @SuppressWarnings("serial")
 class StatDisplayPanel extends JPanel {
 
-	static final int WIDTH  = 80;
+	static int WIDTH  = 75;
 	static final int HEIGHT = BeautySelectionPanel.HEIGHT;
 
 	private static final int VERTICAL_DISPLAY_DISTANCE = 28;
 
 	private static final int TOP_OFFSET  = 3;
-	private static final int LEFT_OFFSET = 8;
+	private static final int LEFT_OFFSET = 3;
 
 	private static final String TEXTFIELD_REGEX = "^[0-9]{1,3}$";
 
@@ -39,26 +39,31 @@ class StatDisplayPanel extends JPanel {
 	private final StatCalculator            statCalculator;
 	
 	private final List<StatDisplay> statDisplays = new ArrayList<>();
-
-	StatDisplayPanel(StatGenerator statGenerator, int xPos, int yPos) {
+	
+	StatDisplayPanel(StatGenerator statGenerator, int xPos, int yPos, Map<Stat, Integer> comparisons) {
 		this.regStatSelectionPanel = statGenerator.getRegularStatSelectionPanel();
 		this.beautySelectionPanel  = statGenerator.getBeautySelectionPanel();
 		this.statCalculator        = statGenerator.getStatCalculator();
+		
+		if(comparisons != null) {
+			int additionalWidth = StatDisplay.ComparisonPanel.WIDTH;
+			WIDTH = WIDTH + additionalWidth;
+		}
 
 		this.setBounds(xPos, yPos, WIDTH, HEIGHT);
 		this.setBorder(CharacterBuilderComponent.BORDER);
 		this.setLayout(null);
 		
-		this.createStatDisplays();
+		this.createStatDisplays(comparisons);
 		this.setDefaultValues();
 	}
 
-	private void createStatDisplays() {
-		Stat.forAll(stat -> createStatDisplay(stat));
+	private void createStatDisplays(Map<Stat, Integer> comparisons) {
+		Stat.forAll(stat -> createStatDisplay(stat, comparisons != null ? comparisons.get(stat) : null));
 	}
 	
-	private void createStatDisplay(Stat stat) {
-		statDisplays.add(new StatDisplay(stat, LEFT_OFFSET, TOP_OFFSET + VERTICAL_DISPLAY_DISTANCE * statDisplays.size()));
+	private void createStatDisplay(Stat stat, Integer comparisonValue) {
+		statDisplays.add(new StatDisplay(stat, LEFT_OFFSET, TOP_OFFSET + VERTICAL_DISPLAY_DISTANCE * statDisplays.size(), comparisonValue));
 	}
 	
 	private StatDisplay getStatDisplayPanel(Stat stat) {
@@ -67,7 +72,6 @@ class StatDisplayPanel extends JPanel {
 
 	void displayStats(Map<Stat, Integer> stats) {
 		stats.keySet().stream().forEach(stat -> displayStat(stat, stats.get(stat)));
-//		displayStatsOnSelectionPanels();
 	}
 
 	void displayStat(Stat stat, int value) {
@@ -117,6 +121,18 @@ class StatDisplayPanel extends JPanel {
 		statDisplays.stream().forEach(display -> display.lock());
 	}
 	
+	private void setDefaultValues() {
+		Stat.forAll(stat -> displayStat(stat, getDefault(stat)));
+		displayStatsOnSelectionPanels();
+	}
+	
+	private int getDefault(Stat stat) {
+		switch(stat) {
+			case SEX:    return 0;
+			default:     return statCalculator.getAverage(stat);
+		}
+	}
+	
 	private class StatDisplay {
 
 		private static final int DISTANCE = 37;
@@ -128,7 +144,7 @@ class StatDisplayPanel extends JPanel {
 
 		private final Stat stat;
 
-		StatDisplay(Stat stat, int x, int y) {
+		StatDisplay(Stat stat, int x, int y, Integer comparisonValue) {
 			this.stat = stat;
 
 			minValue = stat.equals(Stat.SEX) ? 0 : statCalculator.getMin(stat);
@@ -160,6 +176,39 @@ class StatDisplayPanel extends JPanel {
 			});
 
 			StatDisplayPanel.this.add(textField);
+			
+			if(comparisonValue != null) {
+				new ComparisonPanel(x + 61,  y + 4, comparisonValue);
+			}
+		}
+		
+		private class ComparisonPanel { 
+			private static final int WIDTH  = StatGenerator.COMPARISON_WIDTH;
+			private static final int HEIGHT = 22;
+			
+			private final JLabel upperLabel;
+			private final JLabel lowerLabel;
+			
+			private int COMPARISON_VALUE;
+			
+			ComparisonPanel(int x, int y, int comparisonValue) {
+				this.COMPARISON_VALUE = comparisonValue;
+				
+				StatDisplayPanel.this.add(upperLabel = createLabel(x, y));
+				StatDisplayPanel.this.add(lowerLabel = createLabel(x, y + HEIGHT / 2));
+				
+				upperLabel.setText(String.valueOf(COMPARISON_VALUE));
+				lowerLabel.setText("+5");
+			}
+			
+			JLabel createLabel(int x, int y) {
+				JLabel label = new JLabel();
+				label.setHorizontalAlignment(JLabel.RIGHT);
+				label.setBounds(x, y, WIDTH, HEIGHT / 2);
+				label.setFont(new Font(label.getFont().getName(), label.getFont().getStyle(), 11));
+				return label;
+			}
+			
 		}
 
 		private boolean isValidValue(int value) {
@@ -176,7 +225,7 @@ class StatDisplayPanel extends JPanel {
 			if (currentValue < minValue) {
 				warnings.add(new StringBuilder("Value ")
 						.append(currentValue)
-						.append(" is under the minimal ")
+						.append(" is below the minimal ")
 						.append(stat.getName())
 						.append(" value of ")
 						.append(minValue)
@@ -275,17 +324,6 @@ class StatDisplayPanel extends JPanel {
 					textField.setForeground(Color.BLACK);
 				}
 			}
-		}
-	}
-
-	private void setDefaultValues() {
-		Stat.forAll(stat -> displayStat(stat, getDefault(stat)));
-		displayStatsOnSelectionPanels();
-	}
-	private int getDefault(Stat stat) {
-		switch(stat) {
-			case SEX:    return 0;
-			default:     return statCalculator.getAverage(stat);
 		}
 	}
 }

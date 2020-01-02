@@ -1,9 +1,9 @@
-package simplecharacterbuilder.statgenerator.xmlreaderwriter;
+package simplecharacterbuilder.statbalancer;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import simplecharacterbuilder.InfoXmlReaderWriter;
+import simplecharacterbuilder.abstractview.InfoXmlReaderWriter;
 import simplecharacterbuilder.statgenerator.Stat;
 
 public class StatXmlReaderWriter {

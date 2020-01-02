@@ -7,10 +7,12 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import simplecharacterbuilder.statgenerator.StatGenerator;
+
 public abstract class CharacterBuilderComponent {
 	
-	public static final int MAINPANEL_WIDTH 	= 555;
-	public static final int MAINPANEL_HEIGHT 	= 357;
+	public static final int MAINPANEL_WIDTH 	= StatGenerator.WIDTH;
+	public static final int MAINPANEL_HEIGHT 	= StatGenerator.HEIGHT;
 	
 	public static final int CONTROLPANEL_WIDTH 	= MAINPANEL_WIDTH;
 	public static final int CONTROLPANEL_HEIGHT = 75;

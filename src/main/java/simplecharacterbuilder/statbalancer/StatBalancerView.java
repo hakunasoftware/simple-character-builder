@@ -1,7 +1,5 @@
-package simplecharacterbuilder.statgenerator.xmlreaderwriter;
+package simplecharacterbuilder.statbalancer;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,26 +8,26 @@ import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent.CharacterBuilderControlComponent;
 import simplecharacterbuilder.statgenerator.StatGenerator;
 
-public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlComponent {
+public class StatBalancerView  extends CharacterBuilderControlComponent {
 	
 	private final JPanel innerPanel;
-	private final JTextField textField;
+	private final StatGenerator statGenerator;
 	
-	private final StatGenerator STAT_GENERATOR;
 	private final String ACTORS_DIRECTORY;
 	
-	public StatGeneratorXmlReaderWriterView(int x, int y, StatGenerator statGenerator, String configPath) {
+	private String selectedInfoXmlURI;
+	
+	public StatBalancerView(int x, int y, StatGenerator statGenerator, String configPath) {
 		super(x, y);
-		this.STAT_GENERATOR = statGenerator;
+		this.statGenerator = statGenerator;
 		this.ACTORS_DIRECTORY = determineActorsDirectory(configPath);
 		
 		innerPanel = new JPanel();
@@ -38,13 +36,15 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 		innerPanel.setBounds(GAP_WIDTH, 0, CONTROLPANEL_WIDTH - 2 * GAP_WIDTH, CONTROLPANEL_HEIGHT - GAP_WIDTH);
 		mainPanel.add(innerPanel);
 		
-		this.textField = new JTextField();
-		formatPathTextField();
-		
-		String selectXml = "<html>Select<br>Info.xml</html>";
-		innerPanel.add(new ControlButton(selectXml, 285, (e -> selectPath())));
-		innerPanel.add(new ControlButton("Load", 365, (e -> loadFromXml())));
+		innerPanel.add(new ControlButton("Load", 365, (e -> load())));
 		innerPanel.add(new ControlButton("Save", 445, (e -> saveToXml())));
+		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 load();
 	}
 
 	private void selectPath() {
@@ -68,7 +68,7 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 			if (chooser.showOpenDialog(mainPanel.getParent()) == JFileChooser.APPROVE_OPTION) {
 				String filePath = chooser.getSelectedFile().getCanonicalPath().replace("\\", "/");
 				if(filePath.endsWith("Info.xml")) {
-					this.textField.setText(filePath);
+					this.selectedInfoXmlURI = filePath;
 				} else {
 					displayErrorSelectInfoXml();
 				}
@@ -78,41 +78,32 @@ public class StatGeneratorXmlReaderWriterView  extends CharacterBuilderControlCo
 		}
 	}
 
-	private void formatPathTextField() {
-		int offset = (innerPanel.getHeight() - 25) / 2;
-		textField.setBounds(10, offset, 265, 25);
-		textField.setHorizontalAlignment(JLabel.LEFT);
-		textField.setFont(new Font(innerPanel.getFont().getName(), innerPanel.getFont().getStyle(), 13));
-		textField.setForeground(Color.BLACK);
-		textField.setBorder(BORDER);
-		innerPanel.add(textField);
-	}
-
-	private void loadFromXml() {
+	private void load() {
+		selectPath();
 		try {
-			STAT_GENERATOR.setStats(createStatXmlReaderWriter().readStatsFromXml());
+			statGenerator.setStats(createStatXmlReaderWriter().readStatsFromXml());
 		} catch(Exception e) {
 			displayErrorSelectInfoXml();
 		}
 	}
 	
 	private void saveToXml() {
-		if(!STAT_GENERATOR.confirmIntentIfWarningsExist()) {
+		if(!statGenerator.confirmIntentIfWarningsExist()) {
 			return;
 		}
 		try {
-			createStatXmlReaderWriter().updateXmlFromStats(STAT_GENERATOR.getStats());
+			createStatXmlReaderWriter().updateXmlFromStats(statGenerator.getStats());
 		} catch(Exception e) {
 			displayErrorSelectInfoXml();
 		}
 	}
 	
 	private StatXmlReaderWriter createStatXmlReaderWriter() {
-		return new StatXmlReaderWriter(textField.getText());
+		return new StatXmlReaderWriter(selectedInfoXmlURI);
 	}
 	
 	private void displayErrorSelectInfoXml() {
-		JOptionPane.showMessageDialog(mainPanel.getParent(), "Select a valid Info.xml", "Error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(mainPanel.getParent(), "Load a valid Info.xml", "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	private String determineActorsDirectory(String configPath) {
