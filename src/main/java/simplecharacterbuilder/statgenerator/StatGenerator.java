@@ -1,6 +1,5 @@
 package simplecharacterbuilder.statgenerator;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,7 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 		statCalculator            = new StatCalculator(configPath);
 		regularStatSelectionPanel = new RegularStatSelectionPanel(this, GAP_WIDTH, GAP_WIDTH);
 		beautySelectionPanel      = new BeautySelectionPanel(this, 2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH);
-		statDisplayPanel          = new StatDisplayPanel(this, 3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH, createComparisonValues());
+		statDisplayPanel          = new StatDisplayPanel(this, 3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH, showComparison);
 
 		mainPanel.add(regularStatSelectionPanel);
 		mainPanel.add(statDisplayPanel);
@@ -37,19 +36,6 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 		if(showComparison) {
 			mainPanel.setBounds(mainPanel.getX(), mainPanel.getY(), mainPanel.getWidth() + COMPARISON_WIDTH, mainPanel.getHeight());
 		}
-	}
-
-	private Map<Stat, Integer> createComparisonValues() {
-		Map<Stat, Integer> values = new HashMap<>();
-		values.put(Stat.AGILITY, 10);
-		values.put(Stat.BEAUTY, 20);
-		values.put(Stat.CHARISMA, 30);
-		values.put(Stat.CONSTITUTION, 40);
-		values.put(Stat.INTELLIGENCE, 50);
-		values.put(Stat.OBEDIENCE, 60);
-		values.put(Stat.SEX, 70);
-		values.put(Stat.STRENGTH, 80);
-		return values;
 	}
 	
 	public static StatGenerator createInstance(int x, int y, String configPath, boolean showComparison) {
@@ -87,6 +73,10 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 			    dialogueText.toString(),
 			    "Are you sure?",
 			    JOptionPane.OK_CANCEL_OPTION);
+	}
+	
+	public void setComparisonValues(Map<Stat, Integer> values) {
+		statDisplayPanel.setComparisonValues(values);
 	}
 
 	RegularStatSelectionPanel getRegularStatSelectionPanel() {

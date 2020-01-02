@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JButton;
@@ -14,6 +15,7 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent.CharacterBuilderControlComponent;
+import simplecharacterbuilder.statgenerator.Stat;
 import simplecharacterbuilder.statgenerator.StatGenerator;
 
 public class StatBalancerView  extends CharacterBuilderControlComponent {
@@ -81,7 +83,9 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 	private void load() {
 		selectPath();
 		try {
-			statGenerator.setStats(createStatXmlReaderWriter().readStatsFromXml());
+			Map<Stat, Integer> stats = createStatXmlReaderWriter().readStatsFromXml();
+			statGenerator.setComparisonValues(stats);
+			statGenerator.setStats(stats);
 		} catch(Exception e) {
 			displayErrorSelectInfoXml();
 		}
