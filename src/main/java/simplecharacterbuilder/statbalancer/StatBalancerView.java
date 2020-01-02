@@ -1,5 +1,6 @@
 package simplecharacterbuilder.statbalancer;
 
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,10 +8,11 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
@@ -20,7 +22,6 @@ import simplecharacterbuilder.statgenerator.StatGenerator;
 
 public class StatBalancerView  extends CharacterBuilderControlComponent {
 	
-	private final JPanel innerPanel;
 	private final StatGenerator statGenerator;
 	
 	private final String ACTORS_DIRECTORY;
@@ -34,14 +35,16 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 		
 		mainPanel.setBorder(BORDER);
 		
-		innerPanel = new JPanel();
-		innerPanel.setLayout(null);
-		innerPanel.setBorder(BORDER);
-		innerPanel.setBounds(0, 0, CONTROLPANEL_WIDTH - 2 * GAP_WIDTH, CONTROLPANEL_HEIGHT);
-		mainPanel.add(innerPanel);
+		mainPanel.add(new ControlButton("Load", 100, (e -> load())));
+		mainPanel.add(new ControlButton("Save", 150, (e -> saveToXml())));
 		
-		innerPanel.add(new ControlButton("Load", 365, (e -> load())));
-		innerPanel.add(new ControlButton("Save", 445, (e -> saveToXml())));
+		JLabel portrait = new JLabel();
+		int portraitOffset = 4;
+		portrait.setBounds(portraitOffset, portraitOffset, CONTROLPANEL_HEIGHT - 2 * portraitOffset, CONTROLPANEL_HEIGHT - 2 * portraitOffset);
+		portrait.setBorder(BORDER);
+		Image image = new ImageIcon("src/main/resources/Portrait.png").getImage(); 
+		portrait.setIcon( new ImageIcon(image.getScaledInstance(portrait.getWidth(), portrait.getHeight(),  Image.SCALE_SMOOTH)));
+		mainPanel.add(portrait);
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
