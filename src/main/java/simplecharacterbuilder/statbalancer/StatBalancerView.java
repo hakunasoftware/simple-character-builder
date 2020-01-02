@@ -37,7 +37,7 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 		innerPanel = new JPanel();
 		innerPanel.setLayout(null);
 		innerPanel.setBorder(BORDER);
-		innerPanel.setBounds(GAP_WIDTH, 0, CONTROLPANEL_WIDTH - 2 * GAP_WIDTH, CONTROLPANEL_HEIGHT - GAP_WIDTH);
+		innerPanel.setBounds(0, 0, CONTROLPANEL_WIDTH - 2 * GAP_WIDTH, CONTROLPANEL_HEIGHT);
 		mainPanel.add(innerPanel);
 		
 		innerPanel.add(new ControlButton("Load", 365, (e -> load())));
@@ -52,7 +52,11 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 	}
 
 	private void selectPath() {
+		Boolean old = UIManager.getBoolean("FileChooser.readOnly");  
+		UIManager.put("FileChooser.readOnly", Boolean.TRUE);  
 		JFileChooser chooser = new JFileChooser();
+		UIManager.put("FileChooser.readOnly", old);  
+		
 		chooser.setDialogTitle("Select Info.xml");
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setFileFilter(new FileFilter(){
