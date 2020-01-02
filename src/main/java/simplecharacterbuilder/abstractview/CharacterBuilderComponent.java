@@ -3,7 +3,7 @@ package simplecharacterbuilder.abstractview;
 import java.awt.Color;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
@@ -14,10 +14,12 @@ public abstract class CharacterBuilderComponent {
 	public static final int MAINPANEL_WIDTH 	= StatGenerator.WIDTH;
 	public static final int MAINPANEL_HEIGHT 	= StatGenerator.HEIGHT;
 	
-	public static final int CONTROLPANEL_WIDTH 	= MAINPANEL_WIDTH;
-	public static final int CONTROLPANEL_HEIGHT = 75;
-
+	public static final int SHORTENED_CONTENT_HEIGHT = 235;
+	
 	public static final int GAP_WIDTH = 15;
+	
+	public static final int CONTROLPANEL_WIDTH 	= 205;
+	public static final int CONTROLPANEL_HEIGHT = 77;
 	
 	public static final Border BORDER = BorderFactory.createLineBorder(new Color(200, 200, 200, 255));
 
@@ -29,8 +31,8 @@ public abstract class CharacterBuilderComponent {
 		mainPanel.setLayout(null);
 	}
 
-	public void addTo(JComponent panel) {
-		panel.add(mainPanel);
+	public void addTo(JLayeredPane panel, int layer) {
+		panel.add(mainPanel, layer);
 	}
 	
 
@@ -41,8 +43,8 @@ public abstract class CharacterBuilderComponent {
 	}
 
 	public static abstract class CharacterBuilderControlComponent extends CharacterBuilderComponent {
-		protected CharacterBuilderControlComponent(int x, int y) {
-			super(x, y, CONTROLPANEL_WIDTH, CONTROLPANEL_HEIGHT);
+		protected CharacterBuilderControlComponent(int x, int y, boolean extended) {
+			super(x, y, CONTROLPANEL_WIDTH + (extended ? StatGenerator.COMPARISON_WIDTH : 0), CONTROLPANEL_HEIGHT);
 		}
 	}
 }

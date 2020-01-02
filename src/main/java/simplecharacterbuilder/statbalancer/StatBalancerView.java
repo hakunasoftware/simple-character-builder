@@ -28,9 +28,11 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 	private String selectedInfoXmlURI;
 	
 	public StatBalancerView(int x, int y, StatGenerator statGenerator, String configPath) {
-		super(x, y);
+		super(x, y, true);
 		this.statGenerator = statGenerator;
 		this.ACTORS_DIRECTORY = determineActorsDirectory(configPath);
+		
+		mainPanel.setBorder(BORDER);
 		
 		innerPanel = new JPanel();
 		innerPanel.setLayout(null);

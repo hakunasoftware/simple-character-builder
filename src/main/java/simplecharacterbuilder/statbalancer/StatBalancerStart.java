@@ -1,5 +1,7 @@
 package simplecharacterbuilder.statbalancer;
 
+import static simplecharacterbuilder.abstractview.CharacterBuilderComponent.*;
+
 import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +11,8 @@ import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 import simplecharacterbuilder.statgenerator.StatGenerator;
 
 public class StatBalancerStart {
-	private static final int WIDTH 	= CharacterBuilderComponent.MAINPANEL_WIDTH + StatGenerator.COMPARISON_WIDTH;
-	private static final int HEIGHT = CharacterBuilderComponent.MAINPANEL_HEIGHT + CharacterBuilderComponent.CONTROLPANEL_HEIGHT;
+	private static final int WIDTH 	= MAINPANEL_WIDTH + StatGenerator.COMPARISON_WIDTH;
+	private static final int HEIGHT = MAINPANEL_HEIGHT;
 	
 	@SuppressWarnings("unused")
 	private static final String CONFIG_PATH_USE = "config/statgenerator.config";
@@ -22,7 +24,10 @@ public class StatBalancerStart {
 	static {
 		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, CONFIG_PATH_CURRENT, true);
 		COMPONENTS.add(statGenerator);
-		COMPONENTS.add(new StatBalancerView(0, CharacterBuilderComponent.MAINPANEL_HEIGHT, statGenerator, CONFIG_PATH_CURRENT));
+		
+		int controlPanelX = MAINPANEL_WIDTH  - CONTROLPANEL_WIDTH  - GAP_WIDTH;
+		int controlPanelY = MAINPANEL_HEIGHT - CONTROLPANEL_HEIGHT - GAP_WIDTH;
+		COMPONENTS.add(new StatBalancerView(controlPanelX, controlPanelY, statGenerator, CONFIG_PATH_CURRENT));
 	}
 
 	public static void main(String[] args) {

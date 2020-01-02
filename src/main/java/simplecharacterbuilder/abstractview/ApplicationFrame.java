@@ -5,7 +5,7 @@ import java.awt.GridBagLayout;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JLayeredPane;
 
 @SuppressWarnings("serial")
 public class ApplicationFrame extends JFrame {
@@ -19,10 +19,12 @@ public class ApplicationFrame extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setTitle(title);
 		
-		JPanel contentPanel = new JPanel();
+		JLayeredPane contentPanel = new JLayeredPane();
 		contentPanel.setLayout(null);
 		contentPanel.setPreferredSize(new Dimension(width, height));
-		components.stream().forEach(component -> component.addTo(contentPanel));
+		
+		int i = 0;
+		components.stream().forEach(component -> component.addTo(contentPanel, i));
 		this.add(contentPanel);
 	}
 	

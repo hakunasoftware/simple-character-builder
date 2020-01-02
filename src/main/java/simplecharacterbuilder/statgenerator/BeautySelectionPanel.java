@@ -1,5 +1,7 @@
 package simplecharacterbuilder.statgenerator;
 
+import static simplecharacterbuilder.abstractview.CharacterBuilderComponent.*;
+
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
@@ -14,7 +16,7 @@ class BeautySelectionPanel extends JPanel {
 	private static final String[] BEAUTY_OPTIONS = new String[] { "Unattractive", "Plain", "Normal", "Pretty", "Beautiful", "Stunning", "Perfect", "Divine" };
 
 	static final int WIDTH  = 115;
-	static final int HEIGHT = 235;
+	static final int HEIGHT = MAINPANEL_HEIGHT - CONTROLPANEL_HEIGHT - 3 * GAP_WIDTH;
 	
 	private final StatButtonGroup buttonGroup = new StatButtonGroup(Stat.BEAUTY);
 	private final StatGenerator statGenerator;
