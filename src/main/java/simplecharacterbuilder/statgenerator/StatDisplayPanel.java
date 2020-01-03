@@ -35,6 +35,9 @@ class StatDisplayPanel extends JPanel {
 	private static final int LEFT_OFFSET = 3;
 
 	private static final String TEXTFIELD_REGEX = "^[0-9]{1,3}$";
+	
+	private static final Color POSITIVE_DIFFERENCE = new Color(34, 139, 34);
+	private static final Color NEGATIVE_DIFFERENCE = new Color(220, 20, 60);
 
 	private final RegularStatSelectionPanel regStatSelectionPanel;
 	private final BeautySelectionPanel      beautySelectionPanel;
@@ -225,8 +228,19 @@ class StatDisplayPanel extends JPanel {
 			
 			void setDifference(int newValue) {
 				int diff = newValue - getComparisonValue();
-				String difference = diff == 0 ? "" : ((diff < 0 ? "-" : "+") + String.valueOf(Math.abs(diff)));
-				lowerLabel.setText(difference);
+				if(diff == 0) {
+					lowerLabel.setText("");
+					return;
+				}
+				StringBuilder difference = new StringBuilder();
+				if(diff < 0) {
+					difference.append("-");
+					lowerLabel.setForeground(NEGATIVE_DIFFERENCE);
+				} else {
+					difference.append("+");
+					lowerLabel.setForeground(POSITIVE_DIFFERENCE);
+				}
+				lowerLabel.setText(difference.append(String.valueOf(Math.abs(diff))).toString());
 			}
 		}
 

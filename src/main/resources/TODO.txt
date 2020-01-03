@@ -1,3 +1,2 @@
 add automatic adjustment to load and reselecting
 add name+franchise
-color on +/-
