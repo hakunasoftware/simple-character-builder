@@ -22,9 +22,14 @@ import simplecharacterbuilder.statgenerator.StatGenerator;
 
 public class StatBalancerView  extends CharacterBuilderControlComponent {
 	
-	private final StatGenerator statGenerator;
+	private static final int WIDTH = CONTROLPANEL_WIDTH + StatGenerator.COMPARISON_WIDTH;
 	
+	private final StatGenerator statGenerator;
 	private final String ACTORS_DIRECTORY;
+	
+	private final JLabel portrait;
+//	private final JLabel nameLabel;
+//	private final JLabel franchiseLabel;
 	
 	private String selectedInfoXmlURI;
 	
@@ -35,17 +40,15 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 		
 		mainPanel.setBorder(BORDER);
 		
-		mainPanel.add(new ControlButton("Load", 100, (e -> load())));
-		mainPanel.add(new ControlButton("Save", 150, (e -> saveToXml())));
+		mainPanel.add(new ControlButton("Load", 0, (e -> load())));
+		mainPanel.add(new ControlButton("Save", ControlButton.WIDTH, (e -> saveToXml())));
 		
-		JLabel portrait = new JLabel();
-		int portraitOffset = 4;
-		portrait.setBounds(portraitOffset, portraitOffset, CONTROLPANEL_HEIGHT - 2 * portraitOffset, CONTROLPANEL_HEIGHT - 2 * portraitOffset);
+		portrait = new JLabel();
+		portrait.setBounds(WIDTH - CONTROLPANEL_HEIGHT, 0, CONTROLPANEL_HEIGHT, CONTROLPANEL_HEIGHT);
 		portrait.setBorder(BORDER);
-		Image image = new ImageIcon("src/main/resources/Portrait.png").getImage(); 
-		portrait.setIcon( new ImageIcon(image.getScaledInstance(portrait.getWidth(), portrait.getHeight(),  Image.SCALE_SMOOTH)));
+		portrait.setText("<html><center>Portrait not found</center></html>");
 		mainPanel.add(portrait);
-		
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
@@ -88,6 +91,11 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 			e.printStackTrace();
 		}
 	}
+	
+	private void setPortrait(String portraitURI) {
+			Image image = new ImageIcon(portraitURI).getImage(); 
+			portrait.setIcon(new ImageIcon(image.getScaledInstance(portrait.getWidth(), portrait.getHeight(),  Image.SCALE_SMOOTH)));
+	}
 
 	private void load() {
 		selectPath();
@@ -98,6 +106,7 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 		} catch(Exception e) {
 			displayErrorSelectInfoXml();
 		}
+		setPortrait(selectedInfoXmlURI.replace("Info.xml", "Portrait.png"));
 	}
 	
 	private void saveToXml() {
@@ -130,13 +139,15 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 	}
 
 	@SuppressWarnings("serial")
-	private class ControlButton extends JButton {
+	private static class ControlButton extends JButton {
+		static final int WIDTH  = (StatBalancerView.WIDTH - CONTROLPANEL_HEIGHT) / 2;
+		static final int HEIGHT = 35;
+		
 		ControlButton(String buttonText, int xPos, ActionListener actionListener){
 			super(buttonText);
-			this.setBounds(xPos, 10, 70, 40);
+			this.setBounds(xPos, CONTROLPANEL_HEIGHT - HEIGHT, WIDTH, HEIGHT);
 			this.setHorizontalAlignment(CENTER);
 			this.addActionListener(actionListener);
 		}
 	}
-	
 }

@@ -1,0 +1,5 @@
+color on +/-
+add name+franchise
+add automatic adjustment
+add reset to comparison value if same button is selected again
+close entire window when closing first filechooser

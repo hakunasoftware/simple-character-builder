@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -201,7 +203,12 @@ class StatDisplayPanel extends JPanel {
 				StatDisplayPanel.this.add(lowerLabel = createLabel(x, y + HEIGHT / 2));
 				
 				upperLabel.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
-				lowerLabel.setText("+5");
+				upperLabel.addMouseListener(new MouseAdapter() {
+	                @Override
+	                public void mouseClicked(MouseEvent e) {
+	                    StatDisplay.this.setValue(Integer.parseInt(upperLabel.getText()));
+	                }
+				});;
 			}
 			
 			JLabel createLabel(int x, int y) {
