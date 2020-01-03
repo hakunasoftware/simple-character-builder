@@ -5,9 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.IntSupplier;
 
 import javax.swing.AbstractButton;
@@ -66,16 +64,6 @@ class RegularStatSelectionPanel extends JPanel {
 		this.addOptionLabels();
 		this.addRegStatButtons();
 		this.addVirginCheckbox();
-	}
-	
-	Map<Stat, Integer> getSelections() {
-		Map<Stat, Integer> regStats = new HashMap<>();
-		Stat.forRegStats(stat -> regStats.put(stat, getSelection(stat)));
-		return regStats;
-	}
-
-	void setSelections(Map<Stat, Integer> selections) {
-		selections.keySet().stream().forEach(stat -> setSelection(stat, selections.get(stat)));
 	}
 	
 	void setSelection(Stat stat, int selection) {

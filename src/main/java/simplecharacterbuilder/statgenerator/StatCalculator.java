@@ -2,8 +2,6 @@ package simplecharacterbuilder.statgenerator;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
@@ -23,13 +21,6 @@ class StatCalculator {
 		readConfig(configPath);
 	}
 
-	Map<Stat, Integer> generateStats(Map<Stat, Integer> selections) {
-		Map<Stat, Integer> stats = new HashMap<>();
-		selections.keySet().stream()
-			.forEach(stat -> stats.put(stat, generateStatFromSelection(stat, selections.get(stat))));
-		return stats;
-	}
-	
 	int generateSelection(Stat stat, int value) {
 		switch(stat) {
 			case BEAUTY: return getIndexFromBoundaries(beautyBoundaries, value);
@@ -38,9 +29,9 @@ class StatCalculator {
 		}
 	}
 	
-	private int getIndexFromBoundaries(int[] boundaries, int stat) {
+	private int getIndexFromBoundaries(int[] boundaries, int value) {
 		for(int i = 1; i < boundaries.length; i++) {
-			if(stat < boundaries[i]) {
+			if(value < boundaries[i]) {
 				return i - 1;
 			}
 		}
@@ -76,7 +67,6 @@ class StatCalculator {
 			case SEX: if(selectionIndex == -1) return 0;
 			default: return generateStatFromBoundariesAndSelection(regularStatBoundaries, selectionIndex);
 		}
-		
 	}
 
 	private int generateStatFromBoundariesAndSelection(int[] boundaries, int selectionIndex) {

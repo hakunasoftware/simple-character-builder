@@ -98,9 +98,12 @@ class StatDisplayPanel extends JPanel {
 	}
 
 	void displaySelectedStats() {
-		Map<Stat, Integer> statSelections = regStatSelectionPanel.getSelections();
-		statSelections.put(Stat.BEAUTY, beautySelectionPanel.getSelection());
-		displayStats(statCalculator.generateStats(statSelections));
+		Stat.forAll(stat -> displaySelectedStat(stat));
+	}
+	
+	private void displaySelectedStat(Stat stat) {
+		int selection = stat == Stat.BEAUTY ? beautySelectionPanel.getSelection() : regStatSelectionPanel.getSelection(stat);
+		displayStat(stat, statCalculator.generateStatFromSelection(stat, selection));
 	}
 
 	Map<Stat, Integer> getStats() {
