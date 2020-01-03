@@ -1,5 +1,6 @@
 package simplecharacterbuilder.statbalancer;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -17,19 +18,21 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import simplecharacterbuilder.abstractview.CharacterBuilderComponent.CharacterBuilderControlComponent;
+import simplecharacterbuilder.abstractview.InfoXmlReaderWriter;
 import simplecharacterbuilder.statgenerator.Stat;
 import simplecharacterbuilder.statgenerator.StatGenerator;
 
 public class StatBalancerView  extends CharacterBuilderControlComponent {
 	
 	private static final int WIDTH = CONTROLPANEL_WIDTH + StatGenerator.COMPARISON_WIDTH;
+	private static final int LABEL_OFFSET = 8;
 	
 	private final StatGenerator statGenerator;
 	private final String ACTORS_DIRECTORY;
 	
 	private final JLabel portrait;
-//	private final JLabel nameLabel;
-//	private final JLabel franchiseLabel;
+	private final JLabel nameLabel;
+	private final JLabel franchiseLabel;
 	
 	private String selectedInfoXmlURI;
 	
@@ -40,10 +43,17 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 		this.statGenerator = statGenerator;
 		this.ACTORS_DIRECTORY = determineActorsDirectory(configPath);
 		
+		
 		mainPanel.setBorder(BORDER);
 		
 		mainPanel.add(new ControlButton("Load", 0, (e -> load())));
 		mainPanel.add(new ControlButton("Save", ControlButton.WIDTH, (e -> saveToXml())));
+
+		nameLabel      = createTextLabel(0);
+		franchiseLabel = createTextLabel(15);
+		franchiseLabel.setForeground(new Color(150, 150, 150, 255));
+		mainPanel.add(nameLabel);
+		mainPanel.add(franchiseLabel);
 		
 		portrait = new JLabel();
 		portrait.setBounds(WIDTH - CONTROLPANEL_HEIGHT, 0, CONTROLPANEL_HEIGHT, CONTROLPANEL_HEIGHT);
@@ -57,6 +67,21 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 			e.printStackTrace();
 		}
 		 load();
+	}
+	
+	private void setName(String name) {
+		nameLabel.setText(name);
+	}
+	
+	private void setFranchise(String franchise) {
+		franchiseLabel.setText("<html><i>" + franchise + "</i></html>");
+	}
+	
+	private JLabel createTextLabel(int additionalVerticalOffset) {
+		JLabel label = new JLabel();
+		label.setHorizontalAlignment(JLabel.CENTER);
+		label.setBounds(LABEL_OFFSET, LABEL_OFFSET - 2 + additionalVerticalOffset, WIDTH - CONTROLPANEL_HEIGHT - 2 * LABEL_OFFSET, 15);
+		return label;
 	}
 
 	private void selectPath() {
@@ -108,6 +133,15 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 		selectPath();
 		loadFromPath();
 		setPortrait(selectedInfoXmlURI.replace("Info.xml", "Portrait.png"));
+		loadNameAndFranchise();
+	}
+	
+	private void loadNameAndFranchise() {
+		InfoXmlReaderWriter reader = new InfoXmlReaderWriter(selectedInfoXmlURI);
+		String firstName = reader.readStringFromUniqueTagPath("Name/First");
+		String lastName  = reader.readStringFromUniqueTagPath("Name/Last");
+		setName(firstName + " " + lastName);
+		setFranchise(reader.readStringFromUniqueTagPath("Source/Franchise"));
 	}
 	
 	private void loadFromPath() {
@@ -153,7 +187,7 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 	@SuppressWarnings("serial")
 	private static class ControlButton extends JButton {
 		static final int WIDTH  = (StatBalancerView.WIDTH - CONTROLPANEL_HEIGHT) / 2;
-		static final int HEIGHT = 35;
+		static final int HEIGHT = 36;
 		
 		ControlButton(String buttonText, int xPos, ActionListener actionListener){
 			super(buttonText);

@@ -1,2 +1,1 @@
-add automatic adjustment to load and reselecting
-add name+franchise
+add automatic adjustment to load
