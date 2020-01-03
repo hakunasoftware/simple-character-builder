@@ -106,6 +106,11 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 
 	private void load() {
 		selectPath();
+		loadFromPath();
+		setPortrait(selectedInfoXmlURI.replace("Info.xml", "Portrait.png"));
+	}
+	
+	private void loadFromPath() {
 		try {
 			Map<Stat, Integer> stats = createStatXmlReaderWriter().readStatsFromXml();
 			statGenerator.setComparisonValues(stats);
@@ -113,7 +118,6 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 		} catch(Exception e) {
 			displayErrorSelectInfoXml();
 		}
-		setPortrait(selectedInfoXmlURI.replace("Info.xml", "Portrait.png"));
 	}
 	
 	private void saveToXml() {
@@ -122,6 +126,7 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 		}
 		try {
 			createStatXmlReaderWriter().updateXmlFromStats(statGenerator.getStats());
+			loadFromPath();
 		} catch(Exception e) {
 			displayErrorSelectInfoXml();
 		}

@@ -48,6 +48,9 @@ class StatCalculator {
 	}
 	
 	int getMin(Stat stat) {
+		if(stat.equals(Stat.SEX)) {
+			return 0;
+		}
 		int[] boundaries =  getBoundaries(stat);
 		return boundaries[0];
 	}
@@ -67,6 +70,12 @@ class StatCalculator {
 			case SEX: if(selectionIndex == -1) return 0;
 			default: return generateStatFromBoundariesAndSelection(regularStatBoundaries, selectionIndex);
 		}
+	}
+	
+	boolean isValidValue(Stat stat, int value) {
+		return value % getMultiplier() == 0 
+				&& value >= getMin(stat)
+				&& value <= getMax(stat);
 	}
 
 	private int generateStatFromBoundariesAndSelection(int[] boundaries, int selectionIndex) {

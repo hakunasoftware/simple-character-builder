@@ -76,7 +76,6 @@ class RegularStatSelectionPanel extends JPanel {
 			return;
 		}
 		if(selection == -1) {
-			getButtonGroup(Stat.SEX).setSelection(0);
 			if(!virginCheckBox.isSelected()) {
 				virginCheckBox.setSelected(true);
 			}
@@ -213,13 +212,13 @@ class RegularStatSelectionPanel extends JPanel {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int selection = supplier.getAsInt();
+					int selectionIndex = supplier.getAsInt();
 					int comparisonValue = statGenerator.getStatDisplayPanel().getComparisonValue(stat);
-					if(selection != statGenerator.getStatCalculator().generateSelection(stat, comparisonValue)) {
-						int generatedValue = statGenerator.getStatCalculator().generateStatFromSelection(stat, selection);
-						statGenerator.getStatDisplayPanel().displayStat(stat, generatedValue);
-					} else {
+					if(selectionIndex == statGenerator.getStatCalculator().generateSelection(stat, comparisonValue) && statGenerator.getStatCalculator().isValidValue(stat, comparisonValue)) {
 						statGenerator.getStatDisplayPanel().displayStat(stat, comparisonValue);
+					} else {
+						int generatedValue = statGenerator.getStatCalculator().generateStatFromSelection(stat, selectionIndex);
+						statGenerator.getStatDisplayPanel().displayStat(stat, generatedValue);
 					}
 				}
 			};

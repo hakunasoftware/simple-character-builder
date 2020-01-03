@@ -92,7 +92,7 @@ class StatDisplayPanel extends JPanel {
 	private void displayStatOnSelectionPanel(Stat stat) {
 		if(stat.equals(Stat.BEAUTY)) { 
 			beautySelectionPanel.setSelection(statCalculator.generateSelection(Stat.BEAUTY, getStatDisplayPanel(Stat.BEAUTY).getValue()));
-		} else { 
+		} else {
 			regStatSelectionPanel.setSelection(stat, statCalculator.generateSelection(stat, getStatDisplayPanel(stat).getValue()));
 		}
 	}
@@ -230,12 +230,6 @@ class StatDisplayPanel extends JPanel {
 			}
 		}
 
-		private boolean isValidValue(int value) {
-			return value % statCalculator.getMultiplier() == 0 
-					&& value >= minValue 
-					&& value <= maxValue;
-		}
-
 		List<String> getEvaluationWarnings() {
 			List<String> warnings = new ArrayList<>();
 
@@ -348,7 +342,7 @@ class StatDisplayPanel extends JPanel {
 
 			private void checkBoundsAndMultiplier(String text) {
 				int newValue = Integer.parseInt(text);
-				if (!isValidValue(newValue)) {
+				if (!statCalculator.isValidValue(stat, newValue)) {
 					textField.setForeground(Color.RED);
 				} else {
 					textField.setForeground(Color.BLACK);

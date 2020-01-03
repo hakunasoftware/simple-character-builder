@@ -18,13 +18,13 @@
 	</Source>
 
 	<Stats>
-		<Con>60</Con>
-		<Agi>65</Agi>
+		<Con>35</Con>
+		<Agi>10</Agi>
 		<Str>5</Str>
-		<Int>15</Int>
-		<Sex>95</Sex>
+		<Int>60</Int>
+		<Sex>40</Sex>
 		<Beauty>120</Beauty>
-		<Charisma>15</Charisma>
+		<Charisma>95</Charisma>
 		<Obedience>10</Obedience>
 	</Stats>
 
