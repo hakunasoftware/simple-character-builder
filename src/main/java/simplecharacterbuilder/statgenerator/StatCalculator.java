@@ -30,13 +30,6 @@ class StatCalculator {
 		return stats;
 	}
 	
-	Map<Stat, Integer> generateSelections(Map<Stat, Integer> stats) {
-		Map<Stat, Integer> selections = new HashMap<Stat, Integer>();
-		stats.keySet().stream()
-			.forEach(stat -> selections.put(stat, generateSelection(stat, stats.get(stat))));
-		return selections;
-	}
-	
 	int generateSelection(Stat stat, int value) {
 		switch(stat) {
 			case BEAUTY: return getIndexFromBoundaries(beautyBoundaries, value);

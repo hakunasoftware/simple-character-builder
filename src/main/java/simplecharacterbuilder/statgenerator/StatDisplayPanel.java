@@ -89,16 +89,11 @@ class StatDisplayPanel extends JPanel {
 		Stat.forAll(stat -> getStatDisplayPanel(stat).setComparisonValue(values.get(stat)));
 	}
 	
-	private void displayStatsOnSelectionPanels() {
-		beautySelectionPanel.setSelection(statCalculator.generateSelection(Stat.BEAUTY, getStatDisplayPanel(Stat.BEAUTY).getValue()));
-		regStatSelectionPanel.setSelections(statCalculator.generateSelections(getRegStats()));
-	}
-	
 	private void displayStatOnSelectionPanel(Stat stat) {
 		if(stat.equals(Stat.BEAUTY)) { 
 			beautySelectionPanel.setSelection(statCalculator.generateSelection(Stat.BEAUTY, getStatDisplayPanel(Stat.BEAUTY).getValue()));
 		} else { 
-			regStatSelectionPanel.setSelections(statCalculator.generateSelections(getRegStats()));
+			regStatSelectionPanel.setSelection(stat, statCalculator.generateSelection(stat, getStatDisplayPanel(stat).getValue()));
 		}
 	}
 
@@ -114,12 +109,6 @@ class StatDisplayPanel extends JPanel {
 		return stats;
 	}
 	
-	private Map<Stat, Integer> getRegStats() {
-		Map<Stat, Integer> stats = new HashMap<>();
-		Stat.forRegStats(stat -> stats.put(stat, getStatDisplayPanel(stat).getValue()));
-		return stats;
-	}
-	
 	List<String> getEvaluationWarnings(){
 		List<String> warnings = new ArrayList<>();
 		Stat.forAll(stat -> warnings.addAll(getStatDisplayPanel(stat).getEvaluationWarnings()));
@@ -132,7 +121,6 @@ class StatDisplayPanel extends JPanel {
 	
 	private void setDefaultValues() {
 		Stat.forAll(stat -> displayStat(stat, getDefault(stat)));
-		displayStatsOnSelectionPanels();
 	}
 	
 	private int getDefault(Stat stat) {

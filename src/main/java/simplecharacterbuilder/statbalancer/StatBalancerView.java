@@ -33,6 +33,8 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 	
 	private String selectedInfoXmlURI;
 	
+	private boolean firstLoad = true;
+	
 	public StatBalancerView(int x, int y, StatGenerator statGenerator, String configPath) {
 		super(x, y, true);
 		this.statGenerator = statGenerator;
@@ -80,11 +82,16 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 			 chooser.setCurrentDirectory(new File(ACTORS_DIRECTORY));
 		
 			if (chooser.showOpenDialog(mainPanel.getParent()) == JFileChooser.APPROVE_OPTION) {
+				firstLoad = false;
 				String filePath = chooser.getSelectedFile().getCanonicalPath().replace("\\", "/");
 				if(filePath.endsWith("Info.xml")) {
 					this.selectedInfoXmlURI = filePath;
 				} else {
 					displayErrorSelectInfoXml();
+				}
+			} else {
+				if(firstLoad) {
+					System.exit(0);
 				}
 			}
 		} catch (Exception e) {
