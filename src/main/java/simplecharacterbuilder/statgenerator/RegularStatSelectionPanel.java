@@ -2,6 +2,7 @@ package simplecharacterbuilder.statgenerator;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -209,8 +210,19 @@ class RegularStatSelectionPanel extends JPanel {
 		}
 		
 		static ActionListener createDisplayActionListener(StatGenerator statGenerator, Stat stat, IntSupplier supplier) {
-			return e -> statGenerator.getStatDisplayPanel().displayStat(stat, 
-					statGenerator.getStatCalculator().generateStatFromSelection(stat, supplier.getAsInt()));
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int selection = supplier.getAsInt();
+					int comparisonValue = statGenerator.getStatDisplayPanel().getComparisonValue(stat);
+					if(selection != statGenerator.getStatCalculator().generateSelection(stat, comparisonValue)) {
+						int generatedValue = statGenerator.getStatCalculator().generateStatFromSelection(stat, selection);
+						statGenerator.getStatDisplayPanel().displayStat(stat, generatedValue);
+					} else {
+						statGenerator.getStatDisplayPanel().displayStat(stat, comparisonValue);
+					}
+				}
+			};
 		}
 	}
 }

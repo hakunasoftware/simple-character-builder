@@ -122,6 +122,10 @@ class StatDisplayPanel extends JPanel {
 		statDisplays.stream().forEach(display -> display.lock());
 	}
 	
+	int getComparisonValue(Stat stat) {
+		return getStatDisplayPanel(stat).comparisonPanel.getComparisonValue();
+	}
+	
 	private void setDefaultValues() {
 		Stat.forAll(stat -> displayStat(stat, getDefault(stat)));
 	}

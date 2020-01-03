@@ -1,4 +1,3 @@
 add automatic adjustment
 add name+franchise
 color on +/-
-add reset to comparison value if same button is selected again
