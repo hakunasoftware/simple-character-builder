@@ -46,6 +46,10 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 		return statDisplayPanel.getStats();
 	}
 
+	public void setStatSuggestions(Map<Stat, Integer> stats) {
+		statDisplayPanel.displayStats(statCalculator.generateStatSuggestions(stats));
+	}
+	
 	public void setStats(Map<Stat, Integer> stats) {
 		statDisplayPanel.displayStats(stats);
 	}

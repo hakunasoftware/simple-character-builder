@@ -148,7 +148,7 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 		try {
 			Map<Stat, Integer> stats = createStatXmlReaderWriter().readStatsFromXml();
 			statGenerator.setComparisonValues(stats);
-			statGenerator.setStats(stats);
+			statGenerator.setStatSuggestions(stats);
 		} catch(Exception e) {
 			displayErrorSelectInfoXml();
 		}

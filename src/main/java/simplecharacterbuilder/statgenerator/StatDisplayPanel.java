@@ -36,8 +36,8 @@ class StatDisplayPanel extends JPanel {
 
 	private static final String TEXTFIELD_REGEX = "^[0-9]{1,3}$";
 	
-	private static final Color POSITIVE_DIFFERENCE = new Color(34, 139, 34);
-	private static final Color NEGATIVE_DIFFERENCE = new Color(220, 20, 60);
+	private static final Color POSITIVE_GREEN = new Color(34, 139, 34);
+	private static final Color WARNING_RED    = new Color(220, 20, 60);
 
 	private final RegularStatSelectionPanel regStatSelectionPanel;
 	private final BeautySelectionPanel      beautySelectionPanel;
@@ -79,6 +79,8 @@ class StatDisplayPanel extends JPanel {
 		return statDisplays.stream().filter(display -> display.stat.equals(stat)).findFirst().get();
 	}
 
+	//TODO
+	
 	void displayStats(Map<Stat, Integer> stats) {
 		stats.keySet().stream().forEach(stat -> displayStat(stat, stats.get(stat)));
 	}
@@ -88,7 +90,7 @@ class StatDisplayPanel extends JPanel {
 		displayStatOnSelectionPanel(stat);
 	}
 	
-	public void setComparisonValues(Map<Stat, Integer> values) {
+	void setComparisonValues(Map<Stat, Integer> values) {
 		Stat.forAll(stat -> getStatDisplayPanel(stat).setComparisonValue(values.get(stat)));
 	}
 	
@@ -200,7 +202,6 @@ class StatDisplayPanel extends JPanel {
 				StatDisplayPanel.this.add(upperLabel = createLabel(x, y));
 				StatDisplayPanel.this.add(lowerLabel = createLabel(x, y + HEIGHT / 2));
 				
-				upperLabel.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
 				upperLabel.addMouseListener(new MouseAdapter() {
 	                @Override
 	                public void mouseClicked(MouseEvent e) {
@@ -219,6 +220,7 @@ class StatDisplayPanel extends JPanel {
 			
 			void setComparisonValue(int value) {
 				upperLabel.setText(String.valueOf(value));
+				upperLabel.setForeground(statCalculator.isValidValue(stat, value) ? RegularStatSelectionPanel.HEADLINE_COLOR : WARNING_RED);
 			}
 			
 			int getComparisonValue() {
@@ -235,10 +237,10 @@ class StatDisplayPanel extends JPanel {
 				StringBuilder difference = new StringBuilder();
 				if(diff < 0) {
 					difference.append("-");
-					lowerLabel.setForeground(NEGATIVE_DIFFERENCE);
+					lowerLabel.setForeground(WARNING_RED);
 				} else {
 					difference.append("+");
-					lowerLabel.setForeground(POSITIVE_DIFFERENCE);
+					lowerLabel.setForeground(POSITIVE_GREEN);
 				}
 				lowerLabel.setText(difference.append(String.valueOf(Math.abs(diff))).toString());
 			}
@@ -328,14 +330,12 @@ class StatDisplayPanel extends JPanel {
 
 				if (text.isEmpty() || text.equals("0")) {
 					fb.replace(0, currentTextLength, "0", a);
-					setDifferenceFromString("0");
 					checkBoundsAndMultiplier("0");
 					return;
 				}
 
 				if (text.startsWith("0") && str != null && str.length() != 0 && str.matches(TEXTFIELD_REGEX)) {
 					fb.replace(0, 1, str, a);
-					setDifferenceFromString(str);
 					checkBoundsAndMultiplier(str);
 					return;
 				}
@@ -346,7 +346,6 @@ class StatDisplayPanel extends JPanel {
 				}
 
 				fb.replace(offset, length, str, a);
-				setDifferenceFromString(text);
 				checkBoundsAndMultiplier(text);
 			}
 			
@@ -357,10 +356,11 @@ class StatDisplayPanel extends JPanel {
 			private void checkBoundsAndMultiplier(String text) {
 				int newValue = Integer.parseInt(text);
 				if (!statCalculator.isValidValue(stat, newValue)) {
-					textField.setForeground(Color.RED);
+					textField.setForeground(WARNING_RED);
 				} else {
 					textField.setForeground(Color.BLACK);
 				}
+				setDifferenceFromString(text);
 			}
 		}
 	}

@@ -2,6 +2,8 @@ package simplecharacterbuilder.statgenerator;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
@@ -22,11 +24,10 @@ class StatCalculator {
 	}
 
 	int generateSelection(Stat stat, int value) {
-		switch(stat) {
-			case BEAUTY: return getIndexFromBoundaries(beautyBoundaries, value);
-			case SEX: if(value == 0 || value == 1) return -1;
-			default: return getIndexFromBoundaries(regularStatBoundaries, value);
+		if(stat.equals(Stat.SEX) && (value == 0 || value == 1)) {
+			return -1;
 		}
+		return getIndexFromBoundaries(getBoundaries(stat), value);
 	}
 	
 	private int getIndexFromBoundaries(int[] boundaries, int value) {
@@ -65,11 +66,11 @@ class StatCalculator {
 	}
 	
 	int generateStatFromSelection(Stat stat, int selectionIndex) {
-		switch(stat) {
-			case BEAUTY: return generateStatFromBoundariesAndSelection(beautyBoundaries, selectionIndex);
-			case SEX: if(selectionIndex == -1) return 0;
-			default: return generateStatFromBoundariesAndSelection(regularStatBoundaries, selectionIndex);
+		if(stat.equals(Stat.SEX) && selectionIndex == -1) {
+			return 0;
 		}
+		return generateStatFromBoundariesAndSelection(getBoundaries(stat), selectionIndex);
+		
 	}
 	
 	boolean isValidValue(Stat stat, int value) {
@@ -111,5 +112,65 @@ class StatCalculator {
 
 	private int readIntFromProp(String propName) {
 		return Integer.parseInt(this.prop.getProperty(propName));
+	}
+
+	Map<Stat, Integer> generateStatSuggestions(Map<Stat, Integer> stats) { 
+		//TODO add normalization
+		Map<Stat, Integer> suggestions = new HashMap<>();
+		Stat.forAll(stat -> suggestions.put(stat, 
+				isValidValue(stat, stats.get(stat)) ? stats.get(stat) : generateSuggestion(stat, stats.get(stat))));
+		return suggestions;
+	}
+
+	private int generateSuggestion(Stat stat, int value) {
+		if(value > getMax(stat)) {
+			return generateMaxSuggestion(stat);
+		}
+		if(value < getMin(stat)) {
+			return generateMinSuggestion(stat);
+		}
+		return roundToMultiplier(stat, value);
+	}
+	
+	private int generateMaxSuggestion(Stat stat) {
+		int max = getMax(stat);
+		int maxValid = max - max % multiplier;
+		return random.nextBoolean() ? maxValid : maxValid - multiplier; 
+	}
+
+	private int generateMinSuggestion(Stat stat) {
+		int min = getMin(stat);
+		int distance = min % multiplier;
+		int minValid = distance == 0 ? min : min - distance + multiplier;
+		return random.nextBoolean() ? minValid : minValid + multiplier; 
+	}
+	
+	private int roundToMultiplier(Stat stat, int value) {
+		int[] boundaries = getBoundaries(stat);
+		int selectionIndex = getIndexFromBoundaries(boundaries, value);
+		
+		int lowerDistance = value % multiplier;
+		int upperDistance = multiplier - lowerDistance;
+		
+		int lowerValue = value - lowerDistance;
+		int upperValue = value + upperDistance;
+		
+		boolean lowerValueInBounds = isInBounds(boundaries, selectionIndex, lowerValue);
+		boolean upperValueInBounds = isInBounds(boundaries, selectionIndex, upperValue);
+		
+		if(lowerValueInBounds && upperValueInBounds) {
+			return upperDistance <= lowerDistance ? upperValue : lowerValue;
+		}
+		if(lowerValueInBounds) {
+			return lowerValue;
+		}
+		if(upperValueInBounds) {
+			return upperValue;
+		}
+		throw new IllegalArgumentException("Distance between boundaries too big for multiplier");
+	}
+
+	private boolean isInBounds(int[] boundaries, int selectionIndex, int value) {
+		return value >= boundaries[selectionIndex] && value < boundaries[selectionIndex + 1];
 	}
 }
