@@ -115,7 +115,6 @@ class StatCalculator {
 	}
 
 	Map<Stat, Integer> generateStatSuggestions(Map<Stat, Integer> stats) { 
-		//TODO add normalization
 		Map<Stat, Integer> suggestions = new HashMap<>();
 		Stat.forAll(stat -> suggestions.put(stat, 
 				isValidValue(stat, stats.get(stat)) ? stats.get(stat) : generateSuggestion(stat, stats.get(stat))));
@@ -132,17 +131,19 @@ class StatCalculator {
 		return roundToMultiplier(stat, value);
 	}
 	
-	private int generateMaxSuggestion(Stat stat) {
+	int generateMaxSuggestion(Stat stat) {
 		int max = getMax(stat);
 		int maxValid = max - max % multiplier;
-		return random.nextBoolean() ? maxValid : maxValid - multiplier; 
+		int closestValidMultipleOf10 = maxValid - maxValid % 10; 
+		return roundToMultiplier(stat, random.nextInt(maxValid - closestValidMultipleOf10) + closestValidMultipleOf10);
 	}
 
 	private int generateMinSuggestion(Stat stat) {
 		int min = getMin(stat);
 		int distance = min % multiplier;
 		int minValid = distance == 0 ? min : min - distance + multiplier;
-		return random.nextBoolean() ? minValid : minValid + multiplier; 
+		int closestValidMultipleOf10 = minValid % 10 == 0 ? minValid + 10 : minValid - minValid % 10 + 10; 
+		return roundToMultiplier(stat, random.nextInt(closestValidMultipleOf10 - minValid) + minValid);
 	}
 	
 	private int roundToMultiplier(Stat stat, int value) {
@@ -172,5 +173,11 @@ class StatCalculator {
 
 	private boolean isInBounds(int[] boundaries, int selectionIndex, int value) {
 		return value >= boundaries[selectionIndex] && value < boundaries[selectionIndex + 1];
+	}
+
+	public void scaleToMaximalValue(Map<Stat, Integer> stats) {
+		int maxValue = Stat.getAll().stream().filter(stat -> !stat.equals(Stat.BEAUTY)).mapToInt(stat -> stats.get(stat)).max().getAsInt();
+		int maxRegStatSuggestion = generateMaxSuggestion(Stat.AGILITY);
+		Stat.forRegStats(stat -> stats.put(stat, stats.get(stat) * maxRegStatSuggestion / maxValue));
 	}
 }

@@ -47,7 +47,26 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 	}
 
 	public void setStatSuggestions(Map<Stat, Integer> stats) {
+		long valuesOutOfBounds = Stat.getAll().stream().filter(stat -> stats.get(stat) > statCalculator.getMax(stat)).count();
+		if(valuesOutOfBounds >= 1 && confirmScaling(valuesOutOfBounds)) {
+				statCalculator.scaleToMaximalValue(stats);
+		}
 		statDisplayPanel.displayStats(statCalculator.generateStatSuggestions(stats));
+	}
+	
+	private boolean confirmScaling(long valuesOutOfBounds) {
+		StringBuilder dialogueText = new StringBuilder().append(valuesOutOfBounds);
+		if(valuesOutOfBounds == 1) {
+			dialogueText.append(" stat is larger than its maximal value.");
+		} else {
+			dialogueText.append(" stats are larger than their maximal value.");
+		}
+		dialogueText.append(" Do you want to scale all stats relative to the highest stat?");
+		return JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(
+			    mainPanel.getParent(),
+			    dialogueText,
+			    "Loading stats from Info.xml",
+			    JOptionPane.OK_CANCEL_OPTION);
 	}
 	
 	public void setStats(Map<Stat, Integer> stats) {

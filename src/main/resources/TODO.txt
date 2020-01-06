@@ -1,2 +1,1 @@
-add popup for normalizing to highest value if 2+ values out of bounds
 add config entry for normalizing always on

@@ -75,12 +75,18 @@ class RegularStatSelectionPanel extends JPanel {
 			getButtonGroup(stat).setSelection(selection);
 			return;
 		}
+		StatButtonGroup sexButtons = getButtonGroup(Stat.SEX);
 		if(selection == -1) {
+			try{
+				sexButtons.getSelectionIndex();
+			} catch (IllegalArgumentException e) {
+				sexButtons.setSelection(0);
+			}
 			if(!virginCheckBox.isSelected()) {
 				virginCheckBox.setSelected(true);
 			}
 		} else {
-			getButtonGroup(Stat.SEX).setSelection(selection);
+			sexButtons.setSelection(selection);
 			if(virginCheckBox.isSelected()) {
 				virginCheckBox.setSelected(false);
 			}
