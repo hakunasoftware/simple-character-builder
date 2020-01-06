@@ -55,7 +55,7 @@ class StatDisplayPanel extends JPanel {
 		this.showComparisons = showComparisons;
 		
 		if(showComparisons) {
-			int additionalWidth = StatDisplay.ComparisonPanel.WIDTH;
+			int additionalWidth = StatGenerator.COMPARISON_WIDTH;
 			WIDTH = WIDTH + additionalWidth;
 		}
 
@@ -141,8 +141,10 @@ class StatDisplayPanel extends JPanel {
 	}
 	
 	private class StatDisplay {
+		private static final int VERT_TEXTFIELD_OFFSET = 4;
+		private final Font numberFont;
 
-		private static final int DISTANCE = 37;
+		private final int DISTANCE = 37 + (showComparisons ? 50 : 0);
 
 		private JTextField textField;
 
@@ -151,7 +153,7 @@ class StatDisplayPanel extends JPanel {
 
 		private final Stat stat;
 		
-		private final ComparisonPanel comparisonPanel;
+		private final ComparisonPanels comparisonPanel;
 
 		StatDisplay(Stat stat, int x, int y) {
 			this.stat = stat;
@@ -165,13 +167,15 @@ class StatDisplayPanel extends JPanel {
 			statNameLabel.setHorizontalAlignment(JLabel.RIGHT);
 			statNameLabel.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
 			StatDisplayPanel.this.add(statNameLabel);
+			
+			numberFont = new Font(statNameLabel.getFont().getName(), statNameLabel.getFont().getStyle(), 13);
 
 			textField = new JTextField();
 			textField.setText("0");
-			textField.setBounds(x + DISTANCE, y + 4, 25, 22);
+			textField.setBounds(x + DISTANCE, y + VERT_TEXTFIELD_OFFSET, 25, 22);
 			textField.setHorizontalAlignment(JLabel.RIGHT);
 			textField.setBorder(null);
-			textField.setFont(new Font(statNameLabel.getFont().getName(), statNameLabel.getFont().getStyle(), 13));
+			textField.setFont(numberFont);
 			textField.setForeground(Color.BLACK);
 			textField.setBackground(statNameLabel.getBackground());
 
@@ -186,62 +190,71 @@ class StatDisplayPanel extends JPanel {
 
 			StatDisplayPanel.this.add(textField);
 			
-			comparisonPanel = showComparisons ? new ComparisonPanel(x + 61,  y + 4) : null;
+			comparisonPanel = showComparisons ? new ComparisonPanels(x + 37,  y + VERT_TEXTFIELD_OFFSET) : null;
 		}
 		
-		private class ComparisonPanel { 
-			private static final int WIDTH  = StatGenerator.COMPARISON_WIDTH;
+		private class ComparisonPanels { 
+			private static final int WIDTH  = 25;
 			private static final int HEIGHT = 22;
 			
-			private final JLabel upperLabel;
-			private final JLabel lowerLabel;
+			private final JLabel oldValueLabel;
+			private final JLabel differenceLabel;
 			
-			ComparisonPanel(int x, int y) {
-				StatDisplayPanel.this.add(upperLabel = createLabel(x, y));
-				StatDisplayPanel.this.add(lowerLabel = createLabel(x, y + HEIGHT / 2));
+			ComparisonPanels(int x, int y) {
+				oldValueLabel     = createLabel(x, y, WIDTH);
+				JLabel arrowLabel = createLabel(x + WIDTH + 6, y, 20);
+				differenceLabel   = createLabel(x + 79, y, WIDTH + 14);
+
+				oldValueLabel.setHorizontalAlignment(JLabel.RIGHT);
+				arrowLabel.setText("=>");
+				arrowLabel.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
 				
-				upperLabel.addMouseListener(new MouseAdapter() {
+				StatDisplayPanel.this.add(oldValueLabel);
+				StatDisplayPanel.this.add(differenceLabel);
+				StatDisplayPanel.this.add(arrowLabel);
+				
+				oldValueLabel.addMouseListener(new MouseAdapter() {
 	                @Override
 	                public void mouseClicked(MouseEvent e) {
-	                    StatDisplay.this.setValue(Integer.parseInt(upperLabel.getText()));
+	                    StatDisplay.this.setValue(Integer.parseInt(oldValueLabel.getText()));
 	                }
-				});;
+				});
 			}
 			
-			JLabel createLabel(int x, int y) {
+			JLabel createLabel(int x, int y, int width) {
 				JLabel label = new JLabel();
-				label.setHorizontalAlignment(JLabel.RIGHT);
-				label.setBounds(x, y, WIDTH, HEIGHT / 2);
-				label.setFont(new Font(label.getFont().getName(), label.getFont().getStyle(), 11));
+				label.setHorizontalAlignment(JLabel.LEFT);
+				label.setBounds(x, y, width, HEIGHT);
+				label.setFont(numberFont);
 				return label;
 			}
 			
 			void setComparisonValue(int value) {
-				upperLabel.setText(String.valueOf(value));
-				upperLabel.setForeground(statCalculator.isValidValue(stat, value) ? RegularStatSelectionPanel.HEADLINE_COLOR : WARNING_RED);
+				oldValueLabel.setText(String.valueOf(value));
+				oldValueLabel.setForeground(statCalculator.isValidValue(stat, value) ? RegularStatSelectionPanel.HEADLINE_COLOR : WARNING_RED);
 			}
 			
 			int getComparisonValue() {
-				String upperText = upperLabel.getText();
+				String upperText = oldValueLabel.getText();
 				return Integer.valueOf(upperText == "" ? "0" : upperText);
 			}
 			
 			void setDifference(int newValue) {
 				int diff = newValue - getComparisonValue();
 				if(diff == 0) {
-					lowerLabel.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
-					lowerLabel.setText("--");
+					differenceLabel.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
+					differenceLabel.setText("(+0)");
 					return;
 				}
-				StringBuilder difference = new StringBuilder();
+				StringBuilder difference = new StringBuilder("(");
 				if(diff < 0) {
 					difference.append("-");
-					lowerLabel.setForeground(WARNING_RED);
+					differenceLabel.setForeground(WARNING_RED);
 				} else {
 					difference.append("+");
-					lowerLabel.setForeground(POSITIVE_GREEN);
+					differenceLabel.setForeground(POSITIVE_GREEN);
 				}
-				lowerLabel.setText(difference.append(String.valueOf(Math.abs(diff))).toString());
+				differenceLabel.setText(difference.append(String.valueOf(Math.abs(diff))).append(")").toString());
 			}
 		}
 

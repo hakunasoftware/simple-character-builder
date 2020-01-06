@@ -14,7 +14,7 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 	public static final int WIDTH  = RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH + StatDisplayPanel.WIDTH + 4 * GAP_WIDTH;
 	public static final int HEIGHT = RegularStatSelectionPanel.HEIGHT + 2 * GAP_WIDTH;
 	
-	public static final int COMPARISON_WIDTH = 26;
+	public static final int COMPARISON_WIDTH = 82;
 	
 	private final RegularStatSelectionPanel regularStatSelectionPanel;
 	private final BeautySelectionPanel      beautySelectionPanel;
