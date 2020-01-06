@@ -65,16 +65,16 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 	private boolean confirmScaling(long valuesOutOfBounds) {
 		StringBuilder dialogueText = new StringBuilder().append(valuesOutOfBounds);
 		if(valuesOutOfBounds == 1) {
-			dialogueText.append(" stat is larger than its maximal value.");
+			dialogueText.append(" stat exceeds its maximal value.");
 		} else {
-			dialogueText.append(" stats are larger than their maximal value.");
+			dialogueText.append(" stats exceed their maximal value.");
 		}
-		dialogueText.append(" Do you want to scale all stats relative to the highest stat?");
-		return JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(
+		dialogueText.append(" Do you want to downscale all stats?");
+		return JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
 			    mainPanel.getParent(),
 			    dialogueText,
 			    "Loading stats from Info.xml",
-			    JOptionPane.OK_CANCEL_OPTION);
+			    JOptionPane.YES_NO_OPTION);
 	}
 	
 	public void setStats(Map<Stat, Integer> stats) {

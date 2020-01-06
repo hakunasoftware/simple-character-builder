@@ -79,8 +79,6 @@ class StatDisplayPanel extends JPanel {
 		return statDisplays.stream().filter(display -> display.stat.equals(stat)).findFirst().get();
 	}
 
-	//TODO
-	
 	void displayStats(Map<Stat, Integer> stats) {
 		stats.keySet().stream().forEach(stat -> displayStat(stat, stats.get(stat)));
 	}
@@ -231,7 +229,8 @@ class StatDisplayPanel extends JPanel {
 			void setDifference(int newValue) {
 				int diff = newValue - getComparisonValue();
 				if(diff == 0) {
-					lowerLabel.setText("");
+					lowerLabel.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
+					lowerLabel.setText("--");
 					return;
 				}
 				StringBuilder difference = new StringBuilder();
