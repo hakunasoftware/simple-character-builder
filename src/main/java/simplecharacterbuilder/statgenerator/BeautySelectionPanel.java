@@ -1,13 +1,13 @@
 package simplecharacterbuilder.statgenerator;
 
-import static simplecharacterbuilder.abstractview.CharacterBuilderComponent.*;
+import static simplecharacterbuilder.util.CharacterBuilderComponent.*;
 
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 
-import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 import simplecharacterbuilder.statgenerator.RegularStatSelectionPanel.StatButtonGroup;
+import simplecharacterbuilder.util.CharacterBuilderComponent;
 
 
 @SuppressWarnings("serial")

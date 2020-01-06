@@ -6,7 +6,8 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 
-import simplecharacterbuilder.abstractview.CharacterBuilderComponent.CharacterBuilderMainComponent;
+import simplecharacterbuilder.util.CharacterBuilderComponent.CharacterBuilderMainComponent;
+import simplecharacterbuilder.util.ConfigReader;
 
 public final class StatGenerator extends CharacterBuilderMainComponent {
 
@@ -16,15 +17,19 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 	public static final int COMPARISON_WIDTH = 26;
 	
 	private final RegularStatSelectionPanel regularStatSelectionPanel;
-	private final StatDisplayPanel          statDisplayPanel;
 	private final BeautySelectionPanel      beautySelectionPanel;
+	private final StatDisplayPanel          statDisplayPanel;
 	private final StatCalculator            statCalculator;
-
+	private final ConfigReader              configReader;
+	
+	private final boolean ALWAYS_SCALE;
+	private final boolean NEVER_SCALE;
 
 	private StatGenerator(int x, int y, String configPath, boolean showComparison) {
 		super(x, y);
 
-		statCalculator            = new StatCalculator(configPath);
+		configReader              = new ConfigReader(configPath);
+		statCalculator            = new StatCalculator(configReader);
 		regularStatSelectionPanel = new RegularStatSelectionPanel(this, GAP_WIDTH, GAP_WIDTH);
 		beautySelectionPanel      = new BeautySelectionPanel(this, 2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH);
 		statDisplayPanel          = new StatDisplayPanel(this, 3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH, showComparison);
@@ -36,6 +41,9 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 		if(showComparison) {
 			mainPanel.setBounds(mainPanel.getX(), mainPanel.getY(), mainPanel.getWidth() + COMPARISON_WIDTH, mainPanel.getHeight());
 		}
+		
+		ALWAYS_SCALE = configReader.readBoolean("always_scale");
+		NEVER_SCALE  = configReader.readBoolean("never_scale");
 	}
 	
 	public static StatGenerator createInstance(int x, int y, String configPath, boolean showComparison) {
@@ -48,8 +56,8 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 
 	public void setStatSuggestions(Map<Stat, Integer> stats) {
 		long valuesOutOfBounds = Stat.getAll().stream().filter(stat -> stats.get(stat) > statCalculator.getMax(stat)).count();
-		if(valuesOutOfBounds >= 1 && confirmScaling(valuesOutOfBounds)) {
-				statCalculator.scaleToMaximalValue(stats);
+		if(!NEVER_SCALE && valuesOutOfBounds >= 1 && (ALWAYS_SCALE || confirmScaling(valuesOutOfBounds))) {
+			statCalculator.scaleToMaximalValue(stats);
 		}
 		statDisplayPanel.displayStats(statCalculator.generateStatSuggestions(stats));
 	}

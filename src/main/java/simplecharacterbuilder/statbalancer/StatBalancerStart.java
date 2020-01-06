@@ -1,14 +1,14 @@
 package simplecharacterbuilder.statbalancer;
 
-import static simplecharacterbuilder.abstractview.CharacterBuilderComponent.*;
+import static simplecharacterbuilder.util.CharacterBuilderComponent.*;
 
 import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
 
-import simplecharacterbuilder.abstractview.ApplicationFrame;
-import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
 import simplecharacterbuilder.statgenerator.StatGenerator;
+import simplecharacterbuilder.util.ApplicationFrame;
+import simplecharacterbuilder.util.CharacterBuilderComponent;
 
 public class StatBalancerStart {
 	private static final int WIDTH 	= MAINPANEL_WIDTH + StatGenerator.COMPARISON_WIDTH;

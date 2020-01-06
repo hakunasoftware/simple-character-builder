@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import lombok.Getter;
-import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
+import simplecharacterbuilder.util.CharacterBuilderComponent;
 
 @SuppressWarnings("serial")
 class RegularStatSelectionPanel extends JPanel {

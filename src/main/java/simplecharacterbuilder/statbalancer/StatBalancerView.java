@@ -17,10 +17,10 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
-import simplecharacterbuilder.abstractview.CharacterBuilderComponent.CharacterBuilderControlComponent;
-import simplecharacterbuilder.abstractview.InfoXmlReaderWriter;
 import simplecharacterbuilder.statgenerator.Stat;
 import simplecharacterbuilder.statgenerator.StatGenerator;
+import simplecharacterbuilder.util.InfoXmlReaderWriter;
+import simplecharacterbuilder.util.CharacterBuilderComponent.CharacterBuilderControlComponent;
 
 public class StatBalancerView  extends CharacterBuilderControlComponent {
 	

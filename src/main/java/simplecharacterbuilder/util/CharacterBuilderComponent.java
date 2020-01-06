@@ -1,4 +1,4 @@
-package simplecharacterbuilder.abstractview;
+package simplecharacterbuilder.util;
 
 import java.awt.Color;
 

@@ -21,7 +21,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-import simplecharacterbuilder.abstractview.CharacterBuilderComponent;
+import simplecharacterbuilder.util.CharacterBuilderComponent;
 
 @SuppressWarnings("serial")
 class StatDisplayPanel extends JPanel {
