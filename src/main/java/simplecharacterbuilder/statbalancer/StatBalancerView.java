@@ -139,8 +139,13 @@ public class StatBalancerView  extends CharacterBuilderControlComponent {
 	private void loadNameAndFranchise() {
 		InfoXmlReaderWriter reader = new InfoXmlReaderWriter(selectedInfoXmlURI);
 		String firstName = reader.readStringFromUniqueTagPath("Name/First");
-		String lastName  = reader.readStringFromUniqueTagPath("Name/Last");
-		setName(firstName + " " + lastName);
+		String lastName;
+		try {
+			lastName  = " " + reader.readStringFromUniqueTagPath("Name/Last");
+		} catch (Exception e) {
+			lastName = "";
+		}
+		setName(firstName + lastName);
 		setFranchise(reader.readStringFromUniqueTagPath("Source/Franchise"));
 	}
 	
