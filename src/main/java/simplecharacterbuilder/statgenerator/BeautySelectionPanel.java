@@ -20,13 +20,16 @@ class BeautySelectionPanel extends JPanel {
 	
 	private final StatButtonGroup buttonGroup = new StatButtonGroup(Stat.BEAUTY);
 	private final StatGenerator statGenerator;
+	private final boolean showComparison;
 
-	BeautySelectionPanel(StatGenerator statGenerator, int x, int y) {
+	BeautySelectionPanel(StatGenerator statGenerator, int x, int y, boolean showComparison) {
 		this.statGenerator = statGenerator;
 		
 		this.setBounds(x, y, WIDTH, HEIGHT);
 		this.setBorder(CharacterBuilderComponent.BORDER);
 		this.setLayout(null);
+		
+		this.showComparison = showComparison;
 		
 		addCheckBoxes();
 	}
@@ -45,7 +48,7 @@ class BeautySelectionPanel extends JPanel {
 			checkBox.setBounds(10, 8 + 28 * i, 100, 20);
 			checkBox.setActionCommand(String.valueOf(i));
 			checkBox.addActionListener(StatButtonGroup.createDisplayActionListener(statGenerator, Stat.BEAUTY, 
-					() -> Integer.valueOf(checkBox.getActionCommand())));
+					() -> Integer.valueOf(checkBox.getActionCommand()), showComparison));
 			buttonGroup.add(checkBox);
 			this.add(checkBox);
 		}

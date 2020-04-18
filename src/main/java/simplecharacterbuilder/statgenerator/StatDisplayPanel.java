@@ -372,7 +372,9 @@ class StatDisplayPanel extends JPanel {
 				} else {
 					textField.setForeground(Color.BLACK);
 				}
-				setDifferenceFromString(text);
+				if (showComparisons) {
+					setDifferenceFromString(text);
+				}
 			}
 		}
 	}

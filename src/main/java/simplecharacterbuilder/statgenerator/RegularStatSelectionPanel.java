@@ -55,7 +55,9 @@ class RegularStatSelectionPanel extends JPanel {
 	
 	private JCheckBox virginCheckBox;
 	
-	RegularStatSelectionPanel(StatGenerator statGenerator, int xPos, int yPos) {
+	private final boolean showComparison;
+	
+	RegularStatSelectionPanel(StatGenerator statGenerator, int xPos, int yPos, boolean showComparison) {
 		this.statGenerator = statGenerator;
 		
 		this.setBounds(xPos, yPos, WIDTH, HEIGHT);
@@ -65,6 +67,8 @@ class RegularStatSelectionPanel extends JPanel {
 		this.addOptionLabels();
 		this.addRegStatButtons();
 		this.addVirginCheckbox();
+		
+		this.showComparison = showComparison;
 	}
 	
 	void setSelection(Stat stat, int selection) {
@@ -144,7 +148,7 @@ class RegularStatSelectionPanel extends JPanel {
 		
 		virginCheckBox.addItemListener(e -> disableSexButtons());
 		virginCheckBox.addActionListener(StatButtonGroup.createDisplayActionListener(statGenerator, Stat.SEX, 
-				() -> virginCheckBox.isSelected() ? -1 : getButtonGroup(Stat.SEX).getSelectionIndex()));
+				() -> virginCheckBox.isSelected() ? -1 : getButtonGroup(Stat.SEX).getSelectionIndex(), showComparison));
 				
 		this.add(virginCheckBox);
 	}
@@ -178,7 +182,7 @@ class RegularStatSelectionPanel extends JPanel {
 			button.setBounds(x + (20 + HORIZONTAL_BUTTON_DISTANCE) * i, y + 1, 20, 20);
 			button.setActionCommand(String.valueOf(i));
 			button.addActionListener(StatButtonGroup.createDisplayActionListener(statGenerator, stat, 
-					() -> Integer.valueOf(button.getActionCommand())));
+					() -> Integer.valueOf(button.getActionCommand()), showComparison));
 			this.add(button);
 			buttonGroup.add(button);
 		}
@@ -214,18 +218,22 @@ class RegularStatSelectionPanel extends JPanel {
 			throw new IllegalArgumentException();
 		}
 		
-		static ActionListener createDisplayActionListener(StatGenerator statGenerator, Stat stat, IntSupplier supplier) {
+		static ActionListener createDisplayActionListener(StatGenerator statGenerator, Stat stat, IntSupplier supplier, boolean showComparison) {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int selectionIndex = supplier.getAsInt();
-					int comparisonValue = statGenerator.getStatDisplayPanel().getComparisonValue(stat);
-					if(selectionIndex == statGenerator.getStatCalculator().generateSelection(stat, comparisonValue) && statGenerator.getStatCalculator().isValidValue(stat, comparisonValue)) {
-						statGenerator.getStatDisplayPanel().displayStat(stat, comparisonValue);
-					} else {
-						int generatedValue = statGenerator.getStatCalculator().generateStatFromSelection(stat, selectionIndex);
-						statGenerator.getStatDisplayPanel().displayStat(stat, generatedValue);
+					
+					if(showComparison) {
+						int comparisonValue = statGenerator.getStatDisplayPanel().getComparisonValue(stat);
+						if(selectionIndex == statGenerator.getStatCalculator().generateSelection(stat, comparisonValue) && statGenerator.getStatCalculator().isValidValue(stat, comparisonValue)) {
+							statGenerator.getStatDisplayPanel().displayStat(stat, comparisonValue);
+							return;
+						} 
 					}
+					
+					int generatedValue = statGenerator.getStatCalculator().generateStatFromSelection(stat, selectionIndex);
+					statGenerator.getStatDisplayPanel().displayStat(stat, generatedValue);
 				}
 			};
 		}

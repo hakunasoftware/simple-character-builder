@@ -30,8 +30,8 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 
 		configReader              = new ConfigReader(configPath);
 		statCalculator            = new StatCalculator(configReader);
-		regularStatSelectionPanel = new RegularStatSelectionPanel(this, GAP_WIDTH, GAP_WIDTH);
-		beautySelectionPanel      = new BeautySelectionPanel(this, 2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH);
+		regularStatSelectionPanel = new RegularStatSelectionPanel(this, GAP_WIDTH, GAP_WIDTH, showComparison);
+		beautySelectionPanel      = new BeautySelectionPanel(this, 2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH, showComparison);
 		statDisplayPanel          = new StatDisplayPanel(this, 3 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH, GAP_WIDTH, showComparison);
 
 		mainPanel.add(regularStatSelectionPanel);
