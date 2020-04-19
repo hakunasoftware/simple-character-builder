@@ -1,8 +1,5 @@
-package simplecharacterbuilder.statbalancer;
+package simplecharacterbuilder.characterbuilder.core;
 
-import static simplecharacterbuilder.util.CharacterBuilderComponent.CONTROLPANEL_HEIGHT;
-import static simplecharacterbuilder.util.CharacterBuilderComponent.CONTROLPANEL_WIDTH;
-import static simplecharacterbuilder.util.CharacterBuilderComponent.GAP_WIDTH;
 import static simplecharacterbuilder.util.CharacterBuilderComponent.MAINPANEL_HEIGHT;
 import static simplecharacterbuilder.util.CharacterBuilderComponent.MAINPANEL_WIDTH;
 
@@ -12,12 +9,14 @@ import java.util.List;
 
 import javax.swing.UIManager;
 
+import simplecharacterbuilder.characterbuilder.util.JFileChooserPool;
+import simplecharacterbuilder.personaldata.PersonalDataMainComponent;
 import simplecharacterbuilder.statgenerator.StatGenerator;
 import simplecharacterbuilder.util.ApplicationFrame;
 import simplecharacterbuilder.util.CharacterBuilderComponent;
 
-public class StatBalancerStart {
-	private static final int WIDTH = MAINPANEL_WIDTH + StatGenerator.COMPARISON_WIDTH;
+public class CharacterBuilderStart {
+	private static final int WIDTH = MAINPANEL_WIDTH;
 	private static final int HEIGHT = MAINPANEL_HEIGHT;
 
 	@SuppressWarnings("unused")
@@ -28,12 +27,14 @@ public class StatBalancerStart {
 
 	private static final List<CharacterBuilderComponent> COMPONENTS = new ArrayList<>();
 	static {
-		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, CONFIG_PATH_CURRENT, true);
+		COMPONENTS.add(new PersonalDataMainComponent(0, 0));
+
+		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, CONFIG_PATH_CURRENT, false);
+		statGenerator.disable();
 		COMPONENTS.add(statGenerator);
 
-		int controlPanelX = MAINPANEL_WIDTH - CONTROLPANEL_WIDTH - GAP_WIDTH;
-		int controlPanelY = MAINPANEL_HEIGHT - CONTROLPANEL_HEIGHT - GAP_WIDTH;
-		StatBalancerView controlPanel = new StatBalancerView(controlPanelX, controlPanelY, statGenerator, CONFIG_PATH_CURRENT);
+		CharacterBuilderControlPanel controlPanel = CharacterBuilderControlPanel.getInstance();
+		controlPanel.init(COMPONENTS);
 		COMPONENTS.add(controlPanel);
 
 		try {
@@ -41,11 +42,11 @@ public class StatBalancerStart {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		controlPanel.loadXml();
+
+		JFileChooserPool.init();
 	}
 
 	public static void main(String[] args) {
-		EventQueue.invokeLater(() -> new ApplicationFrame(WIDTH, HEIGHT, "SB2R StatBalancer", COMPONENTS));
+		EventQueue.invokeLater(() -> new ApplicationFrame(WIDTH, HEIGHT, "SB2R CharacterBuilder", COMPONENTS));
 	}
 }

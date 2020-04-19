@@ -10,17 +10,17 @@ import javax.swing.border.Border;
 import simplecharacterbuilder.statgenerator.StatGenerator;
 
 public abstract class CharacterBuilderComponent {
-	
-	public static final int MAINPANEL_WIDTH 	= StatGenerator.WIDTH;
-	public static final int MAINPANEL_HEIGHT 	= StatGenerator.HEIGHT;
-	
+
+	public static final int MAINPANEL_WIDTH = StatGenerator.WIDTH;
+	public static final int MAINPANEL_HEIGHT = StatGenerator.HEIGHT;
+
 	public static final int SHORTENED_CONTENT_HEIGHT = 235;
-	
+
 	public static final int GAP_WIDTH = 15;
-	
-	public static final int CONTROLPANEL_WIDTH 	= 205;
+
+	public static final int CONTROLPANEL_WIDTH = 205;
 	public static final int CONTROLPANEL_HEIGHT = 77;
-	
+
 	public static final Border BORDER = BorderFactory.createLineBorder(new Color(200, 200, 200, 255));
 
 	protected JPanel mainPanel;
@@ -34,7 +34,14 @@ public abstract class CharacterBuilderComponent {
 	public void addTo(JLayeredPane panel, int layer) {
 		panel.add(mainPanel, layer);
 	}
-	
+
+	public void enable() {
+		this.mainPanel.setVisible(true);
+	}
+
+	public void disable() {
+		this.mainPanel.setVisible(false);
+	}
 
 	public static abstract class CharacterBuilderMainComponent extends CharacterBuilderComponent {
 		protected CharacterBuilderMainComponent(int x, int y) {

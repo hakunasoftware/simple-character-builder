@@ -13,14 +13,13 @@ import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import lombok.Getter;
-import simplecharacterbuilder.util.CharacterBuilderComponent;
+import simplecharacterbuilder.util.ContentPanel;
 
 @SuppressWarnings("serial")
-class RegularStatSelectionPanel extends JPanel {
+class RegularStatSelectionPanel extends ContentPanel {
 	
 	private static final int CONTENT_XPOS = 5;
 	private static final int CONTENT_YPOS = 13;
@@ -58,11 +57,9 @@ class RegularStatSelectionPanel extends JPanel {
 	private final boolean showComparison;
 	
 	RegularStatSelectionPanel(StatGenerator statGenerator, int xPos, int yPos, boolean showComparison) {
+		super(xPos, yPos, WIDTH, HEIGHT);
+
 		this.statGenerator = statGenerator;
-		
-		this.setBounds(xPos, yPos, WIDTH, HEIGHT);
-		this.setBorder(CharacterBuilderComponent.BORDER);
-		this.setLayout(null);
 		
 		this.addOptionLabels();
 		this.addRegStatButtons();

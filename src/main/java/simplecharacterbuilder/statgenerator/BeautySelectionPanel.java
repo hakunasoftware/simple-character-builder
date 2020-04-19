@@ -1,17 +1,18 @@
 package simplecharacterbuilder.statgenerator;
 
-import static simplecharacterbuilder.util.CharacterBuilderComponent.*;
+import static simplecharacterbuilder.util.CharacterBuilderComponent.CONTROLPANEL_HEIGHT;
+import static simplecharacterbuilder.util.CharacterBuilderComponent.GAP_WIDTH;
+import static simplecharacterbuilder.util.CharacterBuilderComponent.MAINPANEL_HEIGHT;
 
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 
 import simplecharacterbuilder.statgenerator.RegularStatSelectionPanel.StatButtonGroup;
-import simplecharacterbuilder.util.CharacterBuilderComponent;
+import simplecharacterbuilder.util.ContentPanel;
 
 
 @SuppressWarnings("serial")
-class BeautySelectionPanel extends JPanel {
+class BeautySelectionPanel extends ContentPanel {
 
 	private static final String[] BEAUTY_OPTIONS = new String[] { "Unattractive", "Plain", "Normal", "Pretty", "Beautiful", "Stunning", "Perfect", "Divine" };
 
@@ -23,11 +24,8 @@ class BeautySelectionPanel extends JPanel {
 	private final boolean showComparison;
 
 	BeautySelectionPanel(StatGenerator statGenerator, int x, int y, boolean showComparison) {
+		super(x, y, WIDTH, HEIGHT);
 		this.statGenerator = statGenerator;
-		
-		this.setBounds(x, y, WIDTH, HEIGHT);
-		this.setBorder(CharacterBuilderComponent.BORDER);
-		this.setLayout(null);
 		
 		this.showComparison = showComparison;
 		
