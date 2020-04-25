@@ -6,7 +6,6 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.UIManager;
 
 import simplecharacterbuilder.statgenerator.StatGenerator;
 import simplecharacterbuilder.util.CharacterBuilderComponent.CharacterBuilderControlComponent;
@@ -14,7 +13,7 @@ import simplecharacterbuilder.util.CharacterBuilderComponent.CharacterBuilderCon
 public class ControlPanel extends CharacterBuilderControlComponent {
 	public static final int WIDTH_BASIC = CONTROLPANEL_WIDTH;
 	public static final int WIDTH_EXTENDED = CONTROLPANEL_WIDTH + StatGenerator.COMPARISON_WIDTH;
-	
+
 	protected static final int LABEL_OFFSET = 8;
 
 	protected final JLabel portrait;
@@ -35,7 +34,8 @@ public class ControlPanel extends CharacterBuilderControlComponent {
 
 		this.button1 = new ControlButton(nameButton1, 0, extended);
 		mainPanel.add(button1);
-		this.button2 = new ControlButton(nameButton2, extended ? ControlButton.WIDTH_EXTENDED : ControlButton.WIDTH_BASIC, extended);
+		this.button2 = new ControlButton(nameButton2,
+				extended ? ControlButton.WIDTH_EXTENDED : ControlButton.WIDTH_BASIC, extended);
 		mainPanel.add(button2);
 
 		nameLabel = createTextLabel(0);

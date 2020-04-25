@@ -22,7 +22,7 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 		this.button1.addActionListener(e -> previous());
 		this.button2.addActionListener(e -> next());
 
-		this.button1.setVisible(false);
+		this.button1.setEnabled(false);
 	}
 
 	public static CharacterBuilderControlPanel getInstance() {
@@ -30,28 +30,28 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 	}
 
 	public void next() {
-		if (!this.button1.isVisible()) {
-			this.button1.setVisible(true);
+		if (!this.button1.isEnabled()) {
+			this.button1.setEnabled(true);
 		}
 
 		mainComponents.get(pageIndex).disable();
 		mainComponents.get(++pageIndex).enable();
 
 		if (pageIndex == mainComponents.size() - 1) {
-			this.button2.setVisible(false);
+			this.button2.setEnabled(false);
 		}
 	}
 
 	public void previous() {
-		if (!this.button2.isVisible()) {
-			this.button2.setVisible(true);
+		if (!this.button2.isEnabled()) {
+			this.button2.setEnabled(true);
 		}
 
 		mainComponents.get(pageIndex).disable();
 		mainComponents.get(--pageIndex).enable();
 
 		if (pageIndex == 0) {
-			this.button1.setVisible(false);
+			this.button1.setEnabled(false);
 		}
 	}
 

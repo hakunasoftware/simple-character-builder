@@ -14,12 +14,13 @@ import javax.swing.filechooser.FileFilter;
 import simplecharacterbuilder.statgenerator.Stat;
 import simplecharacterbuilder.statgenerator.StatGenerator;
 import simplecharacterbuilder.util.ControlPanel;
+import simplecharacterbuilder.util.GameFileRepository;
 import simplecharacterbuilder.util.InfoXmlReaderWriter;
 
 public class StatBalancerView  extends ControlPanel {
 	
 	private final StatGenerator statGenerator;
-	private final String ACTORS_DIRECTORY;
+	private final File loadingStartDirectory;
 	
 	private String selectedInfoXmlURI;
 	
@@ -28,7 +29,7 @@ public class StatBalancerView  extends ControlPanel {
 	public StatBalancerView(int x, int y, StatGenerator statGenerator, String configPath) {
 		super(x, y, true, "Load", "Save", "<html><center>Portrait not found</center></html>");
 		this.statGenerator = statGenerator;
-		this.ACTORS_DIRECTORY = determineActorsDirectory(configPath);
+		this.loadingStartDirectory = determineLoadingStartDirectory(configPath);
 			
 		this.button1.addActionListener(e -> loadXml());
 		this.button2.addActionListener(e -> saveToXml());
@@ -55,7 +56,7 @@ public class StatBalancerView  extends ControlPanel {
 		});
 		
 		try{
-			 chooser.setCurrentDirectory(new File(ACTORS_DIRECTORY));
+			 chooser.setCurrentDirectory(this.loadingStartDirectory);
 		
 			if (chooser.showOpenDialog(mainPanel.getParent()) == JFileChooser.APPROVE_OPTION) {
 				firstLoad = false;
@@ -126,13 +127,14 @@ public class StatBalancerView  extends ControlPanel {
 		JOptionPane.showMessageDialog(mainPanel.getParent(), "Load a valid Info.xml", "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
-	private String determineActorsDirectory(String configPath) {
+	private File determineLoadingStartDirectory(String configPath) {
 		Properties prop   = new Properties();
 		try (InputStream inputStream = new FileInputStream(configPath)) {
 			prop.load(inputStream);
-			return prop.getProperty("chooser_default_directory").trim();
+			String directory = prop.getProperty("chooser_default_directory").trim();
+			return directory.toLowerCase().equals("default") ? GameFileRepository.getActorsFolder() : new File(directory);
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Error loading config");
+			throw new IllegalArgumentException("Error loading config", e);
 		}
 	}
 

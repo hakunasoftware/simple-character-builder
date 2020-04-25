@@ -1,8 +1,4 @@
-package simplecharacterbuilder.personaldata;
-
-import static simplecharacterbuilder.util.CharacterBuilderComponent.CONTROLPANEL_WIDTH;
-import static simplecharacterbuilder.util.CharacterBuilderComponent.GAP_WIDTH;
-import static simplecharacterbuilder.util.CharacterBuilderComponent.MAINPANEL_HEIGHT;
+package simplecharacterbuilder.characterbuilder.personaldata;
 
 import java.awt.Component;
 import java.awt.Image;
@@ -22,27 +18,21 @@ import javax.swing.filechooser.FileSystemView;
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
 import simplecharacterbuilder.characterbuilder.util.JFileChooserPool;
 import simplecharacterbuilder.util.CharacterBuilderComponent;
-import simplecharacterbuilder.util.ContentPanel;
-import simplecharacterbuilder.util.ControlPanel;
 
 @SuppressWarnings("serial")
-class PictureLoader extends ContentPanel {
-	static final int WIDTH = CONTROLPANEL_WIDTH;
-	static final int HEIGHT = MAINPANEL_HEIGHT - ControlPanel.CONTROLPANEL_HEIGHT - 3 * GAP_WIDTH;
-
-	private final JLabel portraitLabel;
+class PictureLoader extends JLabel {
+	private final int width;
 
 	private Component applicationFrame;
-	
-	PictureLoader() {
-		super(PersonalDataPanel.WIDTH + 2 * GAP_WIDTH, GAP_WIDTH, WIDTH, HEIGHT);
-		this.setBorder(null);
 
-		this.portraitLabel = new JLabel("Load Portrait", SwingConstants.CENTER);
-		this.portraitLabel.setBounds(2, 0, 200, 200);
-		this.portraitLabel.setBorder(CharacterBuilderComponent.BORDER);
-		this.portraitLabel.addMouseListener(new LoadPictureMouseListener());
-		this.add(this.portraitLabel);
+	PictureLoader(int x, int y, int width) {
+		this.width = width;
+		this.setText("Load Portrait");
+		this.setHorizontalAlignment(SwingConstants.CENTER);
+		this.setBounds(x, y, width, width);
+		this.setBorder(CharacterBuilderComponent.BORDER);
+		this.addMouseListener(new LoadPictureMouseListener());
+		this.setToolTipText("Click to load a portrait for the character (required). Portraits must be 200x200 pixel and in png-format.");
 	}
 
 	private class LoadPictureMouseListener extends MouseAdapter {
@@ -68,12 +58,13 @@ class PictureLoader extends ContentPanel {
 	private void setPortrait(File portrait) {
 		Image image = new ImageIcon(portrait.getAbsolutePath()).getImage();
 		if (!portrait.getName().endsWith(".png") || image.getWidth(null) != 200 || image.getHeight(null) != 200) {
-			JOptionPane.showMessageDialog(getApplicationFrame(), "Portraits must be 200x200 pixels and in png-format");
+			JOptionPane.showMessageDialog(getApplicationFrame(), "Portraits must be 200x200px and in png-format");
 			return;
 		}
-		this.portraitLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		this.portraitLabel.setIcon(new ImageIcon(image));
-
+		Image scaledImage = image.getScaledInstance(this.width, this.width, Image.SCALE_SMOOTH);
+		this.setHorizontalAlignment(SwingConstants.LEFT);
+		this.setIcon(new ImageIcon(scaledImage));
+		
 		CharacterBuilderControlPanel.getInstance().setPortrait(portrait.getAbsolutePath());
 	}
 

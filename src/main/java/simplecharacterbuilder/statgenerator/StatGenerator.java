@@ -1,5 +1,6 @@
 package simplecharacterbuilder.statgenerator;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 	private StatGenerator(int x, int y, String configPath, boolean showComparison) {
 		super(x, y);
 
-		configReader              = new ConfigReader(configPath);
+		configReader              = new ConfigReader(new File(configPath));
 		statCalculator            = new StatCalculator(configReader);
 		regularStatSelectionPanel = new RegularStatSelectionPanel(this, GAP_WIDTH, GAP_WIDTH, showComparison);
 		beautySelectionPanel      = new BeautySelectionPanel(this, 2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH, GAP_WIDTH, showComparison);
