@@ -178,16 +178,19 @@ class PersonalDataPanel extends ContentPanel {
 				case SLAVE:
 					showHiredStaffOptions(false);
 					PersonalDataPanel.this.questCheckBox.setSelected(PersonalDataPanel.this.lastQuestCheckBoxSelection);
+					PersonalDataPanel.this.questCheckBox.setEnabled(true);
 					break;
 				case HIRED_STAFF:
 					showHiredStaffOptions(true);
 					PersonalDataPanel.this.questCheckBox.setSelected(PersonalDataPanel.this.lastQuestCheckBoxSelection);
+					PersonalDataPanel.this.questCheckBox.setEnabled(true);
 					break;
 				case DECIDED_ON_QUEST:
 					showHiredStaffOptions(true);
 					PersonalDataPanel.this.lastQuestCheckBoxSelection = PersonalDataPanel.this.questCheckBox
 							.isSelected();
 					PersonalDataPanel.this.questCheckBox.setSelected(true);
+					PersonalDataPanel.this.questCheckBox.setEnabled(false);
 					break;
 				}
 			}
