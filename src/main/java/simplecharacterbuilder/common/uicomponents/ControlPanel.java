@@ -1,4 +1,4 @@
-package simplecharacterbuilder.util;
+package simplecharacterbuilder.common.uicomponents;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -7,8 +7,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-import simplecharacterbuilder.statgenerator.StatGenerator;
-import simplecharacterbuilder.util.CharacterBuilderComponent.CharacterBuilderControlComponent;
+import simplecharacterbuilder.common.statgenerator.StatGenerator;
+import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderControlComponent;
 
 public class ControlPanel extends CharacterBuilderControlComponent {
 	public static final int WIDTH_BASIC = CONTROLPANEL_WIDTH;

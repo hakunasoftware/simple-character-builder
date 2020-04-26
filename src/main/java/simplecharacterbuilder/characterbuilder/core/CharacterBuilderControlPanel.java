@@ -3,8 +3,8 @@ package simplecharacterbuilder.characterbuilder.core;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import simplecharacterbuilder.util.CharacterBuilderComponent;
-import simplecharacterbuilder.util.ControlPanel;
+import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
+import simplecharacterbuilder.common.uicomponents.ControlPanel;
 
 public class CharacterBuilderControlPanel extends ControlPanel {
 	private static final int X_POS = MAINPANEL_WIDTH - CONTROLPANEL_WIDTH - GAP_WIDTH;

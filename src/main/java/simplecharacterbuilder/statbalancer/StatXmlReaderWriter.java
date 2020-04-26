@@ -3,8 +3,8 @@ package simplecharacterbuilder.statbalancer;
 import java.util.HashMap;
 import java.util.Map;
 
-import simplecharacterbuilder.statgenerator.Stat;
-import simplecharacterbuilder.util.InfoXmlReaderWriter;
+import simplecharacterbuilder.common.resourceaccess.InfoXmlReaderWriter;
+import simplecharacterbuilder.common.statgenerator.Stat;
 
 public class StatXmlReaderWriter {
 	

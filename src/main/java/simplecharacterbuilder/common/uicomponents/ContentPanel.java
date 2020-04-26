@@ -1,6 +1,6 @@
-package simplecharacterbuilder.util;
+package simplecharacterbuilder.common.uicomponents;
 
-import static simplecharacterbuilder.util.CharacterBuilderComponent.BORDER;
+import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.BORDER;
 
 import javax.swing.JPanel;
 

@@ -1,4 +1,4 @@
-package simplecharacterbuilder.util;
+package simplecharacterbuilder.common.uicomponents;
 
 import java.awt.Color;
 
@@ -7,7 +7,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-import simplecharacterbuilder.statgenerator.StatGenerator;
+import simplecharacterbuilder.common.statgenerator.StatGenerator;
 
 public abstract class CharacterBuilderComponent {
 

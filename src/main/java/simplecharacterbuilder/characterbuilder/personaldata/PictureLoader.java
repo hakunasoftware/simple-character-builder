@@ -17,7 +17,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
 import simplecharacterbuilder.characterbuilder.util.JFileChooserPool;
-import simplecharacterbuilder.util.CharacterBuilderComponent;
+import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 
 @SuppressWarnings("serial")
 class PictureLoader extends JLabel {

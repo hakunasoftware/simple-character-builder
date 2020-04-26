@@ -1,4 +1,4 @@
-package simplecharacterbuilder.statgenerator;
+package simplecharacterbuilder.common.statgenerator;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -16,7 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 
 import lombok.Getter;
-import simplecharacterbuilder.util.ContentPanel;
+import simplecharacterbuilder.common.uicomponents.ContentPanel;
 
 @SuppressWarnings("serial")
 class RegularStatSelectionPanel extends ContentPanel {

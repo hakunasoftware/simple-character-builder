@@ -1,4 +1,4 @@
-package simplecharacterbuilder.util;
+package simplecharacterbuilder.common.uicomponents;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;

@@ -1,0 +1,32 @@
+package simplecharacterbuilder.common.resourceaccess;
+
+public class PropertyRepository {
+	// characterbuilder.config
+	public static final String MULTIPLIER = "multiplier";
+	public static final String ALWAYS_SCALE = "always_scale";
+	public static final String NEVER_SCALE = "never_scale";
+	public static final String BALANCER_CHOOSER_DEFAULT = "chooser_default_directory";
+	public static final String HIRED_STAFF_DEFAULT_SALARY = "hired_staff_default_salary";
+
+	public static final String REG_STAT_VERY_LOW = "regStat_veryLow";
+	public static final String REG_STAT_LOW = "regStat_low";
+	public static final String REG_STAT_AVERAGE = "regStat_average";
+	public static final String REG_STAT_HIGH = "regStat_high";
+	public static final String REG_STAT_VERY_HIGH = "regStat_veryHigh";
+	public static final String REG_STAT_MAX = "regStat_max";
+
+	public static final String BEA_STAT_UNATTRACTIVE = "unattractive";
+	public static final String BEA_STAT_PLAIN = "plain";
+	public static final String BEA_STAT_NORMAL = "normal";
+	public static final String BEA_STAT_PRETTY = "pretty";
+	public static final String BEA_STAT_BEAUTIFUL = "beautiful";
+	public static final String BEA_STAT_STUNNING = "stunning";
+	public static final String BEA_STAT_PERFECT = "perfect";
+	public static final String BEA_STAT_DIVINE = "divine";
+	public static final String BEA_STAT_MAX = "beauty_max";
+
+	// pathvariables.config
+	public static final String GAME_ROOT_DIRECTORY = "game_root";
+	public static final String ACTORS_FOLDER = "actors_folder";
+	public static final String RACES = "races";
+}

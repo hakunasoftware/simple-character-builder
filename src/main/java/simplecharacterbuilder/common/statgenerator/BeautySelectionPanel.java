@@ -1,14 +1,14 @@
-package simplecharacterbuilder.statgenerator;
+package simplecharacterbuilder.common.statgenerator;
 
-import static simplecharacterbuilder.util.CharacterBuilderComponent.CONTROLPANEL_HEIGHT;
-import static simplecharacterbuilder.util.CharacterBuilderComponent.GAP_WIDTH;
-import static simplecharacterbuilder.util.CharacterBuilderComponent.MAINPANEL_HEIGHT;
+import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CONTROLPANEL_HEIGHT;
+import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.GAP_WIDTH;
+import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.MAINPANEL_HEIGHT;
 
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 
-import simplecharacterbuilder.statgenerator.RegularStatSelectionPanel.StatButtonGroup;
-import simplecharacterbuilder.util.ContentPanel;
+import simplecharacterbuilder.common.statgenerator.RegularStatSelectionPanel.StatButtonGroup;
+import simplecharacterbuilder.common.uicomponents.ContentPanel;
 
 
 @SuppressWarnings("serial")

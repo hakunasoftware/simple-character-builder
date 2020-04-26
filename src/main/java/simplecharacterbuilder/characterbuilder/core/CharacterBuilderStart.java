@@ -1,7 +1,7 @@
 package simplecharacterbuilder.characterbuilder.core;
 
-import static simplecharacterbuilder.util.CharacterBuilderComponent.MAINPANEL_HEIGHT;
-import static simplecharacterbuilder.util.CharacterBuilderComponent.MAINPANEL_WIDTH;
+import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.MAINPANEL_HEIGHT;
+import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.MAINPANEL_WIDTH;
 
 import java.awt.EventQueue;
 import java.util.ArrayList;
@@ -11,27 +11,22 @@ import javax.swing.UIManager;
 
 import simplecharacterbuilder.characterbuilder.personaldata.PersonalDataMainComponent;
 import simplecharacterbuilder.characterbuilder.util.JFileChooserPool;
-import simplecharacterbuilder.statgenerator.StatGenerator;
-import simplecharacterbuilder.util.ApplicationFrame;
-import simplecharacterbuilder.util.CharacterBuilderComponent;
-import simplecharacterbuilder.util.GameFileRepository;
+import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
+import simplecharacterbuilder.common.statgenerator.StatGenerator;
+import simplecharacterbuilder.common.uicomponents.ApplicationFrame;
+import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 
 public class CharacterBuilderStart {
 	private static final int WIDTH = MAINPANEL_WIDTH;
 	private static final int HEIGHT = MAINPANEL_HEIGHT;
 
-	private static final String CONFIG_PATH = "config/";
-	
-	private static final String STATGENERATOR_CONFIG = CONFIG_PATH  + "statgenerator.config";
-	private static final String PATH_VARIABLES_CONFIG = CONFIG_PATH  + "path_variables.config";
-
 	private static final List<CharacterBuilderComponent> COMPONENTS = new ArrayList<>();
 	static {
-		GameFileRepository.init(PATH_VARIABLES_CONFIG);
+		ConfigReaderRepository.init();
 
 		COMPONENTS.add(new PersonalDataMainComponent(0, 0));
 
-		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, STATGENERATOR_CONFIG, false);
+		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, false);
 		statGenerator.disable();
 		COMPONENTS.add(statGenerator);
 

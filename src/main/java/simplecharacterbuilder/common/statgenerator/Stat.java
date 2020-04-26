@@ -1,4 +1,4 @@
-package simplecharacterbuilder.statgenerator;
+package simplecharacterbuilder.common.statgenerator;
 
 import java.util.Arrays;
 import java.util.List;

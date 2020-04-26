@@ -1,11 +1,15 @@
 package simplecharacterbuilder.characterbuilder.personaldata;
 
-import static simplecharacterbuilder.util.CharacterBuilderComponent.CONTROLPANEL_WIDTH;
-import static simplecharacterbuilder.util.CharacterBuilderComponent.GAP_WIDTH;
-import static simplecharacterbuilder.util.CharacterBuilderComponent.MAINPANEL_HEIGHT;
-import static simplecharacterbuilder.util.CharacterBuilderComponent.MAINPANEL_WIDTH;
+import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CONTROLPANEL_WIDTH;
+import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.GAP_WIDTH;
+import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.MAINPANEL_HEIGHT;
+import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.MAINPANEL_WIDTH;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -15,11 +19,17 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.text.AbstractDocument;
 
-import simplecharacterbuilder.util.CharacterBuilderComponent;
-import simplecharacterbuilder.util.ConfigReader;
-import simplecharacterbuilder.util.ContentPanel;
-import simplecharacterbuilder.util.GameFileRepository;
+import simplecharacterbuilder.characterbuilder.util.NumberOnlyDocumentFilter;
+import simplecharacterbuilder.characterbuilder.util.NumberOnlyDocumentFilter.Mode;
+import simplecharacterbuilder.common.resourceaccess.ConfigReader;
+import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
+import simplecharacterbuilder.common.resourceaccess.GameFileAccessor;
+import simplecharacterbuilder.common.resourceaccess.PropertyRepository;
+import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
+import simplecharacterbuilder.common.uicomponents.ContentPanel;
 
 @SuppressWarnings("serial")
 class PersonalDataPanel extends ContentPanel {
@@ -40,6 +50,10 @@ class PersonalDataPanel extends ContentPanel {
 	private static final String MAINTENANCE = "Maintenance";
 	private static final String SEX_WORK = "Does Sex Work";
 
+	private static final String SLAVE = "Slave";
+	private static final String HIRED_STAFF = "Hired Staff";
+	private static final String DECIDED_ON_QUEST = "Decided On Quest";
+
 	private static final int YPOS_FIRST_NAME = 17;
 	private static final int HORIZONTAL_GAP = 39;
 	private static final int COMPONENT_HEIGHT = 22;
@@ -57,6 +71,12 @@ class PersonalDataPanel extends ContentPanel {
 	private final Map<String, JCheckBox> checkBoxes = new HashMap<>();
 	private final Map<String, JComboBox<String>> comboBoxes = new HashMap<>();
 
+	private JTextField maintenanceTextField;
+	private JCheckBox doesSexWorkCheckBox;
+	private JLabel maintenanceLabel;
+	private JCheckBox questCheckBox;
+	private boolean lastQuestCheckBoxSelection;
+
 	PersonalDataPanel() {
 		super(GAP_WIDTH, GAP_WIDTH, WIDTH, HEIGHT);
 
@@ -70,7 +90,7 @@ class PersonalDataPanel extends ContentPanel {
 		this.addRaceOptions();
 		this.addLikesOptions();
 
-		this.addSlaveMercOptions();
+		this.addSlaveHiredStaffOptions();
 		this.addQuestCheckBox();
 		this.addHiredStaffOptions();
 	}
@@ -95,6 +115,14 @@ class PersonalDataPanel extends ContentPanel {
 				COMPONENT_HEIGHT, percentageTooltip);
 		percentageField.setText("0");
 		percentageField.setHorizontalAlignment(JLabel.RIGHT);
+		((AbstractDocument) percentageField.getDocument())
+				.setDocumentFilter(new NumberOnlyDocumentFilter(Mode.PERCENTAGE));
+		percentageField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent evt) {
+				SwingUtilities.invokeLater(() -> percentageField.selectAll());
+			}
+		});
 
 		createFormattedLabel("%)", 260, YPOS_NICKNAME, 13, COMPONENT_HEIGHT).setHorizontalAlignment(JLabel.LEFT);
 	}
@@ -103,14 +131,16 @@ class PersonalDataPanel extends ContentPanel {
 		createFormattedLabel(RACE + ":", 0, YPOS_ASIAN_CHECKBOX, 70, COMPONENT_HEIGHT);
 
 		String tooltip = "Select the race that best fits the character. If you can't find a fitting one, contact the devs.";
-		List<String> bodyTypeList =  new ConfigReader(GameFileRepository.getRacesList()).readAllValues();
-		bodyTypeList.sort((a, b) -> a.equalsIgnoreCase("Human") ? -1 : b.equalsIgnoreCase("Human") ? 1 : a.compareTo(b));
+		List<String> bodyTypeList = new ConfigReader(GameFileAccessor.getFileFromProperty(PropertyRepository.RACES))
+				.readAllValues();
+		bodyTypeList
+				.sort((a, b) -> a.equalsIgnoreCase("Human") ? -1 : b.equalsIgnoreCase("Human") ? 1 : a.compareTo(b));
 		String[] bodyTypes = Arrays.copyOf(bodyTypeList.toArray(), bodyTypeList.size(), String[].class);
 		createComboBox(RACE, bodyTypes, 78, YPOS_ASIAN_CHECKBOX, 110, tooltip);
 	}
 
 	private void addAsianCheckBox() {
-		String tooltip = "For Asian characters the last name will be displayed in front of the first name.";
+		String tooltip = "<html>For Asian characters the last name will be displayed in front of the first name.<br/>This option is not about appearance etc., it's just about how the name is displayed.</html>";
 		createCheckBox(ASIAN, WIDTH - 90, YPOS_ASIAN_CHECKBOX, 80, tooltip);
 	}
 
@@ -124,27 +154,74 @@ class PersonalDataPanel extends ContentPanel {
 
 	private void addQuestCheckBox() {
 		String tooltip = "Check this box if the character is a quest character. She will not appear on the market.";
-		createCheckBox(QUEST, WIDTH - 70, YPOS_QUEST_CHECKBOX, 60, tooltip);
+		this.questCheckBox = createCheckBox(QUEST, WIDTH - 70, YPOS_QUEST_CHECKBOX, 60, tooltip);
+		questCheckBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				JCheckBox questCheckBox = (JCheckBox) event.getSource();
+				PersonalDataPanel.this.lastQuestCheckBoxSelection = questCheckBox.isSelected();
+			}
+		});
 	}
 
-	private void addSlaveMercOptions() {
+	private void addSlaveHiredStaffOptions() {
 		createFormattedLabel(ACTOR_TYPE + ":", 0, YPOS_QUEST_CHECKBOX, 70, COMPONENT_HEIGHT);
 
 		String tooltip = "Select whether the character is a slave or hired staff. This can also be dependant on the outcome of a quest.";
-		String[] bodyTypes = new String[] { "Slave", "Hired Staff", "Decided On Quest" };
-		createComboBox(ACTOR_TYPE, bodyTypes, 78, YPOS_QUEST_CHECKBOX, 130, tooltip);
+		String[] bodyTypes = new String[] { SLAVE, HIRED_STAFF, DECIDED_ON_QUEST };
+		JComboBox<String> comboBox = createComboBox(ACTOR_TYPE, bodyTypes, 78, YPOS_QUEST_CHECKBOX, 130, tooltip);
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				@SuppressWarnings("unchecked")
+				JComboBox<String> comboBox = (JComboBox<String>) event.getSource();
+				String selection = comboBox.getSelectedItem().toString();
+				switch (selection) {
+				case SLAVE:
+					showHiredStaffOptions(false);
+					PersonalDataPanel.this.questCheckBox.setSelected(PersonalDataPanel.this.lastQuestCheckBoxSelection);
+					break;
+				case HIRED_STAFF:
+					showHiredStaffOptions(true);
+					PersonalDataPanel.this.questCheckBox.setSelected(PersonalDataPanel.this.lastQuestCheckBoxSelection);
+					break;
+				case DECIDED_ON_QUEST:
+					showHiredStaffOptions(true);
+					PersonalDataPanel.this.lastQuestCheckBoxSelection = PersonalDataPanel.this.questCheckBox
+							.isSelected();
+					PersonalDataPanel.this.questCheckBox.setSelected(true);
+					break;
+				}
+			}
+		});
 	}
 
 	private void addHiredStaffOptions() {
-		createFormattedLabel(MAINTENANCE + ":", 13, YPOS_HIRED_STAFF_OPTIONS, 80, COMPONENT_HEIGHT);
+		this.maintenanceLabel = createFormattedLabel(MAINTENANCE + ":", 13, YPOS_HIRED_STAFF_OPTIONS, 80,
+				COMPONENT_HEIGHT);
 
-		JTextField textField = createFormattedTextField(MAINTENANCE, 100, YPOS_HIRED_STAFF_OPTIONS, 40,
+		this.maintenanceTextField = createFormattedTextField(MAINTENANCE, 100, YPOS_HIRED_STAFF_OPTIONS, 40,
 				COMPONENT_HEIGHT, "Add the maintenance fee/salary of this character.");
-		textField.setText("1000");
-		textField.setHorizontalAlignment(JLabel.RIGHT);
+		this.maintenanceTextField.setText(String.valueOf(ConfigReaderRepository.getCharacterbuilderConfigReader()
+				.readInt(PropertyRepository.HIRED_STAFF_DEFAULT_SALARY)));
+		this.maintenanceTextField.setHorizontalAlignment(JLabel.RIGHT);
+		((AbstractDocument) this.maintenanceTextField.getDocument())
+				.setDocumentFilter(new NumberOnlyDocumentFilter(Mode.UNRESTRICTED));
+		this.maintenanceTextField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent evt) {
+				SwingUtilities.invokeLater(() -> PersonalDataPanel.this.maintenanceTextField.selectAll());
+			}
+		});
 
 		String tooltip = "Check this box if the character accepts tasks that involve sex.";
-		createCheckBox(SEX_WORK, WIDTH - 130, YPOS_HIRED_STAFF_OPTIONS, 115, tooltip);
+		this.doesSexWorkCheckBox = createCheckBox(SEX_WORK, WIDTH - 130, YPOS_HIRED_STAFF_OPTIONS, 115, tooltip);
+
+		showHiredStaffOptions(false);
+	}
+
+	private void showHiredStaffOptions(boolean showOptions) {
+		this.maintenanceLabel.setVisible(showOptions);
+		this.maintenanceTextField.setVisible(showOptions);
+		this.doesSexWorkCheckBox.setVisible(showOptions);
 	}
 
 	private JLabel createFormattedLabel(String text, int xPos, int yPos, int width, int height) {

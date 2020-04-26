@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
-import simplecharacterbuilder.util.ContentPanel;
+import simplecharacterbuilder.common.uicomponents.ContentPanel;
 
 @SuppressWarnings("serial")
 public class SourcePanel extends ContentPanel {

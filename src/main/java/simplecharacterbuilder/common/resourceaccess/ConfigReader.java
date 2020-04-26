@@ -1,4 +1,4 @@
-package simplecharacterbuilder.util;
+package simplecharacterbuilder.common.resourceaccess;
 
 import java.io.File;
 import java.io.FileInputStream;

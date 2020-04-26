@@ -1,6 +1,6 @@
 package simplecharacterbuilder.characterbuilder.personaldata;
 
-import simplecharacterbuilder.util.CharacterBuilderComponent.CharacterBuilderMainComponent;
+import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderMainComponent;
 
 public class PersonalDataMainComponent extends CharacterBuilderMainComponent {
 	private static final int WIDTH_SOURCE_PANEL = CONTROLPANEL_WIDTH;
