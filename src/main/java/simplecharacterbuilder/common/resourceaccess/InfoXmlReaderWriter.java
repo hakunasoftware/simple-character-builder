@@ -17,8 +17,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import lombok.Getter;
-
 public class InfoXmlReaderWriter{
 	private final File xmlFile;
 	private final Document doc;
@@ -114,7 +112,6 @@ public class InfoXmlReaderWriter{
 	}
 
 	
-	@Getter
 	private static class Tag {
 		private final String[] parentsNames;
 		private final String childName;
@@ -131,6 +128,14 @@ public class InfoXmlReaderWriter{
 				parentsNames = null;
 				childName = tagName;
 			}
+		}
+		
+		public String[] getParentsNames() {
+			return parentsNames;
+		}
+
+		public String getChildName() {
+			return childName;
 		}
 	}
 }

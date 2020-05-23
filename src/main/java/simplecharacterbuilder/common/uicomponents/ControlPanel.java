@@ -76,12 +76,12 @@ public class ControlPanel extends CharacterBuilderControlComponent {
 
 	@SuppressWarnings("serial")
 	protected static class ControlButton extends JButton {
-		static final int WIDTH_BASIC = (ControlPanel.WIDTH_BASIC - CONTROLPANEL_HEIGHT) / 2;
-		static final int WIDTH_EXTENDED = (ControlPanel.WIDTH_EXTENDED - CONTROLPANEL_HEIGHT) / 2;
+		public static final int WIDTH_BASIC = (ControlPanel.WIDTH_BASIC - CONTROLPANEL_HEIGHT) / 2;
+		public static final int WIDTH_EXTENDED = (ControlPanel.WIDTH_EXTENDED - CONTROLPANEL_HEIGHT) / 2;
 
 		static final int HEIGHT = 36;
 
-		ControlButton(String buttonText, int xPos, boolean extended) {
+		public ControlButton(String buttonText, int xPos, boolean extended) {
 			super(buttonText);
 			this.setBounds(xPos, CONTROLPANEL_HEIGHT - HEIGHT, extended ? WIDTH_EXTENDED : WIDTH_BASIC, HEIGHT);
 			this.setHorizontalAlignment(CENTER);

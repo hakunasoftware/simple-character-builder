@@ -15,7 +15,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 
-import lombok.Getter;
 import simplecharacterbuilder.common.uicomponents.ContentPanel;
 
 @SuppressWarnings("serial")
@@ -186,9 +185,9 @@ class RegularStatSelectionPanel extends ContentPanel {
 		return buttonGroup;
 	}
 	
-	@Getter
 	static class StatButtonGroup extends ButtonGroup {
 		private final Stat stat;
+		
 		StatButtonGroup(Stat stat) {
 			this.stat = stat;
 		}
@@ -233,6 +232,10 @@ class RegularStatSelectionPanel extends ContentPanel {
 					statGenerator.getStatDisplayPanel().displayStat(stat, generatedValue);
 				}
 			};
+		}
+		
+		public Stat getStat() {
+			return stat;
 		}
 	}
 }

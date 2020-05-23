@@ -51,8 +51,7 @@ class StatCalculator {
 	}
 
 	int getAverage(Stat stat) {
-		int[] boundaries = getBoundaries(stat);
-		return (boundaries[3] + boundaries[2]) / 2;
+		return generateStatFromBoundariesAndSelection(getBoundaries(stat), 2);
 	}
 
 	int getMin(Stat stat) {

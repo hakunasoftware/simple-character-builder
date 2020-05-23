@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileSystemView;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
+import simplecharacterbuilder.characterbuilder.util.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.JFileChooserPool;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 
@@ -66,6 +67,7 @@ class PictureLoader extends JLabel {
 		this.setIcon(new ImageIcon(scaledImage));
 		
 		CharacterBuilderControlPanel.getInstance().setPortrait(portrait.getAbsolutePath());
+		ImageFileHolder.put(ImageFileHolder.PORTRAIT, portrait);
 	}
 
 	private Component getApplicationFrame() {

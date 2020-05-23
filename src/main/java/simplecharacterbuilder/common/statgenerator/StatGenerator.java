@@ -1,11 +1,13 @@
 package simplecharacterbuilder.common.statgenerator;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 
+import simplecharacterbuilder.common.generated.Actor;
 import simplecharacterbuilder.common.resourceaccess.ConfigReader;
 import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
 import simplecharacterbuilder.common.resourceaccess.PropertyRepository;
@@ -126,5 +128,20 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 
 	StatCalculator getStatCalculator() {
 		return statCalculator;
+	}
+
+	@Override
+	public void setValues(Actor actor) {
+		Map<Stat, Integer> selectedStats = getStats();
+		Actor.Stats stats = new Actor.Stats();
+		stats.setAgi(BigInteger.valueOf(selectedStats.get(Stat.AGILITY)));
+		stats.setBeauty(BigInteger.valueOf(selectedStats.get(Stat.BEAUTY)));
+		stats.setCharisma(BigInteger.valueOf(selectedStats.get(Stat.CHARISMA)));
+		stats.setCon(BigInteger.valueOf(selectedStats.get(Stat.CONSTITUTION)));
+		stats.setInt(BigInteger.valueOf(selectedStats.get(Stat.INTELLIGENCE)));
+		stats.setObedience(BigInteger.valueOf(selectedStats.get(Stat.OBEDIENCE)));
+		stats.setSex(BigInteger.valueOf(selectedStats.get(Stat.SEX)));
+		stats.setStr(BigInteger.valueOf(selectedStats.get(Stat.STRENGTH)));
+		actor.setStats(stats);
 	}
 }

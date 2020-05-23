@@ -1,5 +1,9 @@
 package simplecharacterbuilder.characterbuilder.personaldata;
 
+import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.BOTH;
+import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.FEMALES;
+import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.MALES;
+import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.NEITHER;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CONTROLPANEL_WIDTH;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.GAP_WIDTH;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.MAINPANEL_HEIGHT;
@@ -22,6 +26,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.text.AbstractDocument;
 
+import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
+import simplecharacterbuilder.characterbuilder.util.DocumentChangeListener;
 import simplecharacterbuilder.characterbuilder.util.NumberOnlyDocumentFilter;
 import simplecharacterbuilder.characterbuilder.util.NumberOnlyDocumentFilter.Mode;
 import simplecharacterbuilder.common.resourceaccess.ConfigReader;
@@ -37,22 +43,21 @@ class PersonalDataPanel extends ContentPanel {
 	static final int WIDTH = MAINPANEL_WIDTH - CONTROLPANEL_WIDTH - 3 * GAP_WIDTH;
 	static final int HEIGHT = MAINPANEL_HEIGHT - 2 * GAP_WIDTH;
 
-	private static final String FIRST_NAME = "First Name";
-	private static final String MIDDLE_NAME = "Middle Name";
-	private static final String LAST_NAME = "Last Name";
-	private static final String NICKNAME = "Nickname";
-	private static final String NICKNAME_PERCENTAGE = "Percentage";
-	private static final String ASIAN = "Asian";
-	private static final String RACE = "Race";
-	private static final String QUEST = "Quest";
-	private static final String LIKES = "Likes";
-	private static final String ACTOR_TYPE = "Actor Type";
-	private static final String MAINTENANCE = "Maintenance";
-	private static final String SEX_WORK = "Does Sex Work";
-
-	private static final String SLAVE = "Slave";
-	private static final String HIRED_STAFF = "Hired Staff";
-	private static final String DECIDED_ON_QUEST = "Decided On Quest";
+	public static final String FIRST_NAME = "First Name";
+	public static final String MIDDLE_NAME = "Middle Name";
+	public static final String LAST_NAME = "Last Name";
+	public static final String NICKNAME = "Nickname";
+	public static final String NICKNAME_PERCENTAGE = "Percentage";
+	public static final String ASIAN = "Asian";
+	public static final String RACE = "Race";
+	public static final String QUEST = "Quest";
+	public static final String LIKES = "Likes";
+	public static final String ACTOR_TYPE = "Actor Type";
+	public static final String MAINTENANCE = "Maintenance";
+	public static final String SEX_WORK = "Does Sex Work";
+	public static final String SLAVE = "Slave";
+	public static final String HIRED_STAFF = "Hired Staff";
+	public static final String DECIDED_ON_QUEST = "Decided On Quest";
 
 	private static final int YPOS_FIRST_NAME = 17;
 	private static final int HORIZONTAL_GAP = 39;
@@ -71,19 +76,32 @@ class PersonalDataPanel extends ContentPanel {
 	private final Map<String, JCheckBox> checkBoxes = new HashMap<>();
 	private final Map<String, JComboBox<String>> comboBoxes = new HashMap<>();
 
+	private JTextField firstNameTextField;
+	private JTextField middleNameTextField;
+	private JTextField lastNameTextField;
+
 	private JTextField maintenanceTextField;
+	private JCheckBox asianCheckBox;
 	private JCheckBox doesSexWorkCheckBox;
-	private JLabel maintenanceLabel;
 	private JCheckBox questCheckBox;
+	private JLabel maintenanceLabel;
 	private boolean lastQuestCheckBoxSelection;
 
 	PersonalDataPanel() {
 		super(GAP_WIDTH, GAP_WIDTH, WIDTH, HEIGHT);
 
-		this.addTextField(FIRST_NAME, YPOS_FIRST_NAME, "Add the character's first name [required]");
-		this.addTextField(MIDDLE_NAME, YPOS_MIDDLE_NAME, "Add the character's middle name [optional]");
-		this.addTextField(LAST_NAME, YPOS_LAST_NAME,
+		this.firstNameTextField = this.addTextField(FIRST_NAME, YPOS_FIRST_NAME,
+				"Add the character's first name [required]");
+		this.middleNameTextField = this.addTextField(MIDDLE_NAME, YPOS_MIDDLE_NAME,
+				"Add the character's middle name [optional]");
+		this.lastNameTextField = this.addTextField(LAST_NAME, YPOS_LAST_NAME,
 				"Add the character's last name [optional, but should always be set if the character has one]");
+		this.firstNameTextField.getDocument().addDocumentListener(new DocumentChangeListener(
+				() -> CharacterBuilderControlPanel.setFirstName(this.firstNameTextField.getText())));
+		this.middleNameTextField.getDocument().addDocumentListener(new DocumentChangeListener(
+				() -> CharacterBuilderControlPanel.setMiddleName(this.middleNameTextField.getText())));
+		this.lastNameTextField.getDocument().addDocumentListener(new DocumentChangeListener(
+				() -> CharacterBuilderControlPanel.setLastName(this.lastNameTextField.getText())));
 		this.addNicknameOptions();
 
 		this.addAsianCheckBox();
@@ -110,10 +128,10 @@ class PersonalDataPanel extends ContentPanel {
 				"Add a (canon) nickname [optional]");
 		createFormattedLabel("(Usage: ", 180, YPOS_NICKNAME, 50, COMPONENT_HEIGHT);
 
-		String percentageTooltip = "Determines how often the nickname is used instead of the real name.";
+		String percentageTooltip = "Determines how often the nickname is used instead of the real name [default: always (100%)]";
 		JTextField percentageField = createFormattedTextField(NICKNAME_PERCENTAGE, 232, YPOS_NICKNAME, 27,
 				COMPONENT_HEIGHT, percentageTooltip);
-		percentageField.setText("0");
+		percentageField.setText("100");
 		percentageField.setHorizontalAlignment(JLabel.RIGHT);
 		((AbstractDocument) percentageField.getDocument())
 				.setDocumentFilter(new NumberOnlyDocumentFilter(Mode.PERCENTAGE));
@@ -140,15 +158,17 @@ class PersonalDataPanel extends ContentPanel {
 	}
 
 	private void addAsianCheckBox() {
-		String tooltip = "<html>For Asian characters the last name will be displayed in front of the first name.<br/>This option is not about appearance etc., it's just about how the name is displayed.</html>";
-		createCheckBox(ASIAN, WIDTH - 90, YPOS_ASIAN_CHECKBOX, 80, tooltip);
+		String tooltip = "<html>For Asian characters the last name will be displayed in front of the first name.<br/>This option is only about how the name is displayed.</html>";
+		this.asianCheckBox = createCheckBox(ASIAN, WIDTH - 80, YPOS_ASIAN_CHECKBOX, 60, tooltip);
+		this.asianCheckBox
+				.addActionListener(e -> CharacterBuilderControlPanel.setIsAsian(this.asianCheckBox.isSelected()));
 	}
 
 	private void addLikesOptions() {
 		createFormattedLabel(LIKES + ":", 0, YPOS_LIKES_OPTIONS, 70, COMPONENT_HEIGHT);
 
 		String tooltip = "Select the sexual preference of the character";
-		String[] bodyTypes = new String[] { "Males", "Females", "Both", "Neither" };
+		String[] bodyTypes = new String[] { MALES, FEMALES, BOTH, NEITHER };
 		createComboBox(LIKES, bodyTypes, 78, YPOS_LIKES_OPTIONS, 110, tooltip);
 	}
 

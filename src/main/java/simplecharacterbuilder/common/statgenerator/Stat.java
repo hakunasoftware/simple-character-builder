@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
-
-@Getter
 public enum Stat {
 	CONSTITUTION("Constitution", "CON", "Con"),
 	AGILITY("Agility", "AGI", "Agi"),
@@ -17,7 +14,7 @@ public enum Stat {
 	OBEDIENCE("Obedience", "OBE", "Obedience"),
 	SEX("Sex", "SEX", "Sex"),
 	BEAUTY("Beauty", "BEA", "Beauty");
-	
+
 	private static final List<Stat> allStats;
 	private static final List<Stat> regStats;
 	static {
@@ -49,5 +46,25 @@ public enum Stat {
 	
 	public static void forRegStats(Consumer<? super Stat> action) {
 		Stat.getRegStats().stream().forEach(action);
+	}
+	
+	public static List<Stat> getAllstats() {
+		return allStats;
+	}
+
+	public static List<Stat> getRegstats() {
+		return regStats;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getAbbreviation() {
+		return abbreviation;
+	}
+
+	public String getInfoXmlTag() {
+		return infoXmlTag;
 	}
 }

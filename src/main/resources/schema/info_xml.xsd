@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Actor">
+		<xs:complexType>
+			<xs:sequence>
+			
+				<xs:element name="Name">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="First" type="xs:string" minOccurs="0"/>
+							<xs:element name="Middle" type="xs:string" minOccurs="0"/>
+							<xs:element name="Last" type="xs:string" minOccurs="0"/>
+							<xs:element name="Nick" type="xs:string" minOccurs="0"/>
+							<xs:element name="Asian" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>		
+				
+				<xs:element name="Type" type="xs:string"/>
+				<xs:element name="Maintenance" type="xs:positiveInteger" minOccurs="0"/>
+				<xs:element name="Likes" type="xs:string"/>
+				
+				<xs:element name="Jobs" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Reject" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				
+				<xs:element name="Quest" type="xs:string" minOccurs="0"/>
+			
+				<xs:element name="Body">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Race" type="xs:string"/>
+							<xs:element name="Type" type="xs:string"/>
+							<xs:element name="Skin" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>	
+				
+				<xs:element name="Source">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Type" type="xs:string"/>
+							<xs:element name="Franchise" type="xs:string"/>
+							<xs:element name="Installment" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>	
+				
+				<xs:element name="Stats">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Con" type="xs:positiveInteger"/>
+							<xs:element name="Agi" type="xs:positiveInteger"/>
+							<xs:element name="Str" type="xs:positiveInteger"/>
+							<xs:element name="Int" type="xs:positiveInteger"/>
+							<xs:element name="Sex" type="xs:positiveInteger"/>
+							<xs:element name="Beauty" type="xs:positiveInteger"/>
+							<xs:element name="Charisma" type="xs:positiveInteger"/>
+							<xs:element name="Obedience" type="xs:positiveInteger"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>	
+				
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

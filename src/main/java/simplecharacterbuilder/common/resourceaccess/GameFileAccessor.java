@@ -4,6 +4,8 @@ import java.io.File;
 
 public class GameFileAccessor {
 	public static final GameFileAccessor INSTANCE = new GameFileAccessor();
+	
+	public static final String DIRECTORY_NAME_REGEX = "^[0-9a-zA-Z_\\-. \\+'!#;&%$()=,@~]+";
 
 	private File rootDirectory;
 

@@ -7,6 +7,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import simplecharacterbuilder.common.generated.Actor;
 import simplecharacterbuilder.common.statgenerator.StatGenerator;
 
 public abstract class CharacterBuilderComponent {
@@ -47,6 +48,8 @@ public abstract class CharacterBuilderComponent {
 		protected CharacterBuilderMainComponent(int x, int y) {
 			super(x, y, MAINPANEL_WIDTH, MAINPANEL_HEIGHT);
 		}
+		
+		public abstract void setValues(Actor actor);
 	}
 
 	public static abstract class CharacterBuilderControlComponent extends CharacterBuilderComponent {
