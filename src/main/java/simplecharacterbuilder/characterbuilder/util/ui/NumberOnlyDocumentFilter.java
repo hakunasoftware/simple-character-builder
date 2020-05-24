@@ -1,4 +1,4 @@
-package simplecharacterbuilder.characterbuilder.util;
+package simplecharacterbuilder.characterbuilder.util.ui;
 
 import java.awt.Toolkit;
 

@@ -9,8 +9,11 @@ import java.util.List;
 
 import javax.swing.UIManager;
 
+import simplecharacterbuilder.characterbuilder.bodysprites.SpriteLoaderMainComponent;
 import simplecharacterbuilder.characterbuilder.personaldata.PersonalDataMainComponent;
-import simplecharacterbuilder.characterbuilder.util.JFileChooserPool;
+import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
+import simplecharacterbuilder.characterbuilder.util.holder.DrawIndexRepository;
+import simplecharacterbuilder.characterbuilder.util.holder.JFileChooserPool;
 import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
 import simplecharacterbuilder.common.statgenerator.StatGenerator;
 import simplecharacterbuilder.common.uicomponents.ApplicationFrame;
@@ -23,13 +26,11 @@ public class CharacterBuilderStart {
 	private static final List<CharacterBuilderComponent> COMPONENTS = new ArrayList<>();
 	static {
 		ConfigReaderRepository.init();
-
+		
+		COMPONENTS.add(new SpriteLoaderMainComponent(0, 0));
 		COMPONENTS.add(new PersonalDataMainComponent(0, 0));
-
-		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, false);
-		statGenerator.disable();
-		COMPONENTS.add(statGenerator);
-
+		COMPONENTS.add(StatGenerator.createInstance(0, 0, false));
+		
 		CharacterBuilderControlPanel controlPanel = CharacterBuilderControlPanel.getInstance();
 		controlPanel.init(COMPONENTS);
 		COMPONENTS.add(controlPanel);
@@ -41,6 +42,8 @@ public class CharacterBuilderStart {
 		}
 
 		JFileChooserPool.init();
+		DrawIndexRepository.init();
+		BodyPartRepository.init();
 	}
 
 	public static void main(String[] args) {

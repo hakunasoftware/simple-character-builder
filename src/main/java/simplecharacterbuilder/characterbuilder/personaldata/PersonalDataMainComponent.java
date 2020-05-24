@@ -11,17 +11,21 @@ import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataP
 import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.QUEST;
 import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.RACE;
 import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.SEX_WORK;
-import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.formatBoolean;
-import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.formatLikes;
-import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.formatNickname;
-import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.nullEmptyString;
+import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.formatBoolean;
+import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.formatLikes;
+import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.formatNickname;
+import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.nullEmptyString;
 
 import java.math.BigInteger;
 import java.util.Map;
 
 import javax.swing.JTextField;
 
-import simplecharacterbuilder.characterbuilder.util.ValueFormatter;
+import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
+import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
+import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
+import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader;
+import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader.FileProcessor;
 import simplecharacterbuilder.common.generated.Actor;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderMainComponent;
 
@@ -34,7 +38,14 @@ public class PersonalDataMainComponent extends CharacterBuilderMainComponent {
 	private static final int XPOS_PICTURE_LOADER = MAINPANEL_WIDTH - GAP_WIDTH - (CONTROLPANEL_WIDTH + WIDTH_PICTURE_LOADER) / 2;
 	
 	private final PersonalDataPanel personalDataPanel = new PersonalDataPanel();
-	private final PictureLoader pictureLoader = new PictureLoader(XPOS_PICTURE_LOADER, GAP_WIDTH, WIDTH_PICTURE_LOADER);
+	private final PictureLoader pictureLoader;
+	{
+		FileProcessor fileProcessor = f -> {
+			CharacterBuilderControlPanel.getInstance().setPortrait(f.getAbsolutePath());
+			BodyImageFileHolder.put(BodyImageFileHolder.PORTRAIT, f);
+		};
+		pictureLoader = new PictureLoader(XPOS_PICTURE_LOADER, GAP_WIDTH, 200, 200, WIDTH_PICTURE_LOADER / 200.0, fileProcessor, "Select Portrait (200x200px and png-format)");
+	}
 	private final SourcePanel sourcePanel = new SourcePanel(XPOS_SOURCE_PANEL, YPOS_SOURCE_PANEL, WIDTH_SOURCE_PANEL, HEIGHT_SOURCE_PANEL);
 	
 	public PersonalDataMainComponent(int x, int y) {
@@ -42,6 +53,9 @@ public class PersonalDataMainComponent extends CharacterBuilderMainComponent {
 		this.mainPanel.add(personalDataPanel);
 		this.mainPanel.add(pictureLoader);
 		this.mainPanel.add(sourcePanel);
+
+		pictureLoader.setText("Load Portrait");
+		pictureLoader.setToolTipText("Click to load a portrait for the character (required). Portraits must be 200x200 pixel and in png-format.");
 	}
 
 	@Override

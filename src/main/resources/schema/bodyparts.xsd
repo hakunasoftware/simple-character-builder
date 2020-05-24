@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="BodyParts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="BodyPart" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Name" type="xs:string"/>
+							<xs:element name="Alias" type="xs:string" minOccurs="0"/>
+							<xs:element name="Icon" type="xs:string" minOccurs="0"/>
+							<xs:element name="IconRetracted" type="xs:string" minOccurs="0"/>
+							<xs:element name="UIDisplay" type="xs:string"/>
+							<xs:element name="Retractable" type="xs:string"/>
+							<xs:element name="StdSize" type="xs:string"/>
+							<xs:element name="Slots">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Main" type="xs:string"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="DrawIndex" type="xs:string"/>
+							<xs:element name="ExtraLayers" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Extra" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Name" type="xs:string"/>
+													<xs:element name="DrawIndex" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,4 +1,4 @@
-package simplecharacterbuilder.characterbuilder.util;
+package simplecharacterbuilder.characterbuilder.util.transform;
 
 public class ValueFormatter {
 	public static final String MALES = "Males";

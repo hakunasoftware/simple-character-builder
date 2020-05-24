@@ -12,9 +12,9 @@ import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
-import simplecharacterbuilder.characterbuilder.util.DocumentChangeListener;
-import simplecharacterbuilder.characterbuilder.util.SearchableComboBox;
-import simplecharacterbuilder.characterbuilder.util.ValueFormatter;
+import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
+import simplecharacterbuilder.characterbuilder.util.ui.DocumentChangeListener;
+import simplecharacterbuilder.characterbuilder.util.ui.SearchableComboBox;
 import simplecharacterbuilder.common.resourceaccess.GameFileAccessor;
 import simplecharacterbuilder.common.resourceaccess.InfoXmlReaderWriter;
 import simplecharacterbuilder.common.resourceaccess.PropertyRepository;

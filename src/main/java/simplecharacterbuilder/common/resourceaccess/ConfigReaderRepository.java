@@ -16,9 +16,7 @@ public class ConfigReaderRepository {
 	private ConfigReader pathVariablesConfigReader;
 	private ConfigReader characterbuilderConfigReader;
 	
-	private ConfigReaderRepository() {
-		
-	}
+	private ConfigReaderRepository() {}
 	
 	
 	public static void useTestPaths() {

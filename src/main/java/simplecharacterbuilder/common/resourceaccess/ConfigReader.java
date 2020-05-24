@@ -37,6 +37,10 @@ public class ConfigReader {
 	public String readString(String propertyName) {
 		return this.prop.getProperty(propertyName).trim();
 	}
+	
+	public List<String> readAllKeys() {
+		return Collections.list(this.prop.keys()).stream().map(e -> (String) e).collect(Collectors.toList());
+	}
 
 	public List<String> readAllValues() {
 		return allValuesCache != null ? allValuesCache

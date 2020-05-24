@@ -1,4 +1,4 @@
-package simplecharacterbuilder.characterbuilder.util;
+package simplecharacterbuilder.characterbuilder.util.holder;
 
 import java.io.File;
 
@@ -9,10 +9,10 @@ import javax.swing.filechooser.FileFilter;
 public class JFileChooserPool {
 	private static final JFileChooserPool INSTANCE = new JFileChooserPool();
 	
-	private final JFileChooser portraitChooser;
+	private final JFileChooser pngFileChooser;
 
 	private JFileChooserPool() {
-		this.portraitChooser = createPortraitChooser();
+		this.pngFileChooser = createPngFileChooser();
 	}
 	
 	
@@ -24,13 +24,12 @@ public class JFileChooserPool {
 	}
 
 	
-	private static JFileChooser createPortraitChooser() {
+	private static JFileChooser createPngFileChooser() {
 		Boolean old = UIManager.getBoolean("FileChooser.readOnly");
 		UIManager.put("FileChooser.readOnly", Boolean.TRUE);
 		JFileChooser chooser = new JFileChooser();
 		UIManager.put("FileChooser.readOnly", old);
 
-		chooser.setDialogTitle("Select Portrait (200x200px and png-format)");
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setFileFilter(new FileFilter() {
 			@Override
@@ -40,14 +39,16 @@ public class JFileChooserPool {
 
 			@Override
 			public String getDescription() {
-				return "Folders and .png's";
+				return ".png";
 			}
 		});
 		return chooser;
 	}
 	
-	public static JFileChooser getPortraitChooser() {
-		return INSTANCE.portraitChooser;
+	
+	public static JFileChooser getPngFileChooser(String dialogTitle) {
+		INSTANCE.pngFileChooser.setDialogTitle(dialogTitle);
+		return INSTANCE.pngFileChooser;
 	}
 
 }

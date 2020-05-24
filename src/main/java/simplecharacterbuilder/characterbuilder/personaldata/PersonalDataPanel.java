@@ -1,15 +1,14 @@
 package simplecharacterbuilder.characterbuilder.personaldata;
 
-import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.BOTH;
-import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.FEMALES;
-import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.MALES;
-import static simplecharacterbuilder.characterbuilder.util.ValueFormatter.NEITHER;
+import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.BOTH;
+import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.FEMALES;
+import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.MALES;
+import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.NEITHER;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CONTROLPANEL_WIDTH;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.GAP_WIDTH;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.MAINPANEL_HEIGHT;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.MAINPANEL_WIDTH;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -27,14 +26,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.AbstractDocument;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
-import simplecharacterbuilder.characterbuilder.util.DocumentChangeListener;
-import simplecharacterbuilder.characterbuilder.util.NumberOnlyDocumentFilter;
-import simplecharacterbuilder.characterbuilder.util.NumberOnlyDocumentFilter.Mode;
+import simplecharacterbuilder.characterbuilder.util.ui.DocumentChangeListener;
+import simplecharacterbuilder.characterbuilder.util.ui.NumberOnlyDocumentFilter;
+import simplecharacterbuilder.characterbuilder.util.ui.UIComponentCreator;
+import simplecharacterbuilder.characterbuilder.util.ui.NumberOnlyDocumentFilter.Mode;
 import simplecharacterbuilder.common.resourceaccess.ConfigReader;
 import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
 import simplecharacterbuilder.common.resourceaccess.GameFileAccessor;
 import simplecharacterbuilder.common.resourceaccess.PropertyRepository;
-import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 import simplecharacterbuilder.common.uicomponents.ContentPanel;
 
 @SuppressWarnings("serial")
@@ -61,7 +60,6 @@ class PersonalDataPanel extends ContentPanel {
 
 	private static final int YPOS_FIRST_NAME = 17;
 	private static final int HORIZONTAL_GAP = 39;
-	private static final int COMPONENT_HEIGHT = 22;
 
 	private static final int YPOS_MIDDLE_NAME = YPOS_FIRST_NAME + HORIZONTAL_GAP;
 	private static final int YPOS_LAST_NAME = YPOS_MIDDLE_NAME + HORIZONTAL_GAP;
@@ -118,19 +116,17 @@ class PersonalDataPanel extends ContentPanel {
 	}
 
 	private JTextField addTextField(String name, int yPos, int width, String tooltip) {
-		createFormattedLabel(name + ":", 0, yPos, 90, COMPONENT_HEIGHT);
-		return createFormattedTextField(name, 100, yPos, width, COMPONENT_HEIGHT, tooltip);
+		createFormattedLabel(name + ":", 0, yPos, 90);
+		return createFormattedTextField(name, 100, yPos, width, tooltip);
 	}
 
 	private void addNicknameOptions() {
-		createFormattedLabel(NICKNAME + ":", 0, YPOS_NICKNAME, 70, COMPONENT_HEIGHT);
-		createFormattedTextField(NICKNAME, 75, YPOS_NICKNAME, 105, COMPONENT_HEIGHT,
-				"Add a (canon) nickname [optional]");
-		createFormattedLabel("(Usage: ", 180, YPOS_NICKNAME, 50, COMPONENT_HEIGHT);
+		createFormattedLabel(NICKNAME + ":", 0, YPOS_NICKNAME, 70);
+		createFormattedTextField(NICKNAME, 75, YPOS_NICKNAME, 105, "Add a (canon) nickname [optional]");
+		createFormattedLabel("(Usage: ", 180, YPOS_NICKNAME, 50);
 
 		String percentageTooltip = "Determines how often the nickname is used instead of the real name [default: always (100%)]";
-		JTextField percentageField = createFormattedTextField(NICKNAME_PERCENTAGE, 232, YPOS_NICKNAME, 27,
-				COMPONENT_HEIGHT, percentageTooltip);
+		JTextField percentageField = createFormattedTextField(NICKNAME_PERCENTAGE, 232, YPOS_NICKNAME, 27, percentageTooltip);
 		percentageField.setText("100");
 		percentageField.setHorizontalAlignment(JLabel.RIGHT);
 		((AbstractDocument) percentageField.getDocument())
@@ -142,34 +138,30 @@ class PersonalDataPanel extends ContentPanel {
 			}
 		});
 
-		createFormattedLabel("%)", 260, YPOS_NICKNAME, 13, COMPONENT_HEIGHT).setHorizontalAlignment(JLabel.LEFT);
+		createFormattedLabel("%)", 260, YPOS_NICKNAME, 13).setHorizontalAlignment(JLabel.LEFT);
 	}
 
 	private void addRaceOptions() {
-		createFormattedLabel(RACE + ":", 0, YPOS_ASIAN_CHECKBOX, 70, COMPONENT_HEIGHT);
+		createFormattedLabel(RACE + ":", 0, YPOS_ASIAN_CHECKBOX, 70);
 
 		String tooltip = "Select the race that best fits the character. If you can't find a fitting one, contact the devs.";
-		List<String> bodyTypeList = new ConfigReader(GameFileAccessor.getFileFromProperty(PropertyRepository.RACES))
-				.readAllValues();
-		bodyTypeList
-				.sort((a, b) -> a.equalsIgnoreCase("Human") ? -1 : b.equalsIgnoreCase("Human") ? 1 : a.compareTo(b));
-		String[] bodyTypes = Arrays.copyOf(bodyTypeList.toArray(), bodyTypeList.size(), String[].class);
-		createComboBox(RACE, bodyTypes, 78, YPOS_ASIAN_CHECKBOX, 110, tooltip);
+		List<String> racesList = new ConfigReader(GameFileAccessor.getFileFromProperty(PropertyRepository.RACES)).readAllValues();
+		racesList.sort((a, b) -> a.equalsIgnoreCase("Human") ? -1 : b.equalsIgnoreCase("Human") ? 1 : a.compareTo(b));
+		createComboBox(RACE, 78, YPOS_ASIAN_CHECKBOX, 110, tooltip, racesList.toArray(new String[0]));
 	}
 
 	private void addAsianCheckBox() {
 		String tooltip = "<html>For Asian characters the last name will be displayed in front of the first name.<br/>This option is only about how the name is displayed.</html>";
 		this.asianCheckBox = createCheckBox(ASIAN, WIDTH - 80, YPOS_ASIAN_CHECKBOX, 60, tooltip);
-		this.asianCheckBox
-				.addActionListener(e -> CharacterBuilderControlPanel.setIsAsian(this.asianCheckBox.isSelected()));
+		this.asianCheckBox.addActionListener(e -> CharacterBuilderControlPanel.setIsAsian(this.asianCheckBox.isSelected()));
 	}
 
 	private void addLikesOptions() {
-		createFormattedLabel(LIKES + ":", 0, YPOS_LIKES_OPTIONS, 70, COMPONENT_HEIGHT);
+		createFormattedLabel(LIKES + ":", 0, YPOS_LIKES_OPTIONS, 70);
 
 		String tooltip = "Select the sexual preference of the character";
 		String[] bodyTypes = new String[] { MALES, FEMALES, BOTH, NEITHER };
-		createComboBox(LIKES, bodyTypes, 78, YPOS_LIKES_OPTIONS, 110, tooltip);
+		createComboBox(LIKES, 78, YPOS_LIKES_OPTIONS, 110, tooltip, bodyTypes);
 	}
 
 	private void addQuestCheckBox() {
@@ -184,11 +176,11 @@ class PersonalDataPanel extends ContentPanel {
 	}
 
 	private void addSlaveHiredStaffOptions() {
-		createFormattedLabel(ACTOR_TYPE + ":", 0, YPOS_QUEST_CHECKBOX, 70, COMPONENT_HEIGHT);
+		createFormattedLabel(ACTOR_TYPE + ":", 0, YPOS_QUEST_CHECKBOX, 70);
 
 		String tooltip = "Select whether the character is a slave or hired staff. This can also be dependant on the outcome of a quest.";
 		String[] bodyTypes = new String[] { SLAVE, HIRED_STAFF, DECIDED_ON_QUEST };
-		JComboBox<String> comboBox = createComboBox(ACTOR_TYPE, bodyTypes, 78, YPOS_QUEST_CHECKBOX, 130, tooltip);
+		JComboBox<String> comboBox = createComboBox(ACTOR_TYPE, 78, YPOS_QUEST_CHECKBOX, 130, tooltip, bodyTypes);
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				@SuppressWarnings("unchecked")
@@ -218,11 +210,9 @@ class PersonalDataPanel extends ContentPanel {
 	}
 
 	private void addHiredStaffOptions() {
-		this.maintenanceLabel = createFormattedLabel(MAINTENANCE + ":", 13, YPOS_HIRED_STAFF_OPTIONS, 80,
-				COMPONENT_HEIGHT);
+		this.maintenanceLabel = createFormattedLabel(MAINTENANCE + ":", 13, YPOS_HIRED_STAFF_OPTIONS, 80);
 
-		this.maintenanceTextField = createFormattedTextField(MAINTENANCE, 100, YPOS_HIRED_STAFF_OPTIONS, 40,
-				COMPONENT_HEIGHT, "Add the maintenance fee/salary of this character.");
+		this.maintenanceTextField = createFormattedTextField(MAINTENANCE, 100, YPOS_HIRED_STAFF_OPTIONS, 40, "Add the maintenance fee/salary of this character.");
 		this.maintenanceTextField.setText(String.valueOf(ConfigReaderRepository.getCharacterbuilderConfigReader()
 				.readInt(PropertyRepository.HIRED_STAFF_DEFAULT_SALARY)));
 		this.maintenanceTextField.setHorizontalAlignment(JLabel.RIGHT);
@@ -247,43 +237,28 @@ class PersonalDataPanel extends ContentPanel {
 		this.doesSexWorkCheckBox.setVisible(showOptions);
 	}
 
-	private JLabel createFormattedLabel(String text, int xPos, int yPos, int width, int height) {
-		JLabel label = new JLabel(text);
-		label.setBounds(xPos, yPos, width, height);
-		label.setHorizontalAlignment(JLabel.RIGHT);
-		label.setVerticalAlignment(JLabel.CENTER);
+	private JLabel createFormattedLabel(String text, int xPos, int yPos, int width) {
+		JLabel label = UIComponentCreator.createFormattedLabel(text, xPos, yPos, width);
 		this.add(label);
 		return label;
 	}
 
-	private JTextField createFormattedTextField(String name, int xPos, int yPos, int width, int height,
-			String tooltip) {
-		JTextField textField = new JTextField();
-		textField.setBounds(xPos, yPos, width, height);
-		textField.setBorder(CharacterBuilderComponent.BORDER);
-		textField.setBackground(new Color(255, 255, 255, 245));
-		textField.setToolTipText(tooltip);
+	private JTextField createFormattedTextField(String name, int xPos, int yPos, int width, String tooltip) {
+		JTextField textField = UIComponentCreator.createFormattedTextField(xPos, yPos, width, tooltip);
 		this.textFields.put(name, textField);
 		this.add(textField);
 		return textField;
 	}
 
 	private JCheckBox createCheckBox(String name, int xPos, int yPos, int width, String tooltip) {
-		JCheckBox checkBox = new JCheckBox(name);
-		checkBox.setLocation(xPos, yPos);
-		checkBox.setBounds(xPos, yPos, width, 20);
-		checkBox.setToolTipText(tooltip);
+		JCheckBox checkBox = UIComponentCreator.createCheckBox(name, xPos, yPos, width, tooltip);
 		this.checkBoxes.put(name, checkBox);
 		this.add(checkBox);
 		return checkBox;
 	}
 
-	private JComboBox<String> createComboBox(String name, String[] options, int xPos, int yPos, int width,
-			String tooltip) {
-		JComboBox<String> comboBox = new JComboBox<>(options);
-		comboBox.setSelectedIndex(0);
-		comboBox.setBounds(xPos, yPos, width, 20);
-		comboBox.setToolTipText(tooltip);
+	private JComboBox<String> createComboBox(String name, int xPos, int yPos, int width, String tooltip, String[] options) {
+		JComboBox<String> comboBox = UIComponentCreator.createComboBox(xPos, yPos, width, tooltip, options);
 		this.comboBoxes.put(name, comboBox);
 		this.add(comboBox);
 		return comboBox;

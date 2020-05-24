@@ -15,8 +15,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import simplecharacterbuilder.characterbuilder.util.ImageFileHolder;
-import simplecharacterbuilder.characterbuilder.util.ValueFormatter;
+import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
+import simplecharacterbuilder.characterbuilder.util.holder.JAXBContextHolder;
+import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
 import simplecharacterbuilder.common.generated.Actor;
 import simplecharacterbuilder.common.generated.ObjectFactory;
 import simplecharacterbuilder.common.resourceaccess.GameFileAccessor;
@@ -26,8 +27,8 @@ import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 import simplecharacterbuilder.common.uicomponents.ControlPanel;
 
 public class CharacterBuilderControlPanel extends ControlPanel {
-	private static final int X_POS = MAINPANEL_WIDTH - CONTROLPANEL_WIDTH - GAP_WIDTH;
-	private static final int Y_POS = MAINPANEL_HEIGHT - CONTROLPANEL_HEIGHT - GAP_WIDTH;
+	public static final int X_POS = MAINPANEL_WIDTH - CONTROLPANEL_WIDTH - GAP_WIDTH;
+	public static final int Y_POS = MAINPANEL_HEIGHT - CONTROLPANEL_HEIGHT - GAP_WIDTH;
 
 	private static final CharacterBuilderControlPanel INSTANCE = new CharacterBuilderControlPanel(X_POS, Y_POS);
 	
@@ -60,13 +61,7 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 
 		this.button1.setEnabled(false);
 		
-		try {
-			this.marshaller = JAXBContext.newInstance(ObjectFactory.class).createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-		} catch (JAXBException e) {
-			throw new RuntimeException("Creation of marshaller failed", e);
-		}
+		this.marshaller = JAXBContextHolder.createMarshaller();
 	}
 
 	public static CharacterBuilderControlPanel getInstance() {
@@ -131,14 +126,14 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 			String fullName = ValueFormatter.formatFullName(name.getFirst(), name.getMiddle(), name.getLast(), false);
 			String xml = writer.toString().replace("<Actor>", "<Actor><!-- " + fullName + " -->");
 			xml = addEmptyLinesAfterTags(xml, "</Likes>", "</Jobs>", "</Quest>", "</Body>", "</Source>", "</Stats>", "</Skills>");
-			
-			File characterFolder = getCharacterFolder(actor.getSource().getFranchise(), getInstallmentDirName(actor.getSource().getInstallment()), fullName);
-			characterFolder.mkdir();
-			writeStringToFile(xml, new File(characterFolder, "Info.xml"));
 			System.out.println(xml);
 			
-			ImageFileHolder.copyImagesToTargetDirectory(characterFolder);
-		} catch (JAXBException | IOException e) {
+//			File characterFolder = getCharacterFolder(actor.getSource().getFranchise(), getInstallmentDirName(actor.getSource().getInstallment()), fullName);
+//			characterFolder.mkdir();
+//			writeStringToFile(xml, new File(characterFolder, "Info.xml"));
+//			
+//			BodyImageFileHolder.copyImagesToTargetDirectory(characterFolder);
+		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
 	}
@@ -152,7 +147,7 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 
 	private void verifyActor(Actor actor, List<String> errors){
 		if(actor.getName() == null || actor.getName().getFirst() == null && actor.getName().getLast() == null) {
-			errors.add("Enter a first or a last name.");
+			errors.add("Enter at least a first or a last name.");
 		}
 		if(actor.getSource() == null || actor.getSource().getFranchise() == null) {
 			errors.add("Enter a franchise.");
@@ -163,11 +158,13 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 	}
 	
 	private void verifyImages(List<String> errors) {
-		verifyImage(errors, ImageFileHolder.PORTRAIT, "Load a portrait.");
+		verifyImage(errors, BodyImageFileHolder.PORTRAIT, "Load a portrait.");
+		verifyImage(errors, BodyImageFileHolder.BODY, "Load a body sprite.");
+		verifyImage(errors, BodyImageFileHolder.HAIR, "Load a hair sprite.");
 	}
 	
 	private void verifyImage(List<String> errors, String imageName, String errorMessage) {
-		File image = ImageFileHolder.get(imageName);
+		File image = BodyImageFileHolder.get(imageName);
 		if(image == null || !image.exists()) {
 			errors.add(errorMessage);
 		}
@@ -228,6 +225,10 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 		mainComponents = components.stream().filter(c -> c instanceof CharacterBuilderMainComponent)
 				.map(c -> (CharacterBuilderMainComponent) c).collect(Collectors.toList());
 		statGenerator = (StatGenerator) mainComponents.stream().filter(c -> c instanceof StatGenerator).findFirst().get(); 
+		
+		for(int i = 1; i < mainComponents.size(); i++) {
+			mainComponents.get(i).disable();
+		}
 	}
 
 	public static void setFirstName(String firstName) {

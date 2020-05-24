@@ -100,7 +100,6 @@
 							<outputDirectory>target/generated-sources</outputDirectory>
 							<packageName>simplecharacterbuilder.common.generated</packageName>
 							<schemaDirectory>src/main/resources/schema</schemaDirectory>
-							<schemaFiles>info_xml.xsd</schemaFiles>
 						</configuration>
 					</execution>
 				</executions>
