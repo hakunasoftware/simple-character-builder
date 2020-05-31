@@ -129,7 +129,10 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 			System.out.println(xml);
 			
 //			File characterFolder = getCharacterFolder(actor.getSource().getFranchise(), getInstallmentDirName(actor.getSource().getInstallment()), fullName);
-//			characterFolder.mkdir();
+//			if(!characterFolder.mkdir()) {
+//				JOptionPane.showMessageDialog(null, "Character folder could not be created - it may already exist.", "Error", JOptionPane.ERROR_MESSAGE);
+//				throw new IllegalArgumentException("The character folder " + characterFolder.getAbsolutePath() + " could not be created.");
+//			}
 //			writeStringToFile(xml, new File(characterFolder, "Info.xml"));
 //			
 //			BodyImageFileHolder.copyImagesToTargetDirectory(characterFolder);

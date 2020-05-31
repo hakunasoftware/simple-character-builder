@@ -55,7 +55,6 @@ public class PictureLoader extends JLabel {
 
 			if (fileChooser.showOpenDialog(getApplicationFrame()) == JFileChooser.APPROVE_OPTION) {
 				setImage(fileChooser.getSelectedFile());
-			} else {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

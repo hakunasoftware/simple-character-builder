@@ -11,6 +11,7 @@ import javax.swing.UIManager;
 
 import simplecharacterbuilder.characterbuilder.bodysprites.SpriteLoaderMainComponent;
 import simplecharacterbuilder.characterbuilder.personaldata.PersonalDataMainComponent;
+import simplecharacterbuilder.characterbuilder.traits.TraitSelectorMainComponent;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.DrawIndexRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.JFileChooserPool;
@@ -27,9 +28,10 @@ public class CharacterBuilderStart {
 	static {
 		ConfigReaderRepository.init();
 		
-		COMPONENTS.add(new SpriteLoaderMainComponent(0, 0));
+		COMPONENTS.add(new TraitSelectorMainComponent(0, 0));
 		COMPONENTS.add(new PersonalDataMainComponent(0, 0));
 		COMPONENTS.add(StatGenerator.createInstance(0, 0, false));
+		COMPONENTS.add(new SpriteLoaderMainComponent(0, 0));
 		
 		CharacterBuilderControlPanel controlPanel = CharacterBuilderControlPanel.getInstance();
 		controlPanel.init(COMPONENTS);

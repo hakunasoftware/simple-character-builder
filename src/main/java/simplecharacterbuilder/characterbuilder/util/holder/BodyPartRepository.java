@@ -1,6 +1,7 @@
 package simplecharacterbuilder.characterbuilder.util.holder;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +34,12 @@ public class BodyPartRepository {
 	}
 	
 	public static List<String> getAdditionalBodyParts() {
-		return INSTANCE.additionalBodyParts != null ? INSTANCE.additionalBodyParts 
-				: (INSTANCE.additionalBodyParts = INSTANCE.bodyPartMap.keySet().stream().filter(k -> !BodyImageFileHolder.BODY.equals(k) && !BodyImageFileHolder.BODY.equals(k)).collect(Collectors.toList()));
+		if(INSTANCE.additionalBodyParts == null) {
+			INSTANCE.additionalBodyParts = INSTANCE.bodyPartMap.keySet().stream()
+					.filter(k -> !BodyImageFileHolder.BODY.equals(k) && !BodyImageFileHolder.HAIR.equals(k))
+					.collect(Collectors.toList());
+		}
+		return new ArrayList<>(INSTANCE.additionalBodyParts);
 	}
 	
 	public static Long getDrawIndex(String bodyPart) {
@@ -51,5 +56,4 @@ public class BodyPartRepository {
 			}
 		}
 	}
-	
 }
