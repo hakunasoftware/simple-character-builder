@@ -1,7 +1,5 @@
 package simplecharacterbuilder.characterbuilder.util.ui;
 
-import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -10,34 +8,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
-import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderMainComponent;
 
 @SuppressWarnings("serial")
-public class CheckBoxList extends JPanel {
+public class CheckBoxList extends PanelList {
 	private static final int ITEM_HEIGHT = 21;
 
 	private final List<JCheckBox> checkBoxes = new ArrayList<>();
 
-	private int itemCounter = 0;
-
 	public CheckBoxList(List<String> options, int xPos, int yPos, int width, int height,
 			ItemPanelMouseListenerFactory listenerFactory) {
-		this.setBounds(xPos, yPos, width, height);
-		this.setBorder(CharacterBuilderMainComponent.BORDER);
-		this.setLayout(new GridLayout(1, 1));
-
-		JPanel container = new JPanel();
-		container.setLayout(null);
-		container.setPreferredSize(new Dimension(width - 20, ITEM_HEIGHT * options.size() + 4));
-		options.stream().forEach(o -> container.add(createItemPanel(o, width, listenerFactory)));
-
-		JScrollPane scrollPane = new JScrollPane(container);
-		scrollPane.setBorder(null);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(12);
-		this.add(scrollPane);
+		super(xPos, yPos, width, height, ITEM_HEIGHT);
+		List<ItemContainer> itemContainers = new ArrayList<>();
+		options.stream().forEach(o -> itemContainers.add(createItemPanel(o, width, listenerFactory)));
+		setItemContainers(itemContainers);
 	}
 
 	public List<String> getSelectedItems() {
@@ -52,18 +35,14 @@ public class CheckBoxList extends JPanel {
 		checkBoxes.stream().filter(c -> items.contains(c.getText())).forEach(c -> c.setSelected(selected));
 	}
 	
-	private JPanel createItemPanel(String item, int width, ItemPanelMouseListenerFactory listenerFactory) {
-		JPanel itemContainer = new JPanel();
-		itemContainer.setBounds(0, itemCounter++ * ITEM_HEIGHT + 2, width - 20, ITEM_HEIGHT);
-		itemContainer.setLayout(null);
-
+	private ItemContainer createItemPanel(String item, int width, ItemPanelMouseListenerFactory listenerFactory) {
+		ItemContainer itemContainer = new ItemContainer();
 		JCheckBox checkBox = new JCheckBox(item);
 		checkBox.setBounds(3, (ITEM_HEIGHT - 20) / 2, width - 20, 20);
 		checkBox.addMouseListener(listenerFactory.createListener(checkBox));
 		checkBox.setFocusable(false);
 		itemContainer.add(checkBox);
 		this.checkBoxes.add(checkBox);
-
 		return itemContainer;
 	}
 
