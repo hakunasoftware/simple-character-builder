@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
@@ -19,7 +18,6 @@ import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.JAXBContextHolder;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
 import simplecharacterbuilder.common.generated.Actor;
-import simplecharacterbuilder.common.generated.ObjectFactory;
 import simplecharacterbuilder.common.resourceaccess.GameFileAccessor;
 import simplecharacterbuilder.common.resourceaccess.PropertyRepository;
 import simplecharacterbuilder.common.statgenerator.StatGenerator;

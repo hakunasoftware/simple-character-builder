@@ -25,7 +25,7 @@ public class StatBalancerStart {
 	static {
 		ConfigReaderRepository.init();
 		
-		StatGenerator statGenerator = StatGenerator.createInstance(0, 0, true);
+		StatGenerator statGenerator = StatGenerator.createInstance(true);
 		COMPONENTS.add(statGenerator);
 
 		int controlPanelX = MAINPANEL_WIDTH - CONTROLPANEL_WIDTH - GAP_WIDTH;

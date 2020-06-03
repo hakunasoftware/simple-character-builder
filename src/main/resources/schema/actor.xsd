@@ -65,6 +65,14 @@
 					</xs:complexType>
 				</xs:element>	
 				
+				<xs:element name="Skills">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Trait" type="xs:string" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

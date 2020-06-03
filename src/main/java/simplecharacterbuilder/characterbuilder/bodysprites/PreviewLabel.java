@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
-import simplecharacterbuilder.characterbuilder.util.ui.UIComponentCreator;
+import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 
 @SuppressWarnings("serial")
@@ -33,7 +33,7 @@ class PreviewLabel extends JPanel {
 		this.preview.setVerticalAlignment(JLabel.CENTER);
 		this.add(this.preview);
 
-		JLabel label = UIComponentCreator.createFormattedLabel("Preview", 0, 192, 128);
+		JLabel label = UIComponentFactory.createFormattedLabel("Preview", 0, 192, 128);
 		label.setForeground(new Color(120, 120, 120, 255));
 		label.setHorizontalAlignment(JLabel.CENTER);
 		this.add(label);

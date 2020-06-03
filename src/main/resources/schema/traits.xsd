@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:include schemaLocation="trait.xsd"/>
+	
+	<xs:element name="Traits">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Trait" type="TraitType" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+</xs:schema>

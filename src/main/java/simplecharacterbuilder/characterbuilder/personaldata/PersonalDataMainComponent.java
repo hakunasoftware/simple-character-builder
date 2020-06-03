@@ -48,8 +48,7 @@ public class PersonalDataMainComponent extends CharacterBuilderMainComponent {
 	}
 	private final SourcePanel sourcePanel = new SourcePanel(XPOS_SOURCE_PANEL, YPOS_SOURCE_PANEL, WIDTH_SOURCE_PANEL, HEIGHT_SOURCE_PANEL);
 	
-	public PersonalDataMainComponent(int x, int y) {
-		super(x, y);
+	public PersonalDataMainComponent() {
 		this.mainPanel.add(personalDataPanel);
 		this.mainPanel.add(pictureLoader);
 		this.mainPanel.add(sourcePanel);

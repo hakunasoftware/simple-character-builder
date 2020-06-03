@@ -30,8 +30,8 @@ import javax.swing.filechooser.FileSystemView;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.JFileChooserPool;
-import simplecharacterbuilder.characterbuilder.util.ui.UIComponentCreator;
-import simplecharacterbuilder.characterbuilder.util.ui.UIComponentCreator.ListComponentDto;
+import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
+import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory.ListComponentDto;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderMainComponent;
 import simplecharacterbuilder.common.uicomponents.ContentPanel;
 
@@ -85,7 +85,7 @@ public class AdditionalBodySpriteLoader extends ContentPanel {
 	}
 
 	private void addBodyPartList() {
-		ListComponentDto dto = UIComponentCreator.createList(LIST_XPOS, LIST_YPOS, LIST_WIDTH, LIST_HEIGHT);
+		ListComponentDto dto = UIComponentFactory.createList(LIST_XPOS, LIST_YPOS, LIST_WIDTH, LIST_HEIGHT);
 
 		this.listContainer = dto.getContainer();
 		this.listContainer.setVisible(this.areListComponentsDisplayed);

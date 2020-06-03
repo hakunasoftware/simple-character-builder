@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +27,8 @@ import javax.swing.text.AbstractDocument;
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
 import simplecharacterbuilder.characterbuilder.util.ui.DocumentChangeListener;
 import simplecharacterbuilder.characterbuilder.util.ui.NumberOnlyDocumentFilter;
-import simplecharacterbuilder.characterbuilder.util.ui.UIComponentCreator;
 import simplecharacterbuilder.characterbuilder.util.ui.NumberOnlyDocumentFilter.Mode;
+import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
 import simplecharacterbuilder.common.resourceaccess.ConfigReader;
 import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
 import simplecharacterbuilder.common.resourceaccess.GameFileAccessor;
@@ -238,27 +237,27 @@ class PersonalDataPanel extends ContentPanel {
 	}
 
 	private JLabel createFormattedLabel(String text, int xPos, int yPos, int width) {
-		JLabel label = UIComponentCreator.createFormattedLabel(text, xPos, yPos, width);
+		JLabel label = UIComponentFactory.createFormattedLabel(text, xPos, yPos, width);
 		this.add(label);
 		return label;
 	}
 
 	private JTextField createFormattedTextField(String name, int xPos, int yPos, int width, String tooltip) {
-		JTextField textField = UIComponentCreator.createFormattedTextField(xPos, yPos, width, tooltip);
+		JTextField textField = UIComponentFactory.createFormattedTextField(xPos, yPos, width, tooltip);
 		this.textFields.put(name, textField);
 		this.add(textField);
 		return textField;
 	}
 
 	private JCheckBox createCheckBox(String name, int xPos, int yPos, int width, String tooltip) {
-		JCheckBox checkBox = UIComponentCreator.createCheckBox(name, xPos, yPos, width, tooltip);
+		JCheckBox checkBox = UIComponentFactory.createCheckBox(name, xPos, yPos, width, tooltip);
 		this.checkBoxes.put(name, checkBox);
 		this.add(checkBox);
 		return checkBox;
 	}
 
 	private JComboBox<String> createComboBox(String name, int xPos, int yPos, int width, String tooltip, String[] options) {
-		JComboBox<String> comboBox = UIComponentCreator.createComboBox(xPos, yPos, width, tooltip, options);
+		JComboBox<String> comboBox = UIComponentFactory.createComboBox(xPos, yPos, width, tooltip, options);
 		this.comboBoxes.put(name, comboBox);
 		this.add(comboBox);
 		return comboBox;

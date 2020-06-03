@@ -45,8 +45,8 @@ public abstract class CharacterBuilderComponent {
 	}
 
 	public static abstract class CharacterBuilderMainComponent extends CharacterBuilderComponent {
-		protected CharacterBuilderMainComponent(int x, int y) {
-			super(x, y, MAINPANEL_WIDTH, MAINPANEL_HEIGHT);
+		protected CharacterBuilderMainComponent() {
+			super(0, 0, MAINPANEL_WIDTH, MAINPANEL_HEIGHT);
 		}
 		
 		public abstract void setValues(Actor actor);

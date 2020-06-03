@@ -29,9 +29,7 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 	private final boolean ALWAYS_SCALE;
 	private final boolean NEVER_SCALE;
 
-	private StatGenerator(int x, int y, boolean showComparison) {
-		super(x, y);
-
+	private StatGenerator(boolean showComparison) {
 		statCalculator = new StatCalculator();
 		regularStatSelectionPanel = new RegularStatSelectionPanel(this, GAP_WIDTH, GAP_WIDTH, showComparison);
 		beautySelectionPanel = new BeautySelectionPanel(this, 2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH,
@@ -54,8 +52,8 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 		NEVER_SCALE = configReader.readBoolean(PropertyRepository.NEVER_SCALE);
 	}
 
-	public static StatGenerator createInstance(int x, int y, boolean showComparison) {
-		return new StatGenerator(x, y, showComparison);
+	public static StatGenerator createInstance(boolean showComparison) {
+		return new StatGenerator(showComparison);
 	}
 
 	public Map<Stat, Integer> getStats() {

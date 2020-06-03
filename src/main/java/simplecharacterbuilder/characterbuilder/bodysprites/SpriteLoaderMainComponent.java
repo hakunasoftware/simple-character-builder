@@ -15,8 +15,7 @@ public class SpriteLoaderMainComponent extends CharacterBuilderMainComponent {
 	private final SpriteTemplateInfoSelector spriteTemplateInfoSelector;
 	private final PreviewLabel previewLabel;
 
-	public SpriteLoaderMainComponent(int x, int y) {
-		super(x, y);
+	public SpriteLoaderMainComponent() {
 		this.spriteTemplateInfoSelector = new SpriteTemplateInfoSelector(GAP_WIDTH);
 		this.mainPanel.add(this.spriteTemplateInfoSelector);
 		this.mainPanel.add(createMainSpritePictureLoader(MAIN_SPRITE_LOADER_X_OFFSET, BodyImageFileHolder.BODY));
