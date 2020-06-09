@@ -65,6 +65,9 @@ public class ControlPanel extends CharacterBuilderControlComponent {
 	}
 
 	public void setFranchise(String franchise) {
+		if(franchise.length() > 16) {
+			franchise = franchise.substring(0, 16) + "...";
+		}
 		franchiseLabel.setText("<html><i>" + franchise + "</i></html>");
 	}
 

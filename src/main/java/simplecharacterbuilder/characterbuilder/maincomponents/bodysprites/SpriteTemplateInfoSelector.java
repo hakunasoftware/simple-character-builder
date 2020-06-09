@@ -1,4 +1,4 @@
-package simplecharacterbuilder.characterbuilder.bodysprites;
+package simplecharacterbuilder.characterbuilder.maincomponents.bodysprites;
 
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CONTROLPANEL_WIDTH;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.GAP_WIDTH;
@@ -6,6 +6,7 @@ import static simplecharacterbuilder.common.uicomponents.CharacterBuilderCompone
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
 import simplecharacterbuilder.common.uicomponents.ContentPanel;
@@ -20,7 +21,7 @@ class SpriteTemplateInfoSelector extends ContentPanel {
 	
 	SpriteTemplateInfoSelector (int yPos) {
 		super(GAP_WIDTH, yPos, WIDTH, HEIGHT);
-		this.add(UIComponentFactory.createFormattedLabel("Body Type:", 1, 8, 70));
+		this.add(UIComponentFactory.createFormattedLabel("Body Type:", 1, 8, 70, JLabel.CENTER));
 		String[] bodyTypes = new String[] {"Flat-Chested", "Small Breasts", "Medium Breasts", "Large Breasts", "XL Breasts"};
 		this.bodyTypeComboBox = UIComponentFactory.createComboBox(78, 10, 115, "<html>Select the body type, i.e. the template that was used for the sprite.<br/>(Flat-Chested uses the Small Breasts and XL Breasts the Large Breasts template)</html>", bodyTypes);
 		this.add(bodyTypeComboBox);

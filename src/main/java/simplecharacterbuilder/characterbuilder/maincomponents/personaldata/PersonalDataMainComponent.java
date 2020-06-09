@@ -1,16 +1,16 @@
-package simplecharacterbuilder.characterbuilder.personaldata;
+package simplecharacterbuilder.characterbuilder.maincomponents.personaldata;
 
-import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.ASIAN;
-import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.FIRST_NAME;
-import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.LAST_NAME;
-import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.LIKES;
-import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.MAINTENANCE;
-import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.MIDDLE_NAME;
-import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.NICKNAME;
-import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.NICKNAME_PERCENTAGE;
-import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.QUEST;
-import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.RACE;
-import static simplecharacterbuilder.characterbuilder.personaldata.PersonalDataPanel.SEX_WORK;
+import static simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataPanel.ASIAN;
+import static simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataPanel.FIRST_NAME;
+import static simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataPanel.LAST_NAME;
+import static simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataPanel.LIKES;
+import static simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataPanel.MAINTENANCE;
+import static simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataPanel.MIDDLE_NAME;
+import static simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataPanel.NICKNAME;
+import static simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataPanel.NICKNAME_PERCENTAGE;
+import static simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataPanel.QUEST;
+import static simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataPanel.RACE;
+import static simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataPanel.SEX_WORK;
 import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.formatBoolean;
 import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.formatLikes;
 import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.formatNickname;
@@ -23,12 +23,16 @@ import javax.swing.JTextField;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
+import simplecharacterbuilder.characterbuilder.util.holder.FranchiseCache;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
 import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader;
 import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader.FileProcessor;
 import simplecharacterbuilder.common.generated.Actor;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderMainComponent;
 
+/**
+ * This needs to be the first MainComponent!
+ */
 public class PersonalDataMainComponent extends CharacterBuilderMainComponent {
 	private static final int WIDTH_SOURCE_PANEL = CONTROLPANEL_WIDTH;
 	private static final int HEIGHT_SOURCE_PANEL = 115;
@@ -65,6 +69,12 @@ public class PersonalDataMainComponent extends CharacterBuilderMainComponent {
 		setTypeSettings(actor);
 		setRaceSelection(actor);
 		setSourceSelection(actor);
+	}
+	
+	@Override
+	public void disable() {
+		super.disable();
+		FranchiseCache.setFranchise(sourcePanel.getSelectedFranchise());
 	}
 
 	private void setTypeSettings(Actor actor) {

@@ -1,4 +1,4 @@
-package simplecharacterbuilder.characterbuilder.traits;
+package simplecharacterbuilder.characterbuilder.maincomponents.various;
 
 import java.awt.Color;
 import java.awt.event.MouseEvent;
@@ -87,8 +87,7 @@ public class TraitSelectorMainComponent extends CharacterBuilderMainComponent {
 	}
 
 	private void addTableLabel(String text, int xPos, String tooltip) {
-		JLabel label = UIComponentFactory.createFormattedLabel(text, xPos, 2, SELECTION_WIDTH);
-		label.setHorizontalAlignment(JLabel.CENTER);
+		JLabel label = UIComponentFactory.createFormattedLabel(text, xPos, 2, SELECTION_WIDTH, JLabel.CENTER);
 		label.setForeground(HEADLINE_COLOR);
 		label.setToolTipText(tooltip);
 		this.mainPanel.add(label);
@@ -132,9 +131,8 @@ public class TraitSelectorMainComponent extends CharacterBuilderMainComponent {
 	private void addDescriptionPanel() {
 		this.descriptionPanel = UIComponentFactory.createFormattedLabel(null, GAP_WIDTH,
 				MAINPANEL_HEIGHT - GAP_WIDTH - CONTROLPANEL_HEIGHT,
-				MAINPANEL_WIDTH - 3 * GAP_WIDTH - CONTROLPANEL_WIDTH, CONTROLPANEL_HEIGHT);
+				MAINPANEL_WIDTH - 3 * GAP_WIDTH - CONTROLPANEL_WIDTH, CONTROLPANEL_HEIGHT, JLabel.CENTER);
 		this.descriptionPanel.setBorder(CharacterBuilderMainComponent.BORDER);
-		this.descriptionPanel.setHorizontalAlignment(JLabel.CENTER);
 		this.mainPanel.add(this.descriptionPanel);
 		setDescription(null, null);
 	}

@@ -20,6 +20,8 @@ import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 
 @SuppressWarnings("serial")
 public class PictureLoader extends JLabel {
+	private static File startingDirectory = FileSystemView.getFileSystemView().getHomeDirectory();
+	
 	private final int width;
 	private final int height;
 
@@ -51,10 +53,10 @@ public class PictureLoader extends JLabel {
 	private void selectPath() {
 		JFileChooser fileChooser = JFileChooserPool.getPngFileChooser(this.dialogTitle);
 		try {
-			fileChooser.setCurrentDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
+			fileChooser.setCurrentDirectory(startingDirectory);
 
 			if (fileChooser.showOpenDialog(getApplicationFrame()) == JFileChooser.APPROVE_OPTION) {
-				setImage(fileChooser.getSelectedFile());
+				setImage(startingDirectory = fileChooser.getSelectedFile());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

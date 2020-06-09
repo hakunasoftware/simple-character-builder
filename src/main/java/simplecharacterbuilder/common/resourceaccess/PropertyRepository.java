@@ -35,4 +35,5 @@ public class PropertyRepository {
 	public static final String DRAW_INDICES = "draw_indices";
 	public static final String RETRACTABLE_BODY_PARTS = "retractable_bodyparts";
 	public static final String NON_RETRACTABLE_BODY_PARTS = "non_retractable_bodyparts";
+	public static final String COMMON_BEHAVIORS = "common_behaviors";
 }

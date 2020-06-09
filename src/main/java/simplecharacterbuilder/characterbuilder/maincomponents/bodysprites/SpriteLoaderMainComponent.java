@@ -1,4 +1,4 @@
-package simplecharacterbuilder.characterbuilder.bodysprites;
+package simplecharacterbuilder.characterbuilder.maincomponents.bodysprites;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;

@@ -33,21 +33,17 @@ public abstract class PanelList extends JPanel {
 		this.add(scrollPane);
 	}
 
-	/**
-	 * Initialize the list with a list of ItemContainers. Can only be called once.
-	 * 
-	 * @param itemContainers
-	 */
 	public synchronized void setItemContainers(List<ItemContainer> itemContainers) {
+		this.counter = 0;
 		this.mainContainer.removeAll();
-		this.mainContainer.setPreferredSize(new Dimension(width - 20, itemHeight * itemContainers.size() + 4));
+		this.mainContainer.setPreferredSize(new Dimension(width - 20, itemHeight * itemContainers.size()));
 		itemContainers.stream().forEach(c -> this.mainContainer.add(c));
 		this.mainContainer.revalidate();
 	}
 
 	protected class ItemContainer extends JPanel {
 		public ItemContainer() {
-			this.setBounds(0, counter++ * itemHeight + 2, width - 20, itemHeight);
+			this.setBounds(0, counter++ * itemHeight, width, itemHeight);
 			this.setLayout(null);
 		}
 	}

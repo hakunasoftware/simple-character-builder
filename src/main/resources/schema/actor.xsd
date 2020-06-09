@@ -73,6 +73,22 @@
 					</xs:complexType>
 				</xs:element>
 				
+				<xs:element name="Equipment">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Equip" type="xs:string" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				
+				<xs:element name="Social">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Behavior" type="xs:string" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

@@ -49,7 +49,7 @@
 					<transformers>
 						<transformer
 							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-							<mainClass>simplecharacterbuilder.characterbuilder.core.CharacterBuilderStart</mainClass>
+							<mainClass>simplecharacterbuilder.statbalancer.StatBalancerStart</mainClass>
 						</transformer>
 					</transformers>
 				</configuration>
@@ -68,10 +68,10 @@
 						<configuration>
 							<headerType>gui</headerType>
 							<jar>${project.build.directory}/${artifactId}-${version}-shaded.jar</jar>
-							<outfile>${project.build.directory}/SimpleCharacterBuilder.exe</outfile>
+							<outfile>${project.build.directory}/StatBalancer.exe</outfile>
 							<downloadUrl>http://java.com/download</downloadUrl>
 							<classPath>
-								<mainClass>simplecharacterbuilder.characterbuilder.core.CharacterBuilderStart</mainClass>
+								<mainClass>simplecharacterbuilder.statbalancer.StatBalancerStart</mainClass>
 								<preCp>anything</preCp>
 							</classPath>
 							<icon>src/main/resources/editor.ico</icon>
@@ -88,8 +88,8 @@
 								<txtProductVersion>1.0.0.0</txtProductVersion>
 								<productName>${project.name}</productName>
 								<companyName>hakunasoftware</companyName>
-								<internalName>simplecharacterbuilder</internalName>
-								<originalFilename>SimpleCharacterBuilder.exe</originalFilename>
+								<internalName>statBalancer</internalName>
+								<originalFilename>StatBalancer.exe</originalFilename>
 							</versionInfo>
 						</configuration>
 					</execution>

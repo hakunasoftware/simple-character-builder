@@ -1,4 +1,4 @@
-package simplecharacterbuilder.characterbuilder.personaldata;
+package simplecharacterbuilder.characterbuilder.maincomponents.personaldata;
 
 import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.BOTH;
 import static simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter.FEMALES;
@@ -237,7 +237,7 @@ class PersonalDataPanel extends ContentPanel {
 	}
 
 	private JLabel createFormattedLabel(String text, int xPos, int yPos, int width) {
-		JLabel label = UIComponentFactory.createFormattedLabel(text, xPos, yPos, width);
+		JLabel label = UIComponentFactory.createFormattedLabel(text, xPos, yPos, width, JLabel.RIGHT);
 		this.add(label);
 		return label;
 	}

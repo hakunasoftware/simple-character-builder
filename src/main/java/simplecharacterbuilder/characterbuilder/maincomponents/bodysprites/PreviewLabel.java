@@ -1,4 +1,4 @@
-package simplecharacterbuilder.characterbuilder.bodysprites;
+package simplecharacterbuilder.characterbuilder.maincomponents.bodysprites;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -33,9 +33,8 @@ class PreviewLabel extends JPanel {
 		this.preview.setVerticalAlignment(JLabel.CENTER);
 		this.add(this.preview);
 
-		JLabel label = UIComponentFactory.createFormattedLabel("Preview", 0, 192, 128);
+		JLabel label = UIComponentFactory.createFormattedLabel("Preview", 0, 192, 128, JLabel.CENTER);
 		label.setForeground(new Color(120, 120, 120, 255));
-		label.setHorizontalAlignment(JLabel.CENTER);
 		this.add(label);
 	}
 

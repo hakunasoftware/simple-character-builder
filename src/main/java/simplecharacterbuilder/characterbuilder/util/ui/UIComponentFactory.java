@@ -22,15 +22,16 @@ import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.Char
 public class UIComponentFactory {
 	private UIComponentFactory() {};
 	
-	public static JLabel createFormattedLabel(String text, int xPos, int yPos, int width) {
-		return createFormattedLabel(text, xPos, yPos, width, 22);
+	public static JLabel createFormattedLabel(String text, int xPos, int yPos, int width, int horizontalAlignment) {
+		return createFormattedLabel(text, xPos, yPos, width, 22, horizontalAlignment);
 	}
 	
-	public static JLabel createFormattedLabel(String text, int xPos, int yPos, int width, int height) {
+	public static JLabel createFormattedLabel(String text, int xPos, int yPos, int width, int height, int horizontalAlignment) {
 		JLabel label = new JLabel(text);
 		label.setBounds(xPos, yPos, width, height);
-		label.setHorizontalAlignment(JLabel.RIGHT);
+		label.setHorizontalAlignment(horizontalAlignment);
 		label.setVerticalAlignment(JLabel.CENTER);
+		label.setFocusable(false);
 		return label;
 	}
 

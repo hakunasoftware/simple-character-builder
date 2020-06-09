@@ -9,10 +9,10 @@ import java.util.List;
 
 import javax.swing.UIManager;
 
-import simplecharacterbuilder.characterbuilder.bodysprites.SpriteLoaderMainComponent;
-import simplecharacterbuilder.characterbuilder.personaldata.PersonalDataMainComponent;
-import simplecharacterbuilder.characterbuilder.social.SocialMainComponent;
-import simplecharacterbuilder.characterbuilder.traits.TraitSelectorMainComponent;
+import simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent;
+import simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataMainComponent;
+import simplecharacterbuilder.characterbuilder.maincomponents.various.SocialMainComponent;
+import simplecharacterbuilder.characterbuilder.maincomponents.various.TraitSelectorMainComponent;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.DrawIndexRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.JFileChooserPool;
@@ -31,11 +31,11 @@ public class CharacterBuilderStart {
 		ConfigReaderRepository.init();
 		TraitRepository.init();
 		
-		COMPONENTS.add(new SocialMainComponent());
 		COMPONENTS.add(new PersonalDataMainComponent());
 		COMPONENTS.add(StatGenerator.createInstance(false));
 		COMPONENTS.add(new SpriteLoaderMainComponent());
 		COMPONENTS.add(new TraitSelectorMainComponent());
+//		COMPONENTS.add(new SocialMainComponent());
 		
 		CharacterBuilderControlPanel controlPanel = CharacterBuilderControlPanel.getInstance();
 		controlPanel.init(COMPONENTS);

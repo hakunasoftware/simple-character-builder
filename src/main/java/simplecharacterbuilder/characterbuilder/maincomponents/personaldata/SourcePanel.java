@@ -1,4 +1,4 @@
-package simplecharacterbuilder.characterbuilder.personaldata;
+package simplecharacterbuilder.characterbuilder.maincomponents.personaldata;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -22,12 +22,10 @@ import simplecharacterbuilder.common.uicomponents.ContentPanel;
 
 @SuppressWarnings("serial")
 public class SourcePanel extends ContentPanel {
-	private static final String NONE_OPTION = "<None>";
-
 	private static final String[] PRIMARY_SOURCE_TYPES = new String[] { "Anime", "Manga", "Game", "Light Novel",
 			"Eroge", "Other" };
-	private static final String[] SECONDARY_SOURCE_TYPES = new String[] { NONE_OPTION, "Anime", "Manga", "Game",
-			"Light Novel", "Eroge", "Other" };
+	private static final String[] SECONDARY_SOURCE_TYPES = new String[] { ValueFormatter.NONE_OPTION, "Anime", 
+			"Manga", "Game", "Light Novel", "Eroge", "Other" };
 
 	private static final int COMPONENT_HEIGHT = 20;
 	private static final int YPOS_FIRST_PANEL = 10;
@@ -68,8 +66,7 @@ public class SourcePanel extends ContentPanel {
 	}
 
 	public String getSecondaryType() {
-		String secondaryType = (String) secondaryOptionsComboBox.getSelectedItem();
-		return NONE_OPTION.equals(secondaryType) ? null : secondaryType;
+		return ValueFormatter.checkStringForNoneOption((String) secondaryOptionsComboBox.getSelectedItem());
 	}
 
 	private void createFranchiseOptions() {
@@ -206,7 +203,7 @@ public class SourcePanel extends ContentPanel {
 		}
 		String[] sourceTypes = readSourceTypesFromInfoXml(findExampleInfoXml(franchise, installment)).split("\\|");
 		primaryOptionsComboBox.setSelectedIndex(findIndex(PRIMARY_SOURCE_TYPES, sourceTypes[0].trim()));
-		String secondarySourceType = sourceTypes.length > 1 ? sourceTypes[1].trim() : NONE_OPTION;
+		String secondarySourceType = sourceTypes.length > 1 ? sourceTypes[1].trim() : ValueFormatter.NONE_OPTION;
 		secondaryOptionsComboBox.setSelectedIndex(findIndex(SECONDARY_SOURCE_TYPES, secondarySourceType));
 	}
 

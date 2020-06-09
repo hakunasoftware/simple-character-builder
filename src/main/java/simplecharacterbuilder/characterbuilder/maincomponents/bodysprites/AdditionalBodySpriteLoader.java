@@ -1,4 +1,4 @@
-package simplecharacterbuilder.characterbuilder.bodysprites;
+package simplecharacterbuilder.characterbuilder.maincomponents.bodysprites;
 
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CONTROLPANEL_WIDTH;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.GAP_WIDTH;

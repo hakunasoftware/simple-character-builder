@@ -1,6 +1,7 @@
 package simplecharacterbuilder.characterbuilder.util.transform;
 
 public class ValueFormatter {
+	public static final String NONE_OPTION = "<None>";
 	public static final String MALES = "Males";
 	public static final String FEMALES = "Females";
 	public static final String BOTH = "Both";
@@ -49,9 +50,13 @@ public class ValueFormatter {
 		}
 		return "100".equals(probability) ? nickname : nickname + " [" + probability + "%]";
 	}
+	
+	public static String formatRelationship(String relationshipType, String fullName) {
+		return relationshipType + " ~ " + fullName;
+	}
 
-	public static String formatBoolean(boolean isAsian) {
-		return isAsian ? "True" : null;
+	public static String formatBoolean(boolean value) {
+		return value ? "True" : null;
 	}
 
 	public static String formatSkin(boolean darkSkin) {
@@ -60,6 +65,10 @@ public class ValueFormatter {
 
 	public static boolean isEmpty(String str) {
 		return str == null || str.trim().isEmpty();
+	}
+	
+	public static String checkStringForNoneOption(String input) {
+		return NONE_OPTION.equals(input) ? null : input;
 	}
 
 	private static void appendName(StringBuilder builder, String name) {

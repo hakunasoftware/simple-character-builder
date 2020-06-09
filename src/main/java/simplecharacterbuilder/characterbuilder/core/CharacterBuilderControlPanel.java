@@ -14,8 +14,10 @@ import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import simplecharacterbuilder.characterbuilder.maincomponents.various.SocialMainComponent;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.JAXBContextHolder;
+import simplecharacterbuilder.characterbuilder.util.holder.PostInfoXmlGenerationRunnableHolder;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
 import simplecharacterbuilder.common.generated.Actor;
 import simplecharacterbuilder.common.resourceaccess.GameFileAccessor;
@@ -66,21 +68,25 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 		return INSTANCE;
 	}
 
-	private void next() {
+	public void next() {
 		if (!this.button1.isEnabled()) {
 			this.button1.setEnabled(true);
 		}
-
 		mainComponents.get(pageIndex).disable();
 		mainComponents.get(++pageIndex).enable();
+		System.out.println(pageIndex);
 
 		if (pageIndex == mainComponents.size() - 1) {
 			this.button2.setVisible(false);
 			this.saveButton.setVisible(true);
 		}
+		
+		if(mainComponents.get(pageIndex) instanceof SocialMainComponent && ((SocialMainComponent) mainComponents.get(pageIndex)).isEmpty()) {
+			next();
+		}
 	}
 
-	private void previous() {
+	public void previous() {
 		if (!this.button2.isVisible()) {
 			this.saveButton.setVisible(false);
 			this.button2.setVisible(true);
@@ -92,29 +98,35 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 		if (pageIndex == 0) {
 			this.button1.setEnabled(false);
 		}
+		
+		if(mainComponents.get(pageIndex) instanceof SocialMainComponent && ((SocialMainComponent) mainComponents.get(pageIndex)).isEmpty()) {
+			previous();
+		}
 	}
 
 	private synchronized void save() {
 		Actor actor = new Actor();
 		this.mainComponents.stream().forEach(c -> c.setValues(actor));
 		
-		List<String> verificationErrors = getVerificationErrors(actor);
-		if(verificationErrors.size() > 0) {
-			StringBuilder errorMsg = new StringBuilder("Values are missing or invalid: ");
-			for(String error : verificationErrors) {
-				errorMsg.append("\n- ").append(error);
-			}
-			JOptionPane.showMessageDialog(null, errorMsg.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		if(!statGenerator.confirmIntentIfWarningsExist())
-		{
+//		List<String> verificationErrors = getVerificationErrors(actor);
+//		if(verificationErrors.size() > 0) {
+//			StringBuilder errorMsg = new StringBuilder("Values are missing or invalid: ");
+//			for(String error : verificationErrors) {
+//				errorMsg.append("\n- ").append(error);
+//			}
+//			JOptionPane.showMessageDialog(null, errorMsg.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+//			PostInfoXmlGenerationRunnableHolder.clear();
+//			return;
+//		}
+		if(!statGenerator.confirmIntentIfWarningsExist()) {
+			PostInfoXmlGenerationRunnableHolder.clear();
 			return;
 		}
 		
 		int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to write your input into the respective files?", "Confirm Saving", JOptionPane.YES_NO_OPTION);
 		if(dialogResult != JOptionPane.YES_OPTION){
-		  return;
+			PostInfoXmlGenerationRunnableHolder.clear();
+			return;
 		}
 		
 		StringWriter writer = new StringWriter();
@@ -134,7 +146,14 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 //			writeStringToFile(xml, new File(characterFolder, "Info.xml"));
 //			
 //			BodyImageFileHolder.copyImagesToTargetDirectory(characterFolder);
+			
+			PostInfoXmlGenerationRunnableHolder.runAll();
+			PostInfoXmlGenerationRunnableHolder.clear();
+			
+			JOptionPane.showMessageDialog(null, "Your informations were successfully saved! Don't forget to commit the changes and please do a quick check for any errors!");
 		} catch (JAXBException e) {
+			PostInfoXmlGenerationRunnableHolder.clear();
+			JOptionPane.showMessageDialog(null, "An error occured during saving, sorry. Please report this so that it can be fixed! You may need to clean up some changes that were already made.", "Error", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 	}
