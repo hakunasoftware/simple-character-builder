@@ -28,6 +28,7 @@ public class PropertyRepository {
 	// pathvariables.config
 	public static final String GAME_ROOT_DIRECTORY = "game_root";
 	public static final String ACTORS_FOLDER = "actors_folder";
+	public static final String ACTORS_LIST = "actors_list";
 	public static final String TRAITFOLDER_BACKGROUND = "traitfolder_background";
 	public static final String TRAITFOLDER_PERSONALITY = "traitfolder_personality";
 	public static final String TRAITFOLDER_PHYSICAL = "traitfolder_physical";

@@ -1,11 +1,15 @@
 package simplecharacterbuilder.characterbuilder.util.transform;
 
+import java.util.Random;
+
 public class ValueFormatter {
 	public static final String NONE_OPTION = "<None>";
 	public static final String MALES = "Males";
 	public static final String FEMALES = "Females";
 	public static final String BOTH = "Both";
 	public static final String NEITHER = "Neither";
+
+	private static final String HEXSTRING = "0123456789ABCDEF";
 
 	public static String nullEmptyString(String str) {
 		return isEmpty(str) ? null : str;
@@ -69,6 +73,14 @@ public class ValueFormatter {
 	
 	public static String checkStringForNoneOption(String input) {
 		return NONE_OPTION.equals(input) ? null : input;
+	}
+	
+	public static String formatListEntry(String entry) {
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i < 8; i++) {
+			builder.append(HEXSTRING.charAt(new Random().nextInt(16)));
+		}
+		return builder.append(" : ").append(entry).toString();
 	}
 
 	private static void appendName(StringBuilder builder, String name) {

@@ -1,8 +1,12 @@
 package simplecharacterbuilder.characterbuilder.core;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +24,8 @@ import simplecharacterbuilder.characterbuilder.util.holder.JAXBContextHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.PostInfoXmlGenerationRunnableHolder;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
 import simplecharacterbuilder.common.generated.Actor;
+import simplecharacterbuilder.common.generated.Actor.Name;
+import simplecharacterbuilder.common.generated.Actor.Source;
 import simplecharacterbuilder.common.resourceaccess.GameFileAccessor;
 import simplecharacterbuilder.common.resourceaccess.PropertyRepository;
 import simplecharacterbuilder.common.statgenerator.StatGenerator;
@@ -74,7 +80,6 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 		}
 		mainComponents.get(pageIndex).disable();
 		mainComponents.get(++pageIndex).enable();
-		System.out.println(pageIndex);
 
 		if (pageIndex == mainComponents.size() - 1) {
 			this.button2.setVisible(false);
@@ -107,57 +112,101 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 	private synchronized void save() {
 		Actor actor = new Actor();
 		this.mainComponents.stream().forEach(c -> c.setValues(actor));
+//		verifyActor(actor);
+		confirmIntent();
 		
-//		List<String> verificationErrors = getVerificationErrors(actor);
-//		if(verificationErrors.size() > 0) {
-//			StringBuilder errorMsg = new StringBuilder("Values are missing or invalid: ");
-//			for(String error : verificationErrors) {
-//				errorMsg.append("\n- ").append(error);
-//			}
-//			JOptionPane.showMessageDialog(null, errorMsg.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-//			PostInfoXmlGenerationRunnableHolder.clear();
-//			return;
-//		}
-		if(!statGenerator.confirmIntentIfWarningsExist()) {
-			PostInfoXmlGenerationRunnableHolder.clear();
-			return;
-		}
-		
-		int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to write your input into the respective files?", "Confirm Saving", JOptionPane.YES_NO_OPTION);
-		if(dialogResult != JOptionPane.YES_OPTION){
-			PostInfoXmlGenerationRunnableHolder.clear();
-			return;
-		}
-		
-		StringWriter writer = new StringWriter();
 		try {
-			this.marshaller.marshal(actor, writer);
-			Actor.Name name = actor.getName();
-			String fullName = ValueFormatter.formatFullName(name.getFirst(), name.getMiddle(), name.getLast(), false);
-			String xml = writer.toString().replace("<Actor>", "<Actor><!-- " + fullName + " -->");
-			xml = addEmptyLinesAfterTags(xml, "</Likes>", "</Jobs>", "</Quest>", "</Body>", "</Source>", "</Stats>", "</Skills>");
-			System.out.println(xml);
+			String xml = marshallActorToInfoXmlString(actor);
+			System.out.println("Generated Info.xml:\n" + xml);
 			
 //			File characterFolder = getCharacterFolder(actor.getSource().getFranchise(), getInstallmentDirName(actor.getSource().getInstallment()), fullName);
 //			if(!characterFolder.mkdir()) {
 //				JOptionPane.showMessageDialog(null, "Character folder could not be created - it may already exist.", "Error", JOptionPane.ERROR_MESSAGE);
-//				throw new IllegalArgumentException("The character folder " + characterFolder.getAbsolutePath() + " could not be created.");
+//				PostInfoXmlGenerationRunnableHolder.clear();
+//				return;
 //			}
 //			writeStringToFile(xml, new File(characterFolder, "Info.xml"));
 //			
 //			BodyImageFileHolder.copyImagesToTargetDirectory(characterFolder);
 			
+			addActorToActorsList(actor);
 			PostInfoXmlGenerationRunnableHolder.runAll();
 			PostInfoXmlGenerationRunnableHolder.clear();
 			
 			JOptionPane.showMessageDialog(null, "Your informations were successfully saved! Don't forget to commit the changes and please do a quick check for any errors!");
-		} catch (JAXBException e) {
+		} catch (Exception e) {
 			PostInfoXmlGenerationRunnableHolder.clear();
 			JOptionPane.showMessageDialog(null, "An error occured during saving, sorry. Please report this so that it can be fixed! You may need to clean up some changes that were already made.", "Error", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 	}
 
+	private boolean verifyActor(Actor actor) {
+		List<String> verificationErrors = getVerificationErrors(actor);
+		boolean errorsFound = verificationErrors.size() > 0;
+		if(errorsFound) {
+			StringBuilder errorMsg = new StringBuilder("Values are missing or invalid: ");
+			for(String error : verificationErrors) {
+				errorMsg.append("\n- ").append(error);
+			}
+			JOptionPane.showMessageDialog(null, errorMsg.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+			PostInfoXmlGenerationRunnableHolder.clear();
+		}
+		return errorsFound;
+	}
+	
+	private void confirmIntent() {
+		if(!statGenerator.confirmIntentIfWarningsExist()) {
+			PostInfoXmlGenerationRunnableHolder.clear();
+			return;
+		}
+		int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to write your input into the respective files?", "Confirm Saving", JOptionPane.YES_NO_OPTION);
+		if(dialogResult != JOptionPane.YES_OPTION){
+			PostInfoXmlGenerationRunnableHolder.clear();
+			return;
+		}
+	}
+	
+	private String marshallActorToInfoXmlString(Actor actor) throws JAXBException {
+		StringWriter writer = new StringWriter();
+		this.marshaller.marshal(actor, writer);
+		Actor.Name name = actor.getName();
+		String fullName = ValueFormatter.formatFullName(name.getFirst(), name.getMiddle(), name.getLast(), false);
+		String xml = writer.toString().replace("<Actor>", "<Actor><!-- " + fullName + " -->");
+		xml = addEmptyLinesAfterTags(xml, "</Likes>", "</Jobs>", "</Quest>", "</Body>", "</Source>", "</Stats>", "</Skills>");
+		return xml;
+	}
+	
+	private void addActorToActorsList(Actor actor) throws IOException {
+		Name name = actor.getName();
+		String fullName = ValueFormatter.formatFullName(name.getFirst(), name.getMiddle(), name.getLast(), false);
+		Source source = actor.getSource();
+		String sourceString = ValueFormatter.isEmpty(source.getInstallment()) ? source.getFranchise() : source.getInstallment();
+		File file = GameFileAccessor.getFileFromProperty(PropertyRepository.ACTORS_LIST);
+		File tempFile = new File(file.getParentFile(), "Actors.txt.tmp");
+		
+		try(BufferedReader reader = new BufferedReader(new FileReader(file));
+				PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(tempFile)))) {
+			boolean actorAdded = false;
+			String line;
+			while ((line = reader.readLine()) != null) {
+				writer.println(line);
+			    if (!actorAdded && line.contains(sourceString)) {
+			    	writer.println(ValueFormatter.formatListEntry(fullName));
+			    	actorAdded = true;
+			    }
+			}
+			if(!actorAdded) {
+				writer.println();
+				writer.println("#---- " + sourceString + " ----");
+				writer.println(ValueFormatter.formatListEntry(fullName));
+			}
+		}
+		
+		file.delete();
+		tempFile.renameTo(file);
+	}
+	
 	private List<String> getVerificationErrors(Actor actor) {
 		List<String> errors = new ArrayList<>();
 		verifyActor(actor, errors);
@@ -166,10 +215,14 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 	}
 
 	private void verifyActor(Actor actor, List<String> errors){
-		if(actor.getName() == null || actor.getName().getFirst() == null && actor.getName().getLast() == null) {
+		if(actor.getName() == null || ValueFormatter.isEmpty(actor.getName().getFirst()) && ValueFormatter.isEmpty(actor.getName().getLast())) {
 			errors.add("Enter at least a first or a last name.");
 		}
-		if(actor.getSource() == null || actor.getSource().getFranchise() == null) {
+		if(actor.getName() != null && !ValueFormatter.isEmpty(actor.getName().getMiddle()) 
+				&& (ValueFormatter.isEmpty(actor.getName().getFirst()) || ValueFormatter.isEmpty(actor.getName().getLast()))) {
+			errors.add("To use a middle name, a first and a last name need to be set.");
+		}
+		if(actor.getSource() == null || ValueFormatter.isEmpty(actor.getSource().getFranchise())) {
 			errors.add("Enter a franchise.");
 		}
 		if(!actor.getType().equals("Slave") && actor.getMaintenance() == null) {
