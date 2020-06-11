@@ -11,6 +11,7 @@ import javax.swing.UIManager;
 
 import simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataMainComponent;
+import simplecharacterbuilder.characterbuilder.maincomponents.various.CombatClassSelectorMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.various.SocialMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.various.TraitSelectorMainComponent;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
@@ -35,7 +36,10 @@ public class CharacterBuilderStart {
 		COMPONENTS.add(StatGenerator.createInstance(false));
 		COMPONENTS.add(new SpriteLoaderMainComponent());
 		COMPONENTS.add(new TraitSelectorMainComponent());
-//		COMPONENTS.add(new SocialMainComponent());
+		COMPONENTS.add(new SocialMainComponent());
+		if(CombatClassSelectorMainComponent.SELECTIONS_COUNT > 0) {
+			COMPONENTS.add(new CombatClassSelectorMainComponent());
+		}
 		
 		CharacterBuilderControlPanel controlPanel = CharacterBuilderControlPanel.getInstance();
 		controlPanel.init(COMPONENTS);

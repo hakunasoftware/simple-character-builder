@@ -183,7 +183,7 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 		Source source = actor.getSource();
 		String sourceString = ValueFormatter.isEmpty(source.getInstallment()) ? source.getFranchise() : source.getInstallment();
 		File file = GameFileAccessor.getFileFromProperty(PropertyRepository.ACTORS_LIST);
-		File tempFile = new File(file.getParentFile(), "Actors.txt.tmp");
+		File tempFile = new File(file.getParentFile(), file.getName() + ".tmp");
 		
 		try(BufferedReader reader = new BufferedReader(new FileReader(file));
 				PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(tempFile)))) {

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="CombatClass" type="CombatClassType" />
+
+	<xs:complexType name="CombatClassType">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string" />
+			<xs:element name="Description" type="xs:string" />
+			<xs:element name="UsableEquipment">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="MainHand" type="xs:string" maxOccurs="unbounded" />
+						<xs:element name="TwoHands" type="xs:string" maxOccurs="unbounded" />
+						<xs:element name="Allow" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SkillGroups">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Starting" type="xs:string" maxOccurs="unbounded" />
+						<xs:element name="Learnable" type="xs:string" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

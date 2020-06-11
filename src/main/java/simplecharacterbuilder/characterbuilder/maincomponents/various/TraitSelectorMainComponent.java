@@ -66,16 +66,16 @@ public class TraitSelectorMainComponent extends CharacterBuilderMainComponent {
 	@Override
 	public void setValues(Actor actor) {
 		refresh();
-		Skills skills = actor.getSkills();
-		if (skills == null) {
+		List<String> selectedTraits = new ArrayList<>();
+		selectedTraits.addAll(personalityCheckBoxes.getSelectedItems());
+		selectedTraits.addAll(backgroundCheckBoxes.getSelectedItems());
+		if(selectedTraits.isEmpty()) {
+			return;
+		}
+		if (actor.getSkills() == null) {
 			actor.setSkills(new Skills());
 		}
-		List<String> traits = actor.getSkills().getTrait();
-		traits.addAll(personalityCheckBoxes.getSelectedItems());
-		traits.addAll(backgroundCheckBoxes.getSelectedItems());
-		if(traits.isEmpty()) {
-			actor.setSkills(null);
-		}
+		actor.getSkills().getTrait().addAll(selectedTraits);
 	}
 
 	private void addTableLabels() {

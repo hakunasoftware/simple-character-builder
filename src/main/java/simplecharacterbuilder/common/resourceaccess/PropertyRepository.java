@@ -7,6 +7,7 @@ public class PropertyRepository {
 	public static final String NEVER_SCALE = "never_scale";
 	public static final String BALANCER_CHOOSER_DEFAULT = "chooser_default_directory";
 	public static final String HIRED_STAFF_DEFAULT_SALARY = "hired_staff_default_salary";
+	public static final String MAX_COMBATCLASSES = "maximum_regular_combatclasses";
 
 	public static final String REG_STAT_VERY_LOW = "regStat_veryLow";
 	public static final String REG_STAT_LOW = "regStat_low";
@@ -29,6 +30,7 @@ public class PropertyRepository {
 	public static final String GAME_ROOT_DIRECTORY = "game_root";
 	public static final String ACTORS_FOLDER = "actors_folder";
 	public static final String ACTORS_LIST = "actors_list";
+	public static final String REGULAR_COMBAT_CLASSES = "regular_combat_classes";
 	public static final String TRAITFOLDER_BACKGROUND = "traitfolder_background";
 	public static final String TRAITFOLDER_PERSONALITY = "traitfolder_personality";
 	public static final String TRAITFOLDER_PHYSICAL = "traitfolder_physical";

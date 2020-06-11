@@ -1,5 +1,6 @@
 package simplecharacterbuilder.characterbuilder.util.transform;
 
+import java.util.List;
 import java.util.Random;
 
 public class ValueFormatter {
@@ -81,6 +82,20 @@ public class ValueFormatter {
 			builder.append(HEXSTRING.charAt(new Random().nextInt(16)));
 		}
 		return builder.append(" : ").append(entry).toString();
+	}
+	
+	public static String formatListWithCommas(List<String> list) {
+		if(list == null) {
+			return "";
+		}
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i < list.size(); i++) {
+			builder.append(list.get(i));
+			if(i < list.size() - 1) {
+				builder.append(", ");
+			}
+		}
+		return builder.toString();
 	}
 
 	private static void appendName(StringBuilder builder, String name) {
