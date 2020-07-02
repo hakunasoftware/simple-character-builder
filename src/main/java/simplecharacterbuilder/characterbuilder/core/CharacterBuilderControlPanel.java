@@ -19,7 +19,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import simplecharacterbuilder.characterbuilder.maincomponents.various.SocialMainComponent;
-import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
+import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.JAXBContextHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.PostInfoXmlGenerationRunnableHolder;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
@@ -231,13 +231,12 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 	}
 	
 	private void verifyImages(List<String> errors) {
-		verifyImage(errors, BodyImageFileHolder.PORTRAIT, "Load a portrait.");
-		verifyImage(errors, BodyImageFileHolder.BODY, "Load a body sprite.");
-		verifyImage(errors, BodyImageFileHolder.HAIR, "Load a hair sprite.");
+		verifyImage(errors, ImageFileHolder.getPortrait(), "Load a portrait.");
+		verifyImage(errors, ImageFileHolder.getBodySprite(ImageFileHolder.BODY), "Load a body sprite.");
+		verifyImage(errors, ImageFileHolder.getBodySprite(ImageFileHolder.HAIR), "Load a hair sprite.");
 	}
 	
-	private void verifyImage(List<String> errors, String imageName, String errorMessage) {
-		File image = BodyImageFileHolder.get(imageName);
+	private void verifyImage(List<String> errors, File image, String errorMessage) {
 		if(image == null || !image.exists()) {
 			errors.add(errorMessage);
 		}

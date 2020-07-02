@@ -12,10 +12,12 @@ import javax.swing.UIManager;
 import simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.various.CombatClassSelectorMainComponent;
+import simplecharacterbuilder.characterbuilder.maincomponents.various.EquipmentCreatorMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.various.SocialMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.various.TraitSelectorMainComponent;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.DrawIndexRepository;
+import simplecharacterbuilder.characterbuilder.util.holder.EquipTypeRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.JFileChooserPool;
 import simplecharacterbuilder.characterbuilder.util.holder.TraitRepository;
 import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
@@ -31,7 +33,9 @@ public class CharacterBuilderStart {
 	static {
 		ConfigReaderRepository.init();
 		TraitRepository.init();
-		
+		EquipTypeRepository.init();
+
+		COMPONENTS.add(new EquipmentCreatorMainComponent());
 		COMPONENTS.add(new PersonalDataMainComponent());
 		COMPONENTS.add(StatGenerator.createInstance(false));
 		COMPONENTS.add(new SpriteLoaderMainComponent());

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="EquipType" type="EquipTypeType"/>
+	
+	<xs:complexType name="EquipTypeType">
+		<xs:sequence>
+			<xs:element name="Name" type="xs:string" />
+			<xs:element name="Slot" type="xs:string" minOccurs="0"/>
+			<xs:element name="Slots" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Main" type="xs:string"/>
+						<xs:element name="Extra" type="xs:string" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DrawIndex" type="xs:string" minOccurs="0"/>
+			<xs:element name="DrawIndices" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DrawIndex" type="xs:string" />
+						<xs:element name="ExtraIndex" type="xs:string"  minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

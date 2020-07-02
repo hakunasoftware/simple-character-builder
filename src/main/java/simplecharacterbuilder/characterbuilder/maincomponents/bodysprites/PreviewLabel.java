@@ -12,7 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
+import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
 import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
@@ -39,7 +39,7 @@ class PreviewLabel extends JPanel {
 	}
 
 	void update() {
-		Collection<BufferedImage> sprites = BodyImageFileHolder.getSprites().keySet().stream()
+		Collection<BufferedImage> sprites = ImageFileHolder.getBodySprites().keySet().stream()
 				.sorted((k1, k2) -> BodyPartRepository.getDrawIndex(k1).compareTo(BodyPartRepository.getDrawIndex(k2)))
 				.map(k -> readImage(k)).collect(Collectors.toList());
 		this.preview.setIcon(new ImageIcon(overlay(sprites)));
@@ -47,7 +47,7 @@ class PreviewLabel extends JPanel {
 
 	private BufferedImage readImage(String imageName) {
 		try {
-			return ImageIO.read(BodyImageFileHolder.get(imageName));
+			return ImageIO.read(ImageFileHolder.getBodySprite(imageName));
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new IllegalArgumentException(e);

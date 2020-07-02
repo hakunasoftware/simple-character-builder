@@ -27,7 +27,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileSystemView;
 
-import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
+import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.JFileChooserPool;
 import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
@@ -126,7 +126,7 @@ public class AdditionalBodySpriteLoader extends ContentPanel {
 		this.removeButton.addActionListener(e -> {
 			this.bodyPartList.getSelectedValuesList().stream().forEach(v -> {
 				this.bodyParts.remove(v);
-				BodyImageFileHolder.remove(v);
+				ImageFileHolder.removeBodySprite(v);
 				if(v != null && v.equals(AdditionalBodySpriteLoader.this.lastPreviewed)) {
 					setPreview(null);
 					AdditionalBodySpriteLoader.this.lastPreviewed = null;
@@ -150,7 +150,7 @@ public class AdditionalBodySpriteLoader extends ContentPanel {
 		}
 		this.bodyParts.put(spriteType, spriteFile);
 		updateDisplayedBodyPartList();
-		BodyImageFileHolder.put(spriteType, spriteFile);
+		ImageFileHolder.putBodySprite(spriteType, spriteFile);
 		combinedPreviewLabel.update();
 		displayListComponents(true);
 	}

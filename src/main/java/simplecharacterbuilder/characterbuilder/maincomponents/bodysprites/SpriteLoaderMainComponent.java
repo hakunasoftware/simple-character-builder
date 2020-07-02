@@ -1,7 +1,7 @@
 package simplecharacterbuilder.characterbuilder.maincomponents.bodysprites;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
-import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
+import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader;
 import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader.FileProcessor;
 import simplecharacterbuilder.common.generated.Actor;
@@ -18,8 +18,8 @@ public class SpriteLoaderMainComponent extends CharacterBuilderMainComponent {
 	public SpriteLoaderMainComponent() {
 		this.spriteTemplateInfoSelector = new SpriteTemplateInfoSelector(GAP_WIDTH);
 		this.mainPanel.add(this.spriteTemplateInfoSelector);
-		this.mainPanel.add(createMainSpritePictureLoader(MAIN_SPRITE_LOADER_X_OFFSET, BodyImageFileHolder.BODY));
-		this.mainPanel.add(createMainSpritePictureLoader(AdditionalBodySpriteLoader.WIDTH - (int) (SCALE * 128) - MAIN_SPRITE_LOADER_X_OFFSET, BodyImageFileHolder.HAIR));
+		this.mainPanel.add(createMainSpritePictureLoader(MAIN_SPRITE_LOADER_X_OFFSET, ImageFileHolder.BODY));
+		this.mainPanel.add(createMainSpritePictureLoader(AdditionalBodySpriteLoader.WIDTH - (int) (SCALE * 128) - MAIN_SPRITE_LOADER_X_OFFSET, ImageFileHolder.HAIR));
 		
 		this.previewLabel = new PreviewLabel(CharacterBuilderControlPanel.X_POS + (ControlPanel.WIDTH_BASIC - 128) / 2, 30);
 		this.mainPanel.add(this.previewLabel);
@@ -40,7 +40,7 @@ public class SpriteLoaderMainComponent extends CharacterBuilderMainComponent {
 	
 	private PictureLoader createMainSpritePictureLoader(int x, String spriteName) {
 		FileProcessor fileProcessor = f -> {
-			BodyImageFileHolder.put(spriteName, f);
+			ImageFileHolder.putBodySprite(spriteName, f);
 			this.previewLabel.update();
 		};
 		PictureLoader picLoader = new PictureLoader(GAP_WIDTH + x, GAP_WIDTH + 50, 128, 192, SCALE, fileProcessor, "Select " + spriteName + " sprite (128x192px and png-format)");

@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.swing.JTextField;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
-import simplecharacterbuilder.characterbuilder.util.holder.BodyImageFileHolder;
+import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.FranchiseCache;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
 import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader;
@@ -46,7 +46,7 @@ public class PersonalDataMainComponent extends CharacterBuilderMainComponent {
 	{
 		FileProcessor fileProcessor = f -> {
 			CharacterBuilderControlPanel.getInstance().setPortrait(f.getAbsolutePath());
-			BodyImageFileHolder.put(BodyImageFileHolder.PORTRAIT, f);
+			ImageFileHolder.putPortrait(f);
 		};
 		pictureLoader = new PictureLoader(XPOS_PICTURE_LOADER, GAP_WIDTH, 200, 200, WIDTH_PICTURE_LOADER / 200.0, fileProcessor, "Select Portrait (200x200px and png-format)");
 	}

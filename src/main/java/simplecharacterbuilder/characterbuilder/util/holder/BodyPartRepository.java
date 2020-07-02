@@ -36,7 +36,7 @@ public class BodyPartRepository {
 	public static List<String> getAdditionalBodyParts() {
 		if(INSTANCE.additionalBodyParts == null) {
 			INSTANCE.additionalBodyParts = INSTANCE.bodyPartMap.keySet().stream()
-					.filter(k -> !BodyImageFileHolder.BODY.equals(k) && !BodyImageFileHolder.HAIR.equals(k))
+					.filter(k -> !ImageFileHolder.BODY.equals(k) && !ImageFileHolder.HAIR.equals(k))
 					.collect(Collectors.toList());
 		}
 		return new ArrayList<>(INSTANCE.additionalBodyParts);
