@@ -1,4 +1,4 @@
-package simplecharacterbuilder.characterbuilder.maincomponents.bodysprites;
+package simplecharacterbuilder.characterbuilder.util.ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -14,15 +14,14 @@ import javax.swing.JPanel;
 
 import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
-import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 
 @SuppressWarnings("serial")
-class PreviewLabel extends JPanel {
+public class PreviewLabel extends JPanel {
 
 	private final JLabel preview;
 
-	PreviewLabel(int x, int y) {
+	public PreviewLabel(int x, int y) {
 		this.setBounds(x, y, 128, 212);
 		this.setLayout(null);
 
@@ -38,7 +37,7 @@ class PreviewLabel extends JPanel {
 		this.add(label);
 	}
 
-	void update() {
+	public void update() {
 		Collection<BufferedImage> sprites = ImageFileHolder.getBodySprites().keySet().stream()
 				.sorted((k1, k2) -> BodyPartRepository.getDrawIndex(k1).compareTo(BodyPartRepository.getDrawIndex(k2)))
 				.map(k -> readImage(k)).collect(Collectors.toList());
@@ -63,5 +62,4 @@ class PreviewLabel extends JPanel {
 		graphics.dispose();
 		return combined;
 	}
-
 }

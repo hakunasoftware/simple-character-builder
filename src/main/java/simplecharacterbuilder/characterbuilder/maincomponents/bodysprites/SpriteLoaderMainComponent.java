@@ -3,6 +3,7 @@ package simplecharacterbuilder.characterbuilder.maincomponents.bodysprites;
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
 import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader;
+import simplecharacterbuilder.characterbuilder.util.ui.PreviewLabel;
 import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader.FileProcessor;
 import simplecharacterbuilder.common.generated.Actor;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderMainComponent;

@@ -30,6 +30,7 @@ import javax.swing.filechooser.FileSystemView;
 import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.JFileChooserPool;
+import simplecharacterbuilder.characterbuilder.util.ui.PreviewLabel;
 import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
 import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory.ListComponentDto;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderMainComponent;
