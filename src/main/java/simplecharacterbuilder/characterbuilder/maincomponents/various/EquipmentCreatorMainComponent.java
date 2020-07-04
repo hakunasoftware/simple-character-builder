@@ -1,6 +1,7 @@
 package simplecharacterbuilder.characterbuilder.maincomponents.various;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory.ListCo
 import simplecharacterbuilder.common.generated.Actor;
 import simplecharacterbuilder.common.generated.EquipTypeType;
 import simplecharacterbuilder.common.generated.EquipTypeType.DrawIndices;
+import simplecharacterbuilder.common.generated.EquipTypeType.Slots;
 import simplecharacterbuilder.common.resourceaccess.ConfigReader;
 import simplecharacterbuilder.common.resourceaccess.GameFileAccessor;
 import simplecharacterbuilder.common.resourceaccess.PropertyRepository;
@@ -60,7 +62,7 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	private PictureLoader mainSpriteLoader;
 	private PictureLoader extraSpriteLoader;
 	private PreviewLabel previewLabel;
-	
+
 	private List<String> alreadyExistingItems;
 
 	private final Map<String, ItemDto> createdEquipment = new HashMap<>();
@@ -93,7 +95,7 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	public void setValues(Actor actor) {
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public void enable() {
 		readAlreadyExistingItems();
@@ -112,15 +114,17 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		this.extraSpriteLoader = createPictureLoader(panel, "Select an additional sprite (128x192px and png-format)");
 		this.extraSpriteLoader.setText("<html><center>Load<br/>Extra<br/>Sprite</center></html>");
 		this.mainSpriteLoader.setToolTipText("Load a sprite for the item.");
-		this.extraSpriteLoader.setToolTipText("Load an additional sprite for the item (usually optional). Talk to an experienced spriter before using this option!");
+		this.extraSpriteLoader.setToolTipText(
+				"Load an additional sprite for the item (usually optional). Talk to an experienced spriter before using this option!");
 
 		this.categoryComboBox.addItemListener(e -> updateEquipTypes());
 		this.equipTypeComboBox.addItemListener(e -> updateCurrentEquipType());
 		updateEquipTypes();
-		updateCurrentEquipType();
 
-		this.nameTextField = createTextField(panel, "Item Name:", 40 + 3 * SELECTION_OFFSET, "Add a name for the item. [Tip: Include the character's (first) name to make it unique.]");
-		this.descriptionTextField = createTextField(panel, "Description:", 62 + 4 * SELECTION_OFFSET, "Add a short description of the item that will appear ingame. (Try not to make it generic.)");
+		this.nameTextField = createTextField(panel, "Item Name:", 40 + 3 * SELECTION_OFFSET,
+				"Add a name for the item. [Tip: Include the character's (first) name to make it unique.]");
+		this.descriptionTextField = createTextField(panel, "Description:", 62 + 4 * SELECTION_OFFSET,
+				"Add a short description of the item that will appear ingame. (Try not to make it generic.)");
 
 		JButton addButton = UIComponentFactory.createButton("Add item", ADD_BUTTON_OFFSET,
 				PANEL_HEIGHT - ADD_BUTTON_HEIGHT - ADD_BUTTON_OFFSET, PANEL_WIDTH - 2 * ADD_BUTTON_OFFSET,
@@ -132,9 +136,12 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	}
 
 	private void addItem() {
-		if (!verifySelections()) {
+		String verificationError = checkForVerificationError();
+		if (verificationError != null) {
+			JOptionPane.showMessageDialog(null, verificationError, "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
+
 		String name = this.nameTextField.getText();
 		this.createdEquipment.put(name,
 				new ItemDto((String) this.equipTypeComboBox.getSelectedItem(), name,
@@ -143,34 +150,33 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		refreshCreatedItemList();
 	}
 
-	private boolean verifySelections() {
+	private String checkForVerificationError() {
 		String name = this.nameTextField.getText();
 		if (ValueFormatter.isEmpty(name)) {
-			JOptionPane.showMessageDialog(null, "The name of an item can't be empty.", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
+			return "The name of an item can't be empty.";
 		}
 		if (ValueFormatter.isEmpty(this.descriptionTextField.getText())) {
-			JOptionPane.showMessageDialog(null, "The description of an item can't be empty.", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
+			return "The description of an item can't be empty.";
 		}
 		if (this.mainSpriteLoader.getSelectedPicture() == null) {
-			JOptionPane.showMessageDialog(null, "A (main) sprite needs to be selected.", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
+			return "A (main) sprite needs to be selected.";
 		}
 		if (this.createdEquipment.containsKey(name)) {
-			JOptionPane.showMessageDialog(null, "You already created an item with this name.", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
+			return "You already created an item with this name.";
 		}
 		if (this.alreadyExistingItems.contains(name)) {
-			JOptionPane.showMessageDialog(null, "An item with this name already exists.", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
+			return "An item with this name already exists.";
 		}
-		return true;
+
+		for (String slot : getSlots(this.currentEquipType)) {
+			String conflictingItem = searchItemWithSlot(slot);
+			if (conflictingItem != null) {
+				return "The item you are trying to create would use the slot " + slot + ", but the item "
+						+ conflictingItem + " already occupies this slot.";
+			}
+		}
+
+		return null;
 	}
 
 	private JComboBox<String> createComboBox(JComponent parent, String labelText, int yPos, String tooltip,
@@ -203,6 +209,7 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		List<String> types = EquipTypeRepository
 				.getEquipTypesFromCategory((String) this.categoryComboBox.getSelectedItem());
 		this.equipTypeComboBox.setModel(new DefaultComboBoxModel<>(sortToArray(types)));
+		updateCurrentEquipType();
 	}
 
 	private void updateCurrentEquipType() {
@@ -236,9 +243,36 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	private String[] sortToArray(Collection<String> collection) {
 		return collection.stream().sorted((a, b) -> a.compareTo(b)).toArray(String[]::new);
 	}
-	
+
 	private void readAlreadyExistingItems() {
-		this.alreadyExistingItems = new ConfigReader(GameFileAccessor.getFileFromProperty(PropertyRepository.EQUIPMENT_LIST)).readAllValues();
+		this.alreadyExistingItems = new ConfigReader(
+				GameFileAccessor.getFileFromProperty(PropertyRepository.EQUIPMENT_LIST)).readAllValues();
+	}
+
+	private String searchItemWithSlot(String slot) {
+		for (ItemDto item : this.createdEquipment.values()) {
+			if (getSlots(EquipTypeRepository.getEquipType(item.getEquipType())).contains(slot)) {
+				return item.getName();
+			}
+		}
+		return null;
+	}
+
+	private List<String> getSlots(EquipTypeType equipType) {
+		List<String> slotList = new ArrayList<>();
+		addToCollectionIfNotNull(slotList, equipType.getSlot());
+		Slots slots = equipType.getSlots();
+		if (slots != null) {
+			addToCollectionIfNotNull(slotList, slots.getMain());
+			addToCollectionIfNotNull(slotList, slots.getExtra());
+		}
+		return slotList;
+	}
+
+	private void addToCollectionIfNotNull(Collection<String> collection, String item) {
+		if (item != null) {
+			collection.add(item);
+		}
 	}
 
 	private static class ItemDto {
