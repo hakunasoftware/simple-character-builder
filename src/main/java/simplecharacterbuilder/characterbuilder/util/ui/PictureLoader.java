@@ -30,6 +30,8 @@ public class PictureLoader extends JLabel {
 	private int imgHeight;
 	private FileProcessor fileProcessor;
 	private String dialogTitle;
+	
+	private File selectedPicture;
 
 	public PictureLoader(int x, int y, int imgWidth, int imgHeight, double scale, FileProcessor fileProcessor, String dialogTitle) {
 		this.width = (int) (scale * imgWidth);
@@ -77,6 +79,8 @@ public class PictureLoader extends JLabel {
 		this.setHorizontalAlignment(SwingConstants.LEFT);
 		this.setIcon(new ImageIcon(scaledImage));
 		
+		this.selectedPicture = imgFile;
+		
 		if(this.fileProcessor != null) {
 			this.fileProcessor.process(imgFile);
 		}
@@ -85,6 +89,10 @@ public class PictureLoader extends JLabel {
 	private Component getApplicationFrame() {
 		return applicationFrame == null ? applicationFrame = (JFrame) SwingUtilities.getWindowAncestor(this)
 				: applicationFrame;
+	}
+	
+	public File getSelectedPicture() {
+		return this.selectedPicture;
 	}
 	
 	public static interface FileProcessor{
