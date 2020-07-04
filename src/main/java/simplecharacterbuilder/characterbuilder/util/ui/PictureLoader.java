@@ -49,6 +49,10 @@ public class PictureLoader extends JLabel {
 			selectPath();
 		}
 	}
+	
+	public void clear() {
+		this.setIcon(null);
+	}
 
 	private void selectPath() {
 		JFileChooser fileChooser = JFileChooserPool.getPngFileChooser(this.dialogTitle);
