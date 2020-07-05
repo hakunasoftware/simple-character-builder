@@ -77,9 +77,7 @@ public class AdditionalBodySpriteLoader extends ContentPanel {
 	}
 
 	private void addLoadButton() {
-		JButton loadButton = new JButton("Load additional body part (optional)");
-		loadButton.setBounds(0, 0, WIDTH, LOAD_BUTTON_HEIGHT);
-		loadButton.setBorder(CharacterBuilderMainComponent.BORDER);
+		JButton loadButton = UIComponentFactory.createButton("Load additional body part (optional)", 0, 0, WIDTH, LOAD_BUTTON_HEIGHT);
 		loadButton.setToolTipText("Click to load additional body part sprites. Make sure to consult experienced spriters before using these!");
 		loadButton.addActionListener(e -> loadAdditionalSprite());
 		this.add(loadButton);
@@ -120,9 +118,8 @@ public class AdditionalBodySpriteLoader extends ContentPanel {
 	}
 
 	private void addRemoveButton() {
-		this.removeButton = new JButton("Remove selected body part");
-		this.removeButton.setBounds(0, HEIGHT - REMOVE_BUTTON_HEIGHT, LIST_WIDTH, REMOVE_BUTTON_HEIGHT);
-		this.removeButton.setBorder(CharacterBuilderMainComponent.BORDER);
+		this.removeButton = UIComponentFactory.createButton("Remove selected body part", 
+				0, HEIGHT - REMOVE_BUTTON_HEIGHT, LIST_WIDTH, REMOVE_BUTTON_HEIGHT);
 		this.removeButton.setVisible(this.areListComponentsDisplayed);
 		this.removeButton.addActionListener(e -> {
 			this.bodyPartList.getSelectedValuesList().stream().forEach(v -> {

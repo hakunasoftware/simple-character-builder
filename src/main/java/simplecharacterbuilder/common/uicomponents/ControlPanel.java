@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
 import simplecharacterbuilder.common.statgenerator.StatGenerator;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderControlComponent;
 
@@ -14,14 +15,18 @@ public class ControlPanel extends CharacterBuilderControlComponent {
 	public static final int WIDTH_BASIC = CONTROLPANEL_WIDTH;
 	public static final int WIDTH_EXTENDED = CONTROLPANEL_WIDTH + StatGenerator.COMPARISON_WIDTH;
 
+	public static final int BUTTON_WIDTH_BASIC = (ControlPanel.WIDTH_BASIC - CONTROLPANEL_HEIGHT) / 2;
+	public static final int BUTTON_WIDTH_EXTENDED = (ControlPanel.WIDTH_EXTENDED - CONTROLPANEL_HEIGHT) / 2;
+	public static final int BUTTON_HEIGHT = 36;
+
 	protected static final int LABEL_OFFSET = 8;
 
 	protected final JLabel portrait;
 	protected final JLabel nameLabel;
 	protected final JLabel franchiseLabel;
 
-	protected final ControlButton button1;
-	protected final ControlButton button2;
+	protected final JButton button1;
+	protected final JButton button2;
 
 	protected final boolean extended;
 
@@ -32,10 +37,9 @@ public class ControlPanel extends CharacterBuilderControlComponent {
 
 		mainPanel.setBorder(BORDER);
 
-		this.button1 = new ControlButton(nameButton1, 0, extended);
+		this.button1 = createControlButton(nameButton1, 0, extended);
 		mainPanel.add(button1);
-		this.button2 = new ControlButton(nameButton2,
-				extended ? ControlButton.WIDTH_EXTENDED : ControlButton.WIDTH_BASIC, extended);
+		this.button2 = createControlButton(nameButton2, extended ? BUTTON_WIDTH_EXTENDED : BUTTON_WIDTH_BASIC, extended);
 		mainPanel.add(button2);
 
 		nameLabel = createTextLabel(0);
@@ -76,18 +80,10 @@ public class ControlPanel extends CharacterBuilderControlComponent {
 		Image scaledImage = image.getScaledInstance(portrait.getWidth(), portrait.getHeight(), Image.SCALE_SMOOTH);
 		portrait.setIcon(new ImageIcon(scaledImage));
 	}
-
-	@SuppressWarnings("serial")
-	protected static class ControlButton extends JButton {
-		public static final int WIDTH_BASIC = (ControlPanel.WIDTH_BASIC - CONTROLPANEL_HEIGHT) / 2;
-		public static final int WIDTH_EXTENDED = (ControlPanel.WIDTH_EXTENDED - CONTROLPANEL_HEIGHT) / 2;
-
-		static final int HEIGHT = 36;
-
-		public ControlButton(String buttonText, int xPos, boolean extended) {
-			super(buttonText);
-			this.setBounds(xPos, CONTROLPANEL_HEIGHT - HEIGHT, extended ? WIDTH_EXTENDED : WIDTH_BASIC, HEIGHT);
-			this.setHorizontalAlignment(CENTER);
-		}
+	
+	protected JButton createControlButton(String buttonText, int xPos, boolean extended) {
+		return UIComponentFactory.createButton(buttonText, xPos, CONTROLPANEL_HEIGHT - BUTTON_HEIGHT,
+				(extended ? BUTTON_WIDTH_EXTENDED : BUTTON_WIDTH_BASIC) + 1, BUTTON_HEIGHT);
 	}
+
 }

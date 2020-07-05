@@ -4,22 +4,29 @@ import static simplecharacterbuilder.common.uicomponents.CharacterBuilderCompone
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 import simplecharacterbuilder.characterbuilder.util.ui.CheckBoxList.ItemPanelMouseListenerFactory;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderMainComponent;
 
 public class UIComponentFactory {
+	private static final Border HIGHLIGHTING_BORDER = createHighlightingBorder();
+	
 	private UIComponentFactory() {};
 	
 	public static JLabel createFormattedLabel(String text, int xPos, int yPos, int width, int horizontalAlignment) {
@@ -79,6 +86,7 @@ public class UIComponentFactory {
 		button.setHorizontalAlignment(JLabel.CENTER);
 		button.setVerticalAlignment(JLabel.CENTER);
 		button.setFocusable(false);
+		button.addMouseListener(new HighlightingMouseListener(button));
 		return button;
 	}
 	
@@ -98,6 +106,13 @@ public class UIComponentFactory {
 
 		return new ListComponentDto(container, list);
 	}
+	
+	private static Border createHighlightingBorder() {
+		Border outerBorder = BorderFactory.createLineBorder(new Color(122, 138, 153, 255));
+		Border innerBorder = BorderFactory.createLineBorder(new Color(184, 207, 229, 255));
+		Border compound = BorderFactory.createCompoundBorder(innerBorder, innerBorder);
+		return BorderFactory.createCompoundBorder(outerBorder, compound);
+	}
 
 	public static class ListComponentDto {
 		private final JPanel container;
@@ -114,6 +129,28 @@ public class UIComponentFactory {
 		
 		public JList<String> getList(){
 			return this.list;
+		}
+	}
+	
+	public static class HighlightingMouseListener extends MouseAdapter{
+		private final JComponent component;
+		
+		HighlightingMouseListener(JComponent component) {
+			this.component = component;
+		}
+		
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			if(this.component.isEnabled()) {
+				this.component.setBorder(HIGHLIGHTING_BORDER);
+			}
+			super.mouseEntered(e);
+		}
+		
+		@Override
+		public void mouseExited(MouseEvent e) {
+			this.component.setBorder(CharacterBuilderMainComponent.BORDER);
+			super.mouseExited(e);
 		}
 	}
 	

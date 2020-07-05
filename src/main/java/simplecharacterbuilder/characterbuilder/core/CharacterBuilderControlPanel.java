@@ -57,7 +57,7 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 	private CharacterBuilderControlPanel(int x, int y) {
 		super(x, y, false, "Back", "Next", null);
 
-		this.saveButton = new ControlButton("Save", ControlButton.WIDTH_BASIC, false);
+		this.saveButton = createControlButton("Save", BUTTON_WIDTH_BASIC, false);
 		this.saveButton.setVisible(false);
 		this.mainPanel.add(saveButton);
 
@@ -102,6 +102,7 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 
 		if (pageIndex == 0) {
 			this.button1.setEnabled(false);
+			this.button1.setBorder(CharacterBuilderMainComponent.BORDER);
 		}
 		
 		if(mainComponents.get(pageIndex) instanceof SocialMainComponent && ((SocialMainComponent) mainComponents.get(pageIndex)).isEmpty()) {

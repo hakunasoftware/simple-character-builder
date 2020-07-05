@@ -2,7 +2,6 @@ package simplecharacterbuilder.characterbuilder.util.ui;
 
 import java.awt.Component;
 import java.awt.Image;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 
@@ -46,7 +45,18 @@ public class PictureLoader extends JLabel {
 		this.addMouseListener(new LoadPictureMouseListener());
 	}
 
-	private class LoadPictureMouseListener extends MouseAdapter {
+	private class LoadPictureMouseListener extends UIComponentFactory.HighlightingMouseListener {
+		LoadPictureMouseListener() {
+			super(PictureLoader.this);
+		}
+		
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			if(PictureLoader.this.selectedPicture == null) {
+				super.mouseEntered(e);
+			}
+		}
+
 		public void mouseClicked(MouseEvent e) {
 			selectPath();
 		}
