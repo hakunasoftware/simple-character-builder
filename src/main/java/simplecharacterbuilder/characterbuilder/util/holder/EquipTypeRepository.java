@@ -43,6 +43,15 @@ public class EquipTypeRepository {
 	public static EquipTypeType getEquipType(String equipType) {
 		return INSTANCE.equipTypes.get(equipType);
 	}
+	
+	public static String getCategoryOfEquipType(String equipType) {
+		for(String category : INSTANCE.categories.keySet()) {
+			if(INSTANCE.categories.get(category).contains(equipType)) {
+				return category;
+			}
+		}
+		throw new IllegalArgumentException("Error finding category of " + equipType);
+	}
 
 	@SuppressWarnings("unchecked")
 	private void readEquipTypesFromFile(File file) {

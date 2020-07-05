@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -14,7 +16,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -54,6 +55,8 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	private static final int MAIN_PICLOADER_ONLY_XPOS = (PANEL_WIDTH - PICLOADER_WIDTH) / 2;
 	private static final int MAIN_PICLOADER_EXTRA_XPOS = 70;
 	private static final int EXTRA_PICLOADER_XPOS = PANEL_WIDTH - MAIN_PICLOADER_EXTRA_XPOS - PICLOADER_WIDTH;
+	
+	private static final String ADD_BUTTON_TEXT = "Add Item";
 
 	private JComboBox<String> categoryComboBox;
 	private JComboBox<String> equipTypeComboBox;
@@ -62,12 +65,16 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	private PictureLoader mainSpriteLoader;
 	private PictureLoader extraSpriteLoader;
 	private PreviewLabel previewLabel;
+	private JButton saveButton;
 
 	private List<String> alreadyExistingItems;
 
 	private final Map<String, ItemDto> createdEquipment = new HashMap<>();
 	private final JList<String> createdEquipList;
-
+	
+	private final Queue<ItemDto> itemsToBeEdited = new LinkedList<>();
+	private boolean editingModeEnabled = false;
+	
 	private EquipTypeType currentEquipType;
 
 	public EquipmentCreatorMainComponent() {
@@ -81,9 +88,11 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		JButton hideButton = createControlButton("Hide", GAP_WIDTH, CONTROLBUTTON_WIDTH);
 		this.mainPanel.add(hideButton);
 		JButton editButton = createControlButton("Edit", GAP_WIDTH + CONTROLBUTTON_WIDTH - 1, CONTROLBUTTON_WIDTH + 2);
+		editButton.addActionListener(e -> editSelectedItems());
 		this.mainPanel.add(editButton);
 		JButton deleteButton = createControlButton("Delete", GAP_WIDTH + 2 * CONTROLBUTTON_WIDTH,
 				PANEL_WIDTH - 2 * CONTROLBUTTON_WIDTH);
+		deleteButton.addActionListener(e -> removeSelectedItems());
 		this.mainPanel.add(deleteButton);
 
 		this.previewLabel = new PreviewLabel(CharacterBuilderControlPanel.X_POS + (ControlPanel.WIDTH_BASIC - 128) / 2,
@@ -126,21 +135,34 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		this.descriptionTextField = createTextField(panel, "Description:", 62 + 4 * SELECTION_OFFSET,
 				"Add a short description of the item that will appear ingame. (Try not to make it generic.)");
 
-		JButton addButton = UIComponentFactory.createButton("Add item", ADD_BUTTON_OFFSET,
+		this.saveButton = UIComponentFactory.createButton(ADD_BUTTON_TEXT, ADD_BUTTON_OFFSET,
 				PANEL_HEIGHT - ADD_BUTTON_HEIGHT - ADD_BUTTON_OFFSET, PANEL_WIDTH - 2 * ADD_BUTTON_OFFSET,
 				ADD_BUTTON_HEIGHT);
-		addButton.addActionListener(e -> addItem());
-		panel.add(addButton);
+		this.saveButton.addActionListener(e -> saveInput());
+		panel.add(this.saveButton);
 
 		return panel;
 	}
+	
+	private void saveInput() {
+		addItem();
+
+		if(this.editingModeEnabled) {
+			if(this.itemsToBeEdited.isEmpty()) {
+				this.editingModeEnabled = false;
+				this.saveButton.setText(ADD_BUTTON_TEXT);
+			} else {
+				loadNextItemToBeEdited();
+			}
+		}
+	}
 
 	private void addItem() {
-		String verificationError = checkForVerificationError();
-		if (verificationError != null) {
-			JOptionPane.showMessageDialog(null, verificationError, "Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
+//		String verificationError = checkForVerificationError();
+//		if (verificationError != null) {
+//			JOptionPane.showMessageDialog(null, verificationError, "Error", JOptionPane.ERROR_MESSAGE);
+//			return;
+//		}
 
 		String name = this.nameTextField.getText();
 		this.createdEquipment.put(name,
@@ -148,6 +170,15 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 						this.descriptionTextField.getText(), this.mainSpriteLoader.getSelectedPicture(),
 						this.extraSpriteLoader.getSelectedPicture()));
 		refreshCreatedItemList();
+		clearSelectionComponents();
+	}
+
+	private void clearSelectionComponents() {
+		this.categoryComboBox.setSelectedIndex(0);
+		this.nameTextField.setText("");
+		this.descriptionTextField.setText("");
+		this.mainSpriteLoader.clear();
+		this.extraSpriteLoader.clear();
 	}
 
 	private String checkForVerificationError() {
@@ -273,6 +304,35 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		if (item != null) {
 			collection.add(item);
 		}
+	}
+	
+	private void removeSelectedItems() {
+		this.createdEquipList.getSelectedValuesList().stream().forEach(e -> this.createdEquipment.remove(e));
+		refreshCreatedItemList();
+	}
+	
+	private void editSelectedItems() {
+		this.createdEquipList.getSelectedValuesList().stream().forEach(e -> this.itemsToBeEdited.add(this.createdEquipment.get(e)));
+		setEditingModeEnabled(true);
+		removeSelectedItems();
+	}
+
+	private void setEditingModeEnabled(boolean enabled) {
+		if(!editingModeEnabled) {
+			this.editingModeEnabled = true;
+			loadNextItemToBeEdited();
+			this.saveButton.setText("Save Item");
+		}
+	}
+	
+	private void loadNextItemToBeEdited() {
+		ItemDto item = this.itemsToBeEdited.remove();
+		this.categoryComboBox.setSelectedItem(EquipTypeRepository.getCategoryOfEquipType(item.getEquipType()));
+		this.equipTypeComboBox.setSelectedItem(item.getEquipType());
+		this.nameTextField.setText(item.getName());
+		this.descriptionTextField.setText(item.getDescription());
+		this.mainSpriteLoader.setSelectedPicture(item.getMainSprite());
+		this.extraSpriteLoader.setSelectedPicture(item.getExtraSprite());
 	}
 
 	private static class ItemDto {

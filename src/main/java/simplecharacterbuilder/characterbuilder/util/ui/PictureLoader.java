@@ -64,6 +64,8 @@ public class PictureLoader extends JLabel {
 	
 	public void clear() {
 		this.setIcon(null);
+		this.selectedPicture = null;
+		setHorizontalAlignment(CENTER);
 	}
 
 	private void selectPath() {
@@ -103,6 +105,14 @@ public class PictureLoader extends JLabel {
 	
 	public File getSelectedPicture() {
 		return this.selectedPicture;
+	}
+	
+	public void setSelectedPicture(File selectedPicture) {
+		if(selectedPicture == null) {
+			clear();
+		} else {
+			setImage(selectedPicture);
+		}
 	}
 	
 	public static interface FileProcessor{
