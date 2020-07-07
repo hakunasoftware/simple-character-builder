@@ -3,8 +3,11 @@ package simplecharacterbuilder.characterbuilder.util.ui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -12,16 +15,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import simplecharacterbuilder.characterbuilder.util.holder.DrawIndexRepository;
+import simplecharacterbuilder.characterbuilder.util.holder.EquipTypeRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
-import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
+import simplecharacterbuilder.common.generated.EquipTypeType;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 
 @SuppressWarnings("serial")
 public class PreviewLabel extends JPanel {
-
 	private final JLabel preview;
+	private final boolean showEquipment;
 
-	public PreviewLabel(int x, int y) {
+	public PreviewLabel(int x, int y, boolean showEquipment) {
+		this.showEquipment = showEquipment;
 		this.setBounds(x, y, 128, 212);
 		this.setLayout(null);
 
@@ -38,15 +44,24 @@ public class PreviewLabel extends JPanel {
 	}
 
 	public void update() {
-		Collection<BufferedImage> sprites = ImageFileHolder.getBodySprites().keySet().stream()
-				.sorted((k1, k2) -> BodyPartRepository.getDrawIndex(k1).compareTo(BodyPartRepository.getDrawIndex(k2)))
+		Map<File, Long> sprites = new HashMap<>();
+		
+		Map<String, File> bodySprites = ImageFileHolder.getBodySprites();
+		bodySprites.keySet().stream().forEach(k -> {sprites.put(bodySprites.get(k), DrawIndexRepository.parse(k));});
+
+		if(showEquipment) {
+			Map<String, File> equipSprites = ImageFileHolder.getEquipSprites();
+			equipSprites.keySet().stream().forEach(k -> addEquipLayerToSprites(sprites, equipSprites.get(k), k));
+		}
+		
+		Collection<BufferedImage> images = sprites.keySet().stream().sorted((a, b) -> sprites.get(a).compareTo(sprites.get(b)))
 				.map(k -> readImage(k)).collect(Collectors.toList());
-		this.preview.setIcon(new ImageIcon(overlay(sprites)));
+		this.preview.setIcon(new ImageIcon(overlay(images)));
 	}
 
-	private BufferedImage readImage(String imageName) {
+	private BufferedImage readImage(File imageFile) {
 		try {
-			return ImageIO.read(ImageFileHolder.getBodySprite(imageName));
+			return ImageIO.read(imageFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new IllegalArgumentException(e);
@@ -62,4 +77,17 @@ public class PreviewLabel extends JPanel {
 		graphics.dispose();
 		return combined;
 	}
+
+	public void addEquipLayerToSprites(Map<File, Long> sprites, File sprite, String layerType) {
+		String drawIndex;
+		if(layerType.endsWith(ImageFileHolder.EXTRA_LAYER_SUFFIX)) {
+			EquipTypeType equipType = EquipTypeRepository.getEquipType(layerType.replace(ImageFileHolder.EXTRA_LAYER_SUFFIX, ""));
+			drawIndex = equipType.getDrawIndices().getExtraIndex();
+		} else {
+			EquipTypeType equipType = EquipTypeRepository.getEquipType(layerType);
+			drawIndex = equipType.getDrawIndex() != null ? equipType.getDrawIndex() : equipType.getDrawIndices().getDrawIndex();
+		}
+		sprites.put(sprite, DrawIndexRepository.parse(drawIndex));
+	}
+	
 }

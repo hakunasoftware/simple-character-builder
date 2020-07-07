@@ -52,7 +52,7 @@ public class EquipTypeRepository {
 		}
 		throw new IllegalArgumentException("Error finding category of " + equipType);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private void readEquipTypesFromFile(File file) {
 		try {

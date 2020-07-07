@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
 import simplecharacterbuilder.characterbuilder.util.holder.EquipTypeRepository;
+import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
 import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader;
 import simplecharacterbuilder.characterbuilder.util.ui.PreviewLabel;
@@ -95,8 +96,7 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		deleteButton.addActionListener(e -> removeSelectedItems());
 		this.mainPanel.add(deleteButton);
 
-		this.previewLabel = new PreviewLabel(CharacterBuilderControlPanel.X_POS + (ControlPanel.WIDTH_BASIC - 128) / 2,
-				30);
+		this.previewLabel = new PreviewLabel(CharacterBuilderControlPanel.X_POS + (ControlPanel.WIDTH_BASIC - 128) / 2, 30, true);
 		this.mainPanel.add(this.previewLabel);
 	}
 
@@ -163,13 +163,20 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 //			JOptionPane.showMessageDialog(null, verificationError, "Error", JOptionPane.ERROR_MESSAGE);
 //			return;
 //		}
-
+		
+		String equipType = (String) this.equipTypeComboBox.getSelectedItem();
 		String name = this.nameTextField.getText();
 		this.createdEquipment.put(name,
-				new ItemDto((String) this.equipTypeComboBox.getSelectedItem(), name,
+				new ItemDto(equipType, name,
 						this.descriptionTextField.getText(), this.mainSpriteLoader.getSelectedPicture(),
 						this.extraSpriteLoader.getSelectedPicture()));
-		refreshCreatedItemList();
+		
+		ImageFileHolder.putEquipSprite(equipType, this.mainSpriteLoader.getSelectedPicture());
+		File extraSprite = this.extraSpriteLoader.getSelectedPicture();
+		if(extraSprite != null) {
+			ImageFileHolder.putEquipSprite(equipType + ImageFileHolder.EXTRA_LAYER_SUFFIX, extraSprite);
+		}
+		refresh();
 		clearSelectionComponents();
 	}
 
@@ -261,10 +268,11 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 				: "<html><center>Load<br/>Sprite</center></html>");
 	}
 
-	private void refreshCreatedItemList() {
+	private void refresh() {
 		DefaultListModel<String> model = new DefaultListModel<>();
 		this.createdEquipment.keySet().stream().sorted((a, b) -> a.compareTo(b)).forEach(n -> model.addElement(n));
 		this.createdEquipList.setModel(model);
+		this.previewLabel.update();
 	}
 
 	private JButton createControlButton(String text, int xPos, int width) {
@@ -308,7 +316,7 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	
 	private void removeSelectedItems() {
 		this.createdEquipList.getSelectedValuesList().stream().forEach(e -> this.createdEquipment.remove(e));
-		refreshCreatedItemList();
+		refresh();
 	}
 	
 	private void editSelectedItems() {

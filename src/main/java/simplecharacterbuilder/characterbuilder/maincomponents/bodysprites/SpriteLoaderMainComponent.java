@@ -22,7 +22,7 @@ public class SpriteLoaderMainComponent extends CharacterBuilderMainComponent {
 		this.mainPanel.add(createMainSpritePictureLoader(MAIN_SPRITE_LOADER_X_OFFSET, ImageFileHolder.BODY));
 		this.mainPanel.add(createMainSpritePictureLoader(AdditionalBodySpriteLoader.WIDTH - (int) (SCALE * 128) - MAIN_SPRITE_LOADER_X_OFFSET, ImageFileHolder.HAIR));
 		
-		this.previewLabel = new PreviewLabel(CharacterBuilderControlPanel.X_POS + (ControlPanel.WIDTH_BASIC - 128) / 2, 30);
+		this.previewLabel = new PreviewLabel(CharacterBuilderControlPanel.X_POS + (ControlPanel.WIDTH_BASIC - 128) / 2, 30, false);
 		this.mainPanel.add(this.previewLabel);
 
 		this.mainPanel.add(new AdditionalBodySpriteLoader(previewLabel));

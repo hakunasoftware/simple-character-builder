@@ -12,11 +12,12 @@ public class ImageFileHolder {
 	public static final String PORTRAIT = "Portrait";
 	public static final String BODY = "Body";
 	public static final String HAIR = "Hair";
+	public static final String EXTRA_LAYER_SUFFIX = "_ExtraLayer";
 
 	private File portrait;
 	private final Map<String, File> bodySprites = new HashMap<>();
 	private final Map<String, File> equipSprites = new HashMap<>();
-
+	
 	private ImageFileHolder() {
 	}
 
@@ -49,7 +50,11 @@ public class ImageFileHolder {
 	}
 
 	public static Map<String, File> getBodySprites() {
-		return new HashMap<String, File>(INSTANCE.bodySprites);
+		return new HashMap<>(INSTANCE.bodySprites);
+	}
+
+	public static Map<String, File> getEquipSprites() {
+		return new HashMap<>(INSTANCE.equipSprites);
 	}
 
 	public static void copyBodyImagesToTargetDirectory(File targetDir) {
