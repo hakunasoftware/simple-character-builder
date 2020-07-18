@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import simplecharacterbuilder.characterbuilder.maincomponents.various.EquipmentCreatorMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.various.SocialMainComponent;
 import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.JAXBContextHolder;
@@ -75,6 +76,10 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 	}
 
 	public void next() {
+		if(checkItemEditingEnabled(mainComponents.get(pageIndex))) {
+			return;
+		}
+		
 		if (!this.button1.isEnabled()) {
 			this.button1.setEnabled(true);
 		}
@@ -92,6 +97,10 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 	}
 
 	public void previous() {
+		if(checkItemEditingEnabled(mainComponents.get(pageIndex))) {
+			return;
+		}
+		
 		if (!this.button2.isVisible()) {
 			this.saveButton.setVisible(false);
 			this.button2.setVisible(true);
@@ -111,6 +120,10 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 	}
 
 	private synchronized void save() {
+		if(checkItemEditingEnabled(mainComponents.get(pageIndex))) {
+			return;
+		}
+		
 		Actor actor = new Actor();
 		this.mainComponents.stream().forEach(c -> c.setValues(actor));
 //		verifyActor(actor);
@@ -140,6 +153,17 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 			JOptionPane.showMessageDialog(null, "An error occured during saving, sorry. Please report this so that it can be fixed! You may need to clean up some changes that were already made.", "Error", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
+	}
+	
+	private boolean checkItemEditingEnabled(CharacterBuilderMainComponent mainComponent) {
+		if(!(mainComponent instanceof EquipmentCreatorMainComponent)) {
+			return false;
+		}
+		if(((EquipmentCreatorMainComponent) mainComponent).isEditingModeEnabled()) {
+			JOptionPane.showMessageDialog(null, "You need to finish editing all items before proceeding!", "Error", JOptionPane.ERROR_MESSAGE);
+			return true;
+		}
+		return false;
 	}
 
 	private boolean verifyActor(Actor actor) {

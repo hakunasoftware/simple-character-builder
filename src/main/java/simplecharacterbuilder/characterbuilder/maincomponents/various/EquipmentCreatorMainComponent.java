@@ -114,6 +114,7 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	public void enable() {
 		readAlreadyExistingItems();
 		super.enable();
+		this.previewLabel.update();
 	}
 
 	private JPanel createSelectionPanel() {
@@ -378,6 +379,10 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		this.extraSpriteLoader.setSelectedPicture(item.getExtraSprite());
 	}
 
+	public boolean isEditingModeEnabled() {
+		return editingModeEnabled;
+	}
+	
 	private static class ItemDto {
 		private final String equipType;
 		private final String name;
