@@ -12,7 +12,7 @@ public class ImageFileHolder {
 	public static final String PORTRAIT = "Portrait";
 	public static final String BODY = "Body";
 	public static final String HAIR = "Hair";
-	public static final String EXTRA_LAYER_SUFFIX = "_ExtraLayer";
+	public static final String EXTRA_LAYER_SUFFIX = "_Extra";
 
 	private File portrait;
 	private final Map<String, File> bodySprites = new HashMap<>();
@@ -63,8 +63,15 @@ public class ImageFileHolder {
 
 	public static void copyBodyImagesToTargetDirectory(File targetDir) {
 		copyFile(INSTANCE.portrait, new File(targetDir, PORTRAIT + ".png"));
-		INSTANCE.bodySprites.keySet().stream()
-				.forEach(k -> copyFile(INSTANCE.bodySprites.get(k), new File(targetDir, k + ".png")));
+		copySpriteMapToTargetDirectory(INSTANCE.bodySprites, targetDir);
+	}
+	
+	public static void copyEquipSpritesToTargetDirectory(File targetDir) {
+		copySpriteMapToTargetDirectory(INSTANCE.equipSprites, targetDir);
+	}
+	
+	private static void copySpriteMapToTargetDirectory(Map<String, File> spriteMap, File targetDir) {
+		spriteMap.keySet().stream().forEach(k -> copyFile(INSTANCE.equipSprites.get(k), new File(targetDir, k + ".png")));
 	}
 
 	private static void copyFile(File origin, File target) {

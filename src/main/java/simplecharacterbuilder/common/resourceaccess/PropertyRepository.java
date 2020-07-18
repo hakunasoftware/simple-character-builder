@@ -36,6 +36,7 @@ public class PropertyRepository {
 	public static final String TRAITFOLDER_PERSONALITY = "traitfolder_personality";
 	public static final String TRAITFOLDER_PHYSICAL = "traitfolder_physical";
 	public static final String EQUIPTYPE_FOLDER = "equiptypes";
+	public static final String EQUIPSPRITES_FOLDER = "equipsprites_characters_folder";
 	public static final String RACES = "races";
 	public static final String DRAW_INDICES = "draw_indices";
 	public static final String RETRACTABLE_BODY_PARTS = "retractable_bodyparts";

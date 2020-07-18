@@ -1,2 +1,1 @@
 Save items to xml
-Copy item sprites
