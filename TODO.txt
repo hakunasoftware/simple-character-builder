@@ -1,4 +1,2 @@
 Save items to xml
-Save items to list
 Copy item sprites
-Check if extra layers work correctly
