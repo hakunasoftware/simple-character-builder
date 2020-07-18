@@ -16,6 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -158,11 +159,11 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	}
 
 	private void addItem() {
-//		String verificationError = checkForVerificationError();
-//		if (verificationError != null) {
-//			JOptionPane.showMessageDialog(null, verificationError, "Error", JOptionPane.ERROR_MESSAGE);
-//			return;
-//		}
+		String verificationError = checkForVerificationError();
+		if (verificationError != null) {
+			JOptionPane.showMessageDialog(null, verificationError, "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		
 		String equipType = (String) this.equipTypeComboBox.getSelectedItem();
 		String name = this.nameTextField.getText();
@@ -315,17 +316,23 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	}
 	
 	private void removeSelectedItems() {
-		this.createdEquipList.getSelectedValuesList().stream().forEach(e -> this.createdEquipment.remove(e));
+		this.createdEquipList.getSelectedValuesList().stream().forEach(e -> removeItem(e));
 		refresh();
+	}
+	
+	private void removeItem(String itemName) {
+		String equipType = this.createdEquipment.remove(itemName).getEquipType();
+		ImageFileHolder.removeEquipSprite(equipType);
+		ImageFileHolder.removeEquipSprite(equipType + ImageFileHolder.EXTRA_LAYER_SUFFIX);
 	}
 	
 	private void editSelectedItems() {
 		this.createdEquipList.getSelectedValuesList().stream().forEach(e -> this.itemsToBeEdited.add(this.createdEquipment.get(e)));
-		setEditingModeEnabled(true);
+		enableEditingMode();
 		removeSelectedItems();
 	}
 
-	private void setEditingModeEnabled(boolean enabled) {
+	private void enableEditingMode() {
 		if(!editingModeEnabled) {
 			this.editingModeEnabled = true;
 			loadNextItemToBeEdited();

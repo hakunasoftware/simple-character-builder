@@ -49,6 +49,10 @@ public class ImageFileHolder {
 		INSTANCE.bodySprites.remove(name);
 	}
 
+	public static void removeEquipSprite(String name) {
+		INSTANCE.equipSprites.remove(name);
+	}
+
 	public static Map<String, File> getBodySprites() {
 		return new HashMap<>(INSTANCE.bodySprites);
 	}

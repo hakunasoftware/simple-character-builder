@@ -11,7 +11,7 @@ import javax.swing.JLayeredPane;
 public class ApplicationFrame extends JFrame {
 
 	public ApplicationFrame(int width, int height, String title, List<CharacterBuilderComponent> components) {
-		this.setMinimumSize(new Dimension(width + 20, height + 40));
+		this.setMinimumSize(new Dimension(width + 20, height + 50));
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(new GridBagLayout());
 		this.setResizable(false);
