@@ -30,6 +30,7 @@ import simplecharacterbuilder.characterbuilder.util.ui.PreviewLabel;
 import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
 import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory.ListComponentDto;
 import simplecharacterbuilder.common.generated.Actor;
+import simplecharacterbuilder.common.generated.Actor.Equipment;
 import simplecharacterbuilder.common.generated.EquipTypeType;
 import simplecharacterbuilder.common.generated.EquipTypeType.DrawIndices;
 import simplecharacterbuilder.common.generated.EquipTypeType.Slots;
@@ -91,13 +92,16 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		this.mainPanel.add(listDto.getContainer());
 
 		JButton hideButton = createControlButton("Hide", GAP_WIDTH, CONTROLBUTTON_WIDTH);
+		hideButton.setToolTipText("Hides/Unhides the selected items in the preview to try how different combinations of items look. The items will still be saved normally.");
 		hideButton.addActionListener(e -> hideSelectedItems());
 		this.mainPanel.add(hideButton);
 		JButton editButton = createControlButton("Edit", GAP_WIDTH + CONTROLBUTTON_WIDTH - 1, CONTROLBUTTON_WIDTH + 2);
+		editButton.setToolTipText("Edit the selected items one by one.");
 		editButton.addActionListener(e -> editSelectedItems());
 		this.mainPanel.add(editButton);
 		JButton deleteButton = createControlButton("Delete", GAP_WIDTH + 2 * CONTROLBUTTON_WIDTH,
 				PANEL_WIDTH - 2 * CONTROLBUTTON_WIDTH);
+		deleteButton.setToolTipText("Deletes the selected items.");
 		deleteButton.addActionListener(e -> removeSelectedItems());
 		this.mainPanel.add(deleteButton);
 
@@ -107,7 +111,19 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 
 	@Override
 	public void setValues(Actor actor) {
-		// TODO Auto-generated method stub
+		if(this.createdEquipment.isEmpty()) {
+			actor.setEquipment(null);
+			return;
+		}
+		
+		if(actor.getEquipment() == null) {
+			actor.setEquipment(new Equipment());
+		}
+		this.createdEquipment.values().stream().forEach(e -> actor.getEquipment().getEquip().add(e.getName()));
+		
+		if(actor.getEquipment().getEquip().isEmpty()) {
+			actor.setEquipment(null);
+		}
 	}
 
 	@Override
