@@ -2,11 +2,13 @@ package simplecharacterbuilder.common.resourceaccess;
 
 public class PropertyRepository {
 	// characterbuilder.config
+	public static final String EQUIPMENT_TARGET_XML = "equipment_target_xml";
 	public static final String MULTIPLIER = "multiplier";
 	public static final String ALWAYS_SCALE = "always_scale";
 	public static final String NEVER_SCALE = "never_scale";
 	public static final String BALANCER_CHOOSER_DEFAULT = "chooser_default_directory";
 	public static final String HIRED_STAFF_DEFAULT_SALARY = "hired_staff_default_salary";
+	public static final String EQUIPMENT_PRICE = "equipment_price";
 	public static final String MAX_COMBATCLASSES = "maximum_regular_combatclasses";
 	public static final String IGNORED_EQUIPTYPES = "ignored_equiptypes";
 
@@ -36,7 +38,7 @@ public class PropertyRepository {
 	public static final String TRAITFOLDER_PERSONALITY = "traitfolder_personality";
 	public static final String TRAITFOLDER_PHYSICAL = "traitfolder_physical";
 	public static final String EQUIPTYPE_FOLDER = "equiptypes";
-	public static final String EQUIPSPRITES_FOLDER = "equipsprites_characters_folder";
+	public static final String EQUIPSPRITES_FOLDER = "equipsprites_folder";
 	public static final String RACES = "races";
 	public static final String DRAW_INDICES = "draw_indices";
 	public static final String RETRACTABLE_BODY_PARTS = "retractable_bodyparts";

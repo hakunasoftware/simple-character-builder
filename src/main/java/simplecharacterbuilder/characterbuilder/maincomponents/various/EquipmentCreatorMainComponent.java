@@ -1,6 +1,17 @@
 package simplecharacterbuilder.characterbuilder.maincomponents.various;
 
+import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.FLAT_CHESTED;
+import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.LARGE_BREASTS;
+import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.MEDIUM_BREASTS;
+import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.SMALL_BREASTS;
+import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.XL_BREASTS;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,6 +35,7 @@ import javax.swing.JTextField;
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
 import simplecharacterbuilder.characterbuilder.util.holder.EquipTypeRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
+import simplecharacterbuilder.characterbuilder.util.holder.PostInfoXmlGenerationRunnableHolder;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
 import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader;
 import simplecharacterbuilder.characterbuilder.util.ui.PreviewLabel;
@@ -31,10 +43,12 @@ import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
 import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory.ListComponentDto;
 import simplecharacterbuilder.common.generated.Actor;
 import simplecharacterbuilder.common.generated.Actor.Equipment;
+import simplecharacterbuilder.common.generated.Actor.Name;
 import simplecharacterbuilder.common.generated.EquipTypeType;
 import simplecharacterbuilder.common.generated.EquipTypeType.DrawIndices;
 import simplecharacterbuilder.common.generated.EquipTypeType.Slots;
 import simplecharacterbuilder.common.resourceaccess.ConfigReader;
+import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
 import simplecharacterbuilder.common.resourceaccess.GameFileAccessor;
 import simplecharacterbuilder.common.resourceaccess.PropertyRepository;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderMainComponent;
@@ -124,6 +138,29 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		if(actor.getEquipment().getEquip().isEmpty()) {
 			actor.setEquipment(null);
 		}
+		
+		String installment = actor.getSource().getInstallment();
+		String franchiseFolder = ValueFormatter.isEmpty(installment) ? actor.getSource().getFranchise(): installment;
+		Name name = actor.getName();
+		String fullName = ValueFormatter.formatFullName(name.getFirst(), name.getMiddle(), name.getLast(), false);
+		String folderName = "Characters/" + franchiseFolder + "/" + fullName;
+
+		PostInfoXmlGenerationRunnableHolder.add(() -> copySpritesToGameFolder(actor, folderName));
+		PostInfoXmlGenerationRunnableHolder.add(() -> writeEquipmentToXml(actor, this.createdEquipment.values(), folderName));
+	}
+
+	private void copySpritesToGameFolder(Actor actor, String folderName) {
+		File equipSpriteFolder = getEquipSpriteFolderForActor(actor, folderName);
+		if(!equipSpriteFolder.mkdirs()) {
+			JOptionPane.showMessageDialog(null, "EquipSprite folder could not be created - it may already exist.", "Error", JOptionPane.ERROR_MESSAGE);
+			PostInfoXmlGenerationRunnableHolder.clear();
+			throw new IllegalArgumentException("EquipSprite folder could not be created");
+		}
+		ImageFileHolder.copyEquipSpritesToTargetDirectory(equipSpriteFolder);
+	}
+	
+	private File getEquipSpriteFolderForActor(Actor actor, String folderName) {
+		return new File(GameFileAccessor.getFileFromProperty(PropertyRepository.EQUIPSPRITES_FOLDER).getAbsolutePath() + "/" + folderName);
 	}
 
 	@Override
@@ -394,6 +431,70 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		this.mainSpriteLoader.setSelectedPicture(item.getMainSprite());
 		this.extraSpriteLoader.setSelectedPicture(item.getExtraSprite());
 	}
+	
+	private void writeEquipmentToXml(Actor actor, Collection<ItemDto> items, String folderName) {
+		if(items.isEmpty()) {
+			return;
+		}
+		try {
+			File targetXml = GameFileAccessor.getFileFromCharacterbuilderProperty(PropertyRepository.EQUIPMENT_TARGET_XML);
+			File tempFile = new File(targetXml.getParentFile(), targetXml.getName() + ".tmp");
+
+			try (BufferedReader reader = new BufferedReader(new FileReader(targetXml));
+					PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(tempFile)))) {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					if(line.contains("</EquipItems>")) {
+						String bodyType = determineBodyType(actor);
+						items.stream().forEach(i -> writeItemToWriter(writer, i, bodyType, folderName));
+					}
+					writer.println(line);
+				}
+			}
+			targetXml.delete();
+			tempFile.renameTo(targetXml);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void writeItemToWriter(PrintWriter writer, ItemDto item, String bodyType, String folderName) {
+		writer.println();
+		writer.println("\t<Equipment><!--" + item.getName() + "-->");
+		writer.println("\t\t<Name>" + item.getName() + "</Name>");
+		writer.println("\t\t<Description>" + item.getDescription() + "</Description>");
+		writer.println("\t\t<Type>" + item.getEquipType() + "</Type>");
+		writer.println("\t\t<Price>" + ConfigReaderRepository.getCharacterbuilderConfigReader().readInt(PropertyRepository.EQUIPMENT_PRICE) + "</Price>");
+		writer.println("\t\t<Availability>Character Unique</Availability>");
+		writer.println("\t\t<DynamicSprite>");
+		writer.println("\t\t\t<BodyModel>");
+		writer.println("\t\t\t\t<BodyType>" + bodyType + "</BodyType>");
+		
+		String spritePath = folderName + "/" + item.getEquipType();
+		writer.println("\t\t\t\t<Bitmap>" + spritePath + "</Bitmap>");
+		if(item.getExtraSprite() != null) {
+			writer.println("\t\t\t\t<Bitmap>" + spritePath + ImageFileHolder.EXTRA_LAYER_SUFFIX + "</Bitmap>");
+		}
+
+		writer.println("\t\t\t</BodyModel>");
+		writer.println("\t\t</DynamicSprite>");
+		writer.println("\t</Equipment>");
+	}
+	
+	private String determineBodyType(Actor actor) {
+		switch(actor.getBody().getType()) {
+		case FLAT_CHESTED:
+		case SMALL_BREASTS:
+			return SMALL_BREASTS;
+		case MEDIUM_BREASTS:
+			return MEDIUM_BREASTS;
+		case LARGE_BREASTS:
+		case XL_BREASTS:
+			return LARGE_BREASTS;
+		}
+		throw new IllegalArgumentException("Invalid BodyType: " + actor.getBody().getType());
+	}
+	
 
 	public boolean isEditingModeEnabled() {
 		return editingModeEnabled;

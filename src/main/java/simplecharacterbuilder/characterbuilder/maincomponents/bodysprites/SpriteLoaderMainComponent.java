@@ -10,6 +10,12 @@ import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.Char
 import simplecharacterbuilder.common.uicomponents.ControlPanel;
 
 public class SpriteLoaderMainComponent extends CharacterBuilderMainComponent {
+	public static final String FLAT_CHESTED = "Flat-Chested";
+	public static final String SMALL_BREASTS = "Small Breasts";
+	public static final String MEDIUM_BREASTS = "Medium Breasts";
+	public static final String LARGE_BREASTS = "Large Breasts";
+	public static final String XL_BREASTS = "XL Breasts";
+	
 	private static final double SCALE = 0.65;
 	private static final int MAIN_SPRITE_LOADER_X_OFFSET = 42;
 	

@@ -35,7 +35,6 @@ public class CharacterBuilderStart {
 		TraitRepository.init();
 		EquipTypeRepository.init();
 
-		COMPONENTS.add(new EquipmentCreatorMainComponent());
 		COMPONENTS.add(new PersonalDataMainComponent());
 		COMPONENTS.add(StatGenerator.createInstance(false));
 		COMPONENTS.add(new SpriteLoaderMainComponent());
@@ -44,6 +43,7 @@ public class CharacterBuilderStart {
 		if(CombatClassSelectorMainComponent.SELECTIONS_COUNT > 0) {
 			COMPONENTS.add(new CombatClassSelectorMainComponent());
 		}
+		COMPONENTS.add(new EquipmentCreatorMainComponent());
 		
 		CharacterBuilderControlPanel controlPanel = CharacterBuilderControlPanel.getInstance();
 		controlPanel.init(COMPONENTS);

@@ -20,7 +20,10 @@ public class GameFileAccessor {
 	}
 
 	public static File getFileFromProperty(String propertyName) {
-		return new File(INSTANCE.rootDirectory,
-				ConfigReaderRepository.getPathVariablesConfigReader().readString(propertyName));
+		return new File(INSTANCE.rootDirectory, ConfigReaderRepository.getPathVariablesConfigReader().readString(propertyName));
+	}
+
+	public static File getFileFromCharacterbuilderProperty(String propertyName) {
+		return new File(INSTANCE.rootDirectory, ConfigReaderRepository.getCharacterbuilderConfigReader().readString(propertyName));
 	}
 }

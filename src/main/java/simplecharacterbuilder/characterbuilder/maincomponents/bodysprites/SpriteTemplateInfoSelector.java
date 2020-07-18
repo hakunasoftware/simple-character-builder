@@ -1,5 +1,10 @@
 package simplecharacterbuilder.characterbuilder.maincomponents.bodysprites;
 
+import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.FLAT_CHESTED;
+import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.LARGE_BREASTS;
+import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.MEDIUM_BREASTS;
+import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.SMALL_BREASTS;
+import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.XL_BREASTS;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CONTROLPANEL_WIDTH;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.GAP_WIDTH;
 import static simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.MAINPANEL_WIDTH;
@@ -22,7 +27,7 @@ class SpriteTemplateInfoSelector extends ContentPanel {
 	SpriteTemplateInfoSelector (int yPos) {
 		super(GAP_WIDTH, yPos, WIDTH, HEIGHT);
 		this.add(UIComponentFactory.createFormattedLabel("Body Type:", 1, 8, 70, JLabel.CENTER));
-		String[] bodyTypes = new String[] {"Flat-Chested", "Small Breasts", "Medium Breasts", "Large Breasts", "XL Breasts"};
+		String[] bodyTypes = new String[] {FLAT_CHESTED, SMALL_BREASTS, MEDIUM_BREASTS, LARGE_BREASTS, XL_BREASTS};
 		this.bodyTypeComboBox = UIComponentFactory.createComboBox(78, 10, 115, "<html>Select the body type, i.e. the template that was used for the sprite.<br/>(Flat-Chested uses the Small Breasts and XL Breasts the Large Breasts template)</html>", bodyTypes);
 		this.add(bodyTypeComboBox);
 		this.skinCheckBox = UIComponentFactory.createCheckBox("Dark Skin", 200, 10, 80, "Check this if you used the Dark Skin version of the body template. For other skin colors, contact the devs.");

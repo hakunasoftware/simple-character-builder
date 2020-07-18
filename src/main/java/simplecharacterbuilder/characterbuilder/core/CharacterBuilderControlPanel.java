@@ -128,9 +128,22 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 
 		Actor actor = new Actor();
 		this.mainComponents.stream().forEach(c -> c.setValues(actor));
-//		verifyActor(actor);
-		confirmIntent();
+		if(!verifyActor(actor)) {
+			return;
+		}
 
+		if (!statGenerator.confirmIntentIfWarningsExist()) {
+			PostInfoXmlGenerationRunnableHolder.clear();
+			return;
+		}
+		int dialogResult = JOptionPane.showConfirmDialog(null,
+				"Are you sure you want to write your input into the respective files?", "Confirm Saving",
+				JOptionPane.YES_NO_OPTION);
+		if (dialogResult != JOptionPane.YES_OPTION) {
+			PostInfoXmlGenerationRunnableHolder.clear();
+			return;
+		}
+		
 		Actor.Name name = actor.getName();
 		String fullName = ValueFormatter.formatFullName(name.getFirst(), name.getMiddle(), name.getLast(), false);
 
@@ -144,19 +157,13 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 				PostInfoXmlGenerationRunnableHolder.clear();
 				return;
 			}
-			File equipSpriteFolder = getEquipSpriteFolderForActor(actor, fullName);
-			if(!equipSpriteFolder.mkdir()) {
-				JOptionPane.showMessageDialog(null, "EquipSprite folder could not be created - it may already exist.", "Error", JOptionPane.ERROR_MESSAGE);
-				PostInfoXmlGenerationRunnableHolder.clear();
-				return;
-			}
-//			writeStringToFile(xml, new File(characterFolder, "Info.xml"));
-//			
-//			ImageFileHolder.copyBodyImagesToTargetDirectory(characterFolder);
-			ImageFileHolder.copyEquipSpritesToTargetDirectory(equipSpriteFolder);
+			
+			writeStringToFile(xml, new File(characterFolder, "Info.xml"));
+			
+			ImageFileHolder.copyBodyImagesToTargetDirectory(characterFolder);
 
-//			addActorToActorsList(actor);
-//			addEquipmentToEquipmentList(actor);
+			addActorToActorsList(actor);
+			addEquipmentToEquipmentList(actor);
 			
 			PostInfoXmlGenerationRunnableHolder.runAll();
 			PostInfoXmlGenerationRunnableHolder.clear();
@@ -195,21 +202,7 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 			JOptionPane.showMessageDialog(null, errorMsg.toString(), "Error", JOptionPane.ERROR_MESSAGE);
 			PostInfoXmlGenerationRunnableHolder.clear();
 		}
-		return errorsFound;
-	}
-
-	private void confirmIntent() {
-		if (!statGenerator.confirmIntentIfWarningsExist()) {
-			PostInfoXmlGenerationRunnableHolder.clear();
-			return;
-		}
-		int dialogResult = JOptionPane.showConfirmDialog(null,
-				"Are you sure you want to write your input into the respective files?", "Confirm Saving",
-				JOptionPane.YES_NO_OPTION);
-		if (dialogResult != JOptionPane.YES_OPTION) {
-			PostInfoXmlGenerationRunnableHolder.clear();
-			return;
-		}
+		return !errorsFound;
 	}
 
 	private String marshallActorToInfoXmlString(Actor actor, String fullName) throws JAXBException {
@@ -344,17 +337,6 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 			if (!parentDir.exists()) {
 				parentDir.mkdir();
 			}
-		}
-		return new File(parentDir, fullCharacterName);
-	}
-	
-	private File getEquipSpriteFolderForActor(Actor actor, String fullCharacterName) {
-		String installment = actor.getSource().getInstallment();
-		String folderName = ValueFormatter.isEmpty(installment) ? actor.getSource().getFranchise(): installment;
-
-		File parentDir = new File(GameFileAccessor.getFileFromProperty(PropertyRepository.EQUIPSPRITES_FOLDER), folderName);
-		if (!parentDir.exists()) {
-			parentDir.mkdir();
 		}
 		return new File(parentDir, fullCharacterName);
 	}
