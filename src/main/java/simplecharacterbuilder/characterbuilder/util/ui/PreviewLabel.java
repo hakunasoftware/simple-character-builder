@@ -5,8 +5,10 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,8 @@ import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 public class PreviewLabel extends JPanel {
 	private final JLabel preview;
 	private final boolean showEquipment;
+	
+	private final List<String> hiddenEquipTypes = new ArrayList<>();
 
 	public PreviewLabel(int x, int y, boolean showEquipment) {
 		this.showEquipment = showEquipment;
@@ -51,7 +55,8 @@ public class PreviewLabel extends JPanel {
 
 		if(showEquipment) {
 			Map<String, File> equipSprites = ImageFileHolder.getEquipSprites();
-			equipSprites.keySet().stream().forEach(k -> addEquipLayerToSprites(sprites, equipSprites.get(k), k));
+			equipSprites.keySet().stream().filter(k -> !isHidden(k))
+				.forEach(k -> addEquipLayerToSprites(sprites, equipSprites.get(k), k));
 		}
 		
 		Collection<BufferedImage> images = sprites.keySet().stream().sorted((a, b) -> sprites.get(a).compareTo(sprites.get(b)))
@@ -88,6 +93,18 @@ public class PreviewLabel extends JPanel {
 			drawIndex = equipType.getDrawIndex() != null ? equipType.getDrawIndex() : equipType.getDrawIndices().getDrawIndex();
 		}
 		sprites.put(sprite, DrawIndexRepository.parse(drawIndex));
+	}
+	
+	public void hideEquipType(String equipType, boolean hidden) {
+		if(hidden) {
+			this.hiddenEquipTypes.add(equipType);
+		} else {
+			this.hiddenEquipTypes.remove(equipType);
+		}
+	}
+	
+	private boolean isHidden(String equipType) {
+		return this.hiddenEquipTypes.contains(equipType.replace(ImageFileHolder.EXTRA_LAYER_SUFFIX, ""));
 	}
 	
 }

@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.stream.Stream;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -59,6 +60,8 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	private static final int EXTRA_PICLOADER_XPOS = PANEL_WIDTH - MAIN_PICLOADER_EXTRA_XPOS - PICLOADER_WIDTH;
 	
 	private static final String ADD_BUTTON_TEXT = "Add Item";
+	
+	private static final String HIDDEN_SUFFIX = " [hidden]";
 
 	private JComboBox<String> categoryComboBox;
 	private JComboBox<String> equipTypeComboBox;
@@ -88,6 +91,7 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		this.mainPanel.add(listDto.getContainer());
 
 		JButton hideButton = createControlButton("Hide", GAP_WIDTH, CONTROLBUTTON_WIDTH);
+		hideButton.addActionListener(e -> hideSelectedItems());
 		this.mainPanel.add(hideButton);
 		JButton editButton = createControlButton("Edit", GAP_WIDTH + CONTROLBUTTON_WIDTH - 1, CONTROLBUTTON_WIDTH + 2);
 		editButton.addActionListener(e -> editSelectedItems());
@@ -271,11 +275,15 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 
 	private void refresh() {
 		DefaultListModel<String> model = new DefaultListModel<>();
-		this.createdEquipment.keySet().stream().sorted((a, b) -> a.compareTo(b)).forEach(n -> model.addElement(n));
+		this.createdEquipment.keySet().stream().sorted((a, b) -> a.compareTo(b)).forEach(n -> model.addElement(checkHidden(n)));
 		this.createdEquipList.setModel(model);
 		this.previewLabel.update();
 	}
-
+	
+	private String checkHidden(String itemName) {
+		return this.createdEquipment.get(itemName).isHidden() ? itemName + HIDDEN_SUFFIX : itemName; 
+	}
+	
 	private JButton createControlButton(String text, int xPos, int width) {
 		return UIComponentFactory.createButton(text, xPos, CONTROLBUTTON_YPOS, width, CONTROLBUTTON_HEIGHT);
 	}
@@ -315,8 +323,24 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		}
 	}
 	
+	private Stream<String> getStreamOfSelectedItems() {
+		return this.createdEquipList.getSelectedValuesList().stream().map(n -> n.replace(HIDDEN_SUFFIX, ""));
+	}
+
+	private void hideSelectedItems() {
+		getStreamOfSelectedItems().forEach(e -> hideItem(e));
+		refresh();
+	}
+	
+	private void hideItem(String itemName) {
+		ItemDto item = this.createdEquipment.get(itemName);
+		boolean newHidden = !item.isHidden();
+		item.setHidden(newHidden);
+		this.previewLabel.hideEquipType(item.getEquipType(), newHidden);
+	}
+	
 	private void removeSelectedItems() {
-		this.createdEquipList.getSelectedValuesList().stream().forEach(e -> removeItem(e));
+		getStreamOfSelectedItems().forEach(e -> removeItem(e));
 		refresh();
 	}
 	
@@ -324,10 +348,14 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		String equipType = this.createdEquipment.remove(itemName).getEquipType();
 		ImageFileHolder.removeEquipSprite(equipType);
 		ImageFileHolder.removeEquipSprite(equipType + ImageFileHolder.EXTRA_LAYER_SUFFIX);
+		this.previewLabel.hideEquipType(equipType, false);
 	}
 	
 	private void editSelectedItems() {
-		this.createdEquipList.getSelectedValuesList().stream().forEach(e -> this.itemsToBeEdited.add(this.createdEquipment.get(e)));
+		getStreamOfSelectedItems().forEach(e -> this.itemsToBeEdited.add(this.createdEquipment.get(e)));
+		if(this.itemsToBeEdited.isEmpty()) {
+			return;
+		}
 		enableEditingMode();
 		removeSelectedItems();
 	}
@@ -356,6 +384,8 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		private final String description;
 		private final File mainSprite;
 		private final File extraSprite;
+		
+		private boolean hidden = false;
 
 		ItemDto(String equipType, String name, String description, File mainSprite, File extraSprite) {
 			this.equipType = equipType;
@@ -383,6 +413,14 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 
 		public File getExtraSprite() {
 			return extraSprite;
+		}
+
+		public boolean isHidden() {
+			return hidden;
+		}
+
+		public void setHidden(boolean hidden) {
+			this.hidden = hidden;
 		}
 	}
 
