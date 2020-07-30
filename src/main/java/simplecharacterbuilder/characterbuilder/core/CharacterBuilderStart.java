@@ -12,17 +12,17 @@ import javax.swing.UIManager;
 import simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.personaldata.PersonalDataMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.various.CombatClassSelectorMainComponent;
+import simplecharacterbuilder.characterbuilder.maincomponents.various.EnablingStatGenerator;
 import simplecharacterbuilder.characterbuilder.maincomponents.various.EquipmentCreatorMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.various.SocialMainComponent;
 import simplecharacterbuilder.characterbuilder.maincomponents.various.TraitSelectorMainComponent;
+import simplecharacterbuilder.characterbuilder.util.holder.ApplicationFrameHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.BodyPartRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.DrawIndexRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.EquipTypeRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.JFileChooserPool;
 import simplecharacterbuilder.characterbuilder.util.holder.TraitRepository;
 import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
-import simplecharacterbuilder.common.statgenerator.StatGenerator;
-import simplecharacterbuilder.common.uicomponents.ApplicationFrame;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 
 public class CharacterBuilderStart {
@@ -36,7 +36,7 @@ public class CharacterBuilderStart {
 		EquipTypeRepository.init();
 
 		COMPONENTS.add(new PersonalDataMainComponent());
-		COMPONENTS.add(StatGenerator.createInstance(false));
+		COMPONENTS.add(new EnablingStatGenerator());
 		COMPONENTS.add(new SpriteLoaderMainComponent());
 		COMPONENTS.add(new TraitSelectorMainComponent());
 		COMPONENTS.add(new SocialMainComponent());
@@ -61,6 +61,6 @@ public class CharacterBuilderStart {
 	}
 
 	public static void main(String[] args) {
-		EventQueue.invokeLater(() -> new ApplicationFrame(WIDTH, HEIGHT, "SB2R CharacterBuilder", COMPONENTS));
+		EventQueue.invokeLater(() -> ApplicationFrameHolder.createApplicationFrame(WIDTH, HEIGHT, "SB2R CharacterBuilder", "Personal Data", COMPONENTS));
 	}
 }

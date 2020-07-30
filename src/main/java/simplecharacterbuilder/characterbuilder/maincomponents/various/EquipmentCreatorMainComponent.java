@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
+import simplecharacterbuilder.characterbuilder.util.holder.ApplicationFrameHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.EquipTypeRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.PostInfoXmlGenerationRunnableHolder;
@@ -168,6 +169,7 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		readAlreadyExistingItems();
 		super.enable();
 		this.previewLabel.update();
+		ApplicationFrameHolder.setApplicationFrameTitle("Equipment");
 	}
 
 	private JPanel createSelectionPanel() {

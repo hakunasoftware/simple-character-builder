@@ -1,6 +1,7 @@
 package simplecharacterbuilder.characterbuilder.maincomponents.bodysprites;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
+import simplecharacterbuilder.characterbuilder.util.holder.ApplicationFrameHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader;
 import simplecharacterbuilder.characterbuilder.util.ui.PreviewLabel;
@@ -32,6 +33,12 @@ public class SpriteLoaderMainComponent extends CharacterBuilderMainComponent {
 		this.mainPanel.add(this.previewLabel);
 
 		this.mainPanel.add(new AdditionalBodySpriteLoader(previewLabel));
+	}
+	
+	@Override
+	public void enable() {
+		super.enable();
+		ApplicationFrameHolder.setApplicationFrameTitle("Body Sprites");
 	}
 
 	@Override

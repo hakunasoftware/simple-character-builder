@@ -13,7 +13,7 @@ import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
 import simplecharacterbuilder.common.resourceaccess.PropertyRepository;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent.CharacterBuilderMainComponent;
 
-public final class StatGenerator extends CharacterBuilderMainComponent {
+public class StatGenerator extends CharacterBuilderMainComponent {
 
 	public static final int WIDTH = RegularStatSelectionPanel.WIDTH + BeautySelectionPanel.WIDTH
 			+ StatDisplayPanel.WIDTH + 4 * GAP_WIDTH;
@@ -29,7 +29,7 @@ public final class StatGenerator extends CharacterBuilderMainComponent {
 	private final boolean ALWAYS_SCALE;
 	private final boolean NEVER_SCALE;
 
-	private StatGenerator(boolean showComparison) {
+	protected StatGenerator(boolean showComparison) {
 		statCalculator = new StatCalculator();
 		regularStatSelectionPanel = new RegularStatSelectionPanel(this, GAP_WIDTH, GAP_WIDTH, showComparison);
 		beautySelectionPanel = new BeautySelectionPanel(this, 2 * GAP_WIDTH + RegularStatSelectionPanel.WIDTH,

@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
 import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
+import simplecharacterbuilder.characterbuilder.util.holder.ApplicationFrameHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.FranchiseCache;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
 import simplecharacterbuilder.characterbuilder.util.ui.PictureLoader;
@@ -69,6 +70,12 @@ public class PersonalDataMainComponent extends CharacterBuilderMainComponent {
 		setTypeSettings(actor);
 		setRaceSelection(actor);
 		setSourceSelection(actor);
+	}
+	
+	@Override
+	public void enable() {
+		super.enable();
+		ApplicationFrameHolder.setApplicationFrameTitle("Personal Data");
 	}
 	
 	@Override

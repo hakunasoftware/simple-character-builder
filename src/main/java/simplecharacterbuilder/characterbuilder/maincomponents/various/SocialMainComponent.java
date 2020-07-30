@@ -20,6 +20,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.FileUtils;
 
+import simplecharacterbuilder.characterbuilder.util.holder.ApplicationFrameHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.FranchiseCache;
 import simplecharacterbuilder.characterbuilder.util.holder.JAXBContextHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.PostInfoXmlGenerationRunnableHolder;
@@ -83,6 +84,12 @@ public class SocialMainComponent extends CharacterBuilderMainComponent {
 		if (actor.getSocial().getBehavior().isEmpty()) {
 			actor.setSocial(null);
 		}
+	}
+	
+	@Override
+	public void enable() {
+		super.enable();
+		ApplicationFrameHolder.setApplicationFrameTitle("Relationships");
 	}
 
 	public boolean isEmpty() {

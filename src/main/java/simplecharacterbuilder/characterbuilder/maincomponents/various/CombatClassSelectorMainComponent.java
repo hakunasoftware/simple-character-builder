@@ -19,6 +19,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FileUtils;
 
+import simplecharacterbuilder.characterbuilder.util.holder.ApplicationFrameHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.JAXBContextHolder;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
 import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;
@@ -64,6 +65,12 @@ public class CombatClassSelectorMainComponent extends CharacterBuilderMainCompon
 			actor.setSkills(new Skills());
 		}
 		actor.getSkills().getCombatClass().addAll(selectedCombatClasses);
+	}
+	
+	@Override
+	public void enable() {
+		super.enable();
+		ApplicationFrameHolder.setApplicationFrameTitle("Combat Classes");
 	}
 
 	private void readRegularCombatClasses() {

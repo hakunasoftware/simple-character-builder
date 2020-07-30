@@ -17,6 +17,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
+import simplecharacterbuilder.characterbuilder.util.holder.ApplicationFrameHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.TraitRepository;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
 import simplecharacterbuilder.characterbuilder.util.ui.CheckBoxList;
@@ -76,6 +77,12 @@ public class TraitSelectorMainComponent extends CharacterBuilderMainComponent {
 			actor.setSkills(new Skills());
 		}
 		actor.getSkills().getTrait().addAll(selectedTraits);
+	}
+	
+	@Override
+	public void enable() {
+		super.enable();
+		ApplicationFrameHolder.setApplicationFrameTitle("Traits");
 	}
 
 	private void addTableLabels() {
