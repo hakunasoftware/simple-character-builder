@@ -24,6 +24,7 @@ import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.JAXBContextHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.PostInfoXmlGenerationRunnableHolder;
 import simplecharacterbuilder.characterbuilder.util.transform.ValueFormatter;
+import simplecharacterbuilder.common.ErrorLogfileWriter;
 import simplecharacterbuilder.common.generated.Actor;
 import simplecharacterbuilder.common.generated.Actor.Name;
 import simplecharacterbuilder.common.generated.Actor.Source;
@@ -173,9 +174,9 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 		} catch (Exception e) {
 			PostInfoXmlGenerationRunnableHolder.clear();
 			JOptionPane.showMessageDialog(null,
-					"An error occured during saving, sorry. Please report this so that it can be fixed! You may need to clean up some changes that were already made.",
+					"An error occured during saving, sorry. Please report this (including the generated ErrorLog) so that it can be fixed!\nYou may need to clean up some changes that were already made.",
 					"Error", JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
+			ErrorLogfileWriter.logException(e);
 		}
 	}
 
@@ -246,6 +247,9 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 	}
 
 	private void addEquipmentToEquipmentList(Actor actor) throws IOException {
+		if(actor.getEquipment() == null) {
+			return;
+		}
 		List<String> equipments = actor.getEquipment().getEquip();
 		if (equipments.isEmpty()) {
 			return;

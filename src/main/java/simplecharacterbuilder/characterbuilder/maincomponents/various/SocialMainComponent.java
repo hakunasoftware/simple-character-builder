@@ -76,7 +76,7 @@ public class SocialMainComponent extends CharacterBuilderMainComponent {
 										ValueFormatter.formatFullName(actorName.getFirst(), actorName.getMiddle(),
 												actorName.getLast(), false)));
 					} catch (IOException e) {
-						e.printStackTrace();
+						throw new RuntimeException(e);
 					}
 				});
 			}

@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.UIManager;
 
+import simplecharacterbuilder.common.ErrorLogfileWriter;
 import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
 import simplecharacterbuilder.common.statgenerator.StatGenerator;
 import simplecharacterbuilder.common.uicomponents.ApplicationFrame;
@@ -36,7 +37,7 @@ public class StatBalancerStart {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErrorLogfileWriter.logException(e);
 		}
 		
 		controlPanel.loadXml();

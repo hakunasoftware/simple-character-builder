@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
+import simplecharacterbuilder.common.ErrorLogfileWriter;
 import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
 import simplecharacterbuilder.common.resourceaccess.GameFileAccessor;
 import simplecharacterbuilder.common.resourceaccess.InfoXmlReaderWriter;
@@ -71,7 +72,7 @@ public class StatBalancerView extends ControlPanel {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErrorLogfileWriter.logException(e);
 		}
 	}
 

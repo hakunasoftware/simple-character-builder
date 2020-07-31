@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileSystemView;
 
 import simplecharacterbuilder.characterbuilder.util.holder.JFileChooserPool;
+import simplecharacterbuilder.common.ErrorLogfileWriter;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 
 @SuppressWarnings("serial")
@@ -77,7 +78,7 @@ public class PictureLoader extends JLabel {
 				setImage(startingDirectory = fileChooser.getSelectedFile());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErrorLogfileWriter.logException(e);
 		}
 	}
 

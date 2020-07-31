@@ -9,8 +9,10 @@ import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +33,8 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import org.apache.commons.io.FileUtils;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
 import simplecharacterbuilder.characterbuilder.util.holder.ApplicationFrameHolder;
@@ -74,9 +78,9 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	private static final int MAIN_PICLOADER_ONLY_XPOS = (PANEL_WIDTH - PICLOADER_WIDTH) / 2;
 	private static final int MAIN_PICLOADER_EXTRA_XPOS = 70;
 	private static final int EXTRA_PICLOADER_XPOS = PANEL_WIDTH - MAIN_PICLOADER_EXTRA_XPOS - PICLOADER_WIDTH;
-	
+
 	private static final String ADD_BUTTON_TEXT = "Add Item";
-	
+
 	private static final String HIDDEN_SUFFIX = " [hidden]";
 
 	private JComboBox<String> categoryComboBox;
@@ -92,10 +96,10 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 
 	private final Map<String, ItemDto> createdEquipment = new HashMap<>();
 	private final JList<String> createdEquipList;
-	
+
 	private final Queue<ItemDto> itemsToBeEdited = new LinkedList<>();
 	private boolean editingModeEnabled = false;
-	
+
 	private EquipTypeType currentEquipType;
 
 	public EquipmentCreatorMainComponent() {
@@ -107,7 +111,8 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		this.mainPanel.add(listDto.getContainer());
 
 		JButton hideButton = createControlButton("Hide", GAP_WIDTH, CONTROLBUTTON_WIDTH);
-		hideButton.setToolTipText("Hides/Unhides the selected items in the preview to try how different combinations of items look. The items will still be saved normally.");
+		hideButton.setToolTipText(
+				"Hides/Unhides the selected items in the preview to try how different combinations of items look. The items will still be saved normally.");
 		hideButton.addActionListener(e -> hideSelectedItems());
 		this.mainPanel.add(hideButton);
 		JButton editButton = createControlButton("Edit", GAP_WIDTH + CONTROLBUTTON_WIDTH - 1, CONTROLBUTTON_WIDTH + 2);
@@ -120,48 +125,52 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		deleteButton.addActionListener(e -> removeSelectedItems());
 		this.mainPanel.add(deleteButton);
 
-		this.previewLabel = new PreviewLabel(CharacterBuilderControlPanel.X_POS + (ControlPanel.WIDTH_BASIC - 128) / 2, 30, true);
+		this.previewLabel = new PreviewLabel(CharacterBuilderControlPanel.X_POS + (ControlPanel.WIDTH_BASIC - 128) / 2,
+				30, true);
 		this.mainPanel.add(this.previewLabel);
 	}
 
 	@Override
 	public void setValues(Actor actor) {
-		if(this.createdEquipment.isEmpty()) {
+		if (this.createdEquipment.isEmpty()) {
 			actor.setEquipment(null);
 			return;
 		}
-		
-		if(actor.getEquipment() == null) {
+
+		if (actor.getEquipment() == null) {
 			actor.setEquipment(new Equipment());
 		}
 		this.createdEquipment.values().stream().forEach(e -> actor.getEquipment().getEquip().add(e.getName()));
-		
-		if(actor.getEquipment().getEquip().isEmpty()) {
+
+		if (actor.getEquipment().getEquip().isEmpty()) {
 			actor.setEquipment(null);
 		}
-		
+
 		String installment = actor.getSource().getInstallment();
-		String franchiseFolder = ValueFormatter.isEmpty(installment) ? actor.getSource().getFranchise(): installment;
+		String franchiseFolder = ValueFormatter.isEmpty(installment) ? actor.getSource().getFranchise() : installment;
 		Name name = actor.getName();
 		String fullName = ValueFormatter.formatFullName(name.getFirst(), name.getMiddle(), name.getLast(), false);
 		String folderName = "Characters/" + franchiseFolder + "/" + fullName;
 
 		PostInfoXmlGenerationRunnableHolder.add(() -> copySpritesToGameFolder(actor, folderName));
-		PostInfoXmlGenerationRunnableHolder.add(() -> writeEquipmentToXml(actor, this.createdEquipment.values(), folderName));
+		PostInfoXmlGenerationRunnableHolder
+				.add(() -> writeEquipmentToXml(actor, this.createdEquipment.values(), folderName, franchiseFolder, fullName));
 	}
 
 	private void copySpritesToGameFolder(Actor actor, String folderName) {
 		File equipSpriteFolder = getEquipSpriteFolderForActor(actor, folderName);
-		if(!equipSpriteFolder.mkdirs()) {
-			JOptionPane.showMessageDialog(null, "EquipSprite folder could not be created - it may already exist.", "Error", JOptionPane.ERROR_MESSAGE);
+		if (!equipSpriteFolder.mkdirs()) {
+			JOptionPane.showMessageDialog(null, "EquipSprite folder could not be created - it may already exist.",
+					"Error", JOptionPane.ERROR_MESSAGE);
 			PostInfoXmlGenerationRunnableHolder.clear();
 			throw new IllegalArgumentException("EquipSprite folder could not be created");
 		}
 		ImageFileHolder.copyEquipSpritesToTargetDirectory(equipSpriteFolder);
 	}
-	
+
 	private File getEquipSpriteFolderForActor(Actor actor, String folderName) {
-		return new File(GameFileAccessor.getFileFromProperty(PropertyRepository.EQUIPSPRITES_FOLDER).getAbsolutePath() + "/" + folderName);
+		return new File(GameFileAccessor.getFileFromProperty(PropertyRepository.EQUIPSPRITES_FOLDER).getAbsolutePath()
+				+ "/" + folderName);
 	}
 
 	@Override
@@ -204,12 +213,12 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 
 		return panel;
 	}
-	
+
 	private void saveInput() {
 		addItem();
 
-		if(this.editingModeEnabled) {
-			if(this.itemsToBeEdited.isEmpty()) {
+		if (this.editingModeEnabled) {
+			if (this.itemsToBeEdited.isEmpty()) {
 				this.editingModeEnabled = false;
 				this.saveButton.setText(ADD_BUTTON_TEXT);
 			} else {
@@ -224,17 +233,15 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 			JOptionPane.showMessageDialog(null, verificationError, "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
+
 		String equipType = (String) this.equipTypeComboBox.getSelectedItem();
 		String name = this.nameTextField.getText();
-		this.createdEquipment.put(name,
-				new ItemDto(equipType, name,
-						this.descriptionTextField.getText(), this.mainSpriteLoader.getSelectedPicture(),
-						this.extraSpriteLoader.getSelectedPicture()));
-		
+		this.createdEquipment.put(name, new ItemDto(equipType, name, this.descriptionTextField.getText(),
+				this.mainSpriteLoader.getSelectedPicture(), this.extraSpriteLoader.getSelectedPicture()));
+
 		ImageFileHolder.putEquipSprite(equipType, this.mainSpriteLoader.getSelectedPicture());
 		File extraSprite = this.extraSpriteLoader.getSelectedPicture();
-		if(extraSprite != null) {
+		if (extraSprite != null) {
 			ImageFileHolder.putEquipSprite(equipType + ImageFileHolder.EXTRA_LAYER_SUFFIX, extraSprite);
 		}
 		refresh();
@@ -331,15 +338,16 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 
 	private void refresh() {
 		DefaultListModel<String> model = new DefaultListModel<>();
-		this.createdEquipment.keySet().stream().sorted((a, b) -> a.compareTo(b)).forEach(n -> model.addElement(checkHidden(n)));
+		this.createdEquipment.keySet().stream().sorted((a, b) -> a.compareTo(b))
+				.forEach(n -> model.addElement(checkHidden(n)));
 		this.createdEquipList.setModel(model);
 		this.previewLabel.update();
 	}
-	
+
 	private String checkHidden(String itemName) {
-		return this.createdEquipment.get(itemName).isHidden() ? itemName + HIDDEN_SUFFIX : itemName; 
+		return this.createdEquipment.get(itemName).isHidden() ? itemName + HIDDEN_SUFFIX : itemName;
 	}
-	
+
 	private JButton createControlButton(String text, int xPos, int width) {
 		return UIComponentFactory.createButton(text, xPos, CONTROLBUTTON_YPOS, width, CONTROLBUTTON_HEIGHT);
 	}
@@ -378,7 +386,7 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 			collection.add(item);
 		}
 	}
-	
+
 	private Stream<String> getStreamOfSelectedItems() {
 		return this.createdEquipList.getSelectedValuesList().stream().map(n -> n.replace(HIDDEN_SUFFIX, ""));
 	}
@@ -387,29 +395,29 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		getStreamOfSelectedItems().forEach(e -> hideItem(e));
 		refresh();
 	}
-	
+
 	private void hideItem(String itemName) {
 		ItemDto item = this.createdEquipment.get(itemName);
 		boolean newHidden = !item.isHidden();
 		item.setHidden(newHidden);
 		this.previewLabel.hideEquipType(item.getEquipType(), newHidden);
 	}
-	
+
 	private void removeSelectedItems() {
 		getStreamOfSelectedItems().forEach(e -> removeItem(e));
 		refresh();
 	}
-	
+
 	private void removeItem(String itemName) {
 		String equipType = this.createdEquipment.remove(itemName).getEquipType();
 		ImageFileHolder.removeEquipSprite(equipType);
 		ImageFileHolder.removeEquipSprite(equipType + ImageFileHolder.EXTRA_LAYER_SUFFIX);
 		this.previewLabel.hideEquipType(equipType, false);
 	}
-	
+
 	private void editSelectedItems() {
 		getStreamOfSelectedItems().forEach(e -> this.itemsToBeEdited.add(this.createdEquipment.get(e)));
-		if(this.itemsToBeEdited.isEmpty()) {
+		if (this.itemsToBeEdited.isEmpty()) {
 			return;
 		}
 		enableEditingMode();
@@ -417,13 +425,13 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 	}
 
 	private void enableEditingMode() {
-		if(!editingModeEnabled) {
+		if (!editingModeEnabled) {
 			this.editingModeEnabled = true;
 			loadNextItemToBeEdited();
 			this.saveButton.setText("Save Item");
 		}
 	}
-	
+
 	private void loadNextItemToBeEdited() {
 		ItemDto item = this.itemsToBeEdited.remove();
 		this.categoryComboBox.setSelectedItem(EquipTypeRepository.getCategoryOfEquipType(item.getEquipType()));
@@ -433,12 +441,41 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		this.mainSpriteLoader.setSelectedPicture(item.getMainSprite());
 		this.extraSpriteLoader.setSelectedPicture(item.getExtraSprite());
 	}
-	
-	private void writeEquipmentToXml(Actor actor, Collection<ItemDto> items, String folderName) {
+
+	private void writeEquipmentToXml(Actor actor, Collection<ItemDto> items, String folderName, String franchiseFolder, String fullName) {
 		if(items.isEmpty()) {
 			return;
 		}
 		try {
+			String bodyType = determineBodyType(actor);
+			if("default".equals(ConfigReaderRepository.getCharacterbuilderConfigReader().readString(PropertyRepository.EQUIPMENT_TARGET_XML))) {
+				writeEquipmentToCharacterSpecificFile(items, bodyType, folderName, franchiseFolder, fullName);
+			} else {
+				writeEquipmentToDeclaredFile(items, bodyType, folderName);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private void writeEquipmentToCharacterSpecificFile(Collection<ItemDto> items, String bodyType, String folderName, String franchiseFolder, String fullName) throws IOException {
+		File targetDir = new File(GameFileAccessor.getFileFromProperty(PropertyRepository.CHARACTERSPECIFIC_EQUIPMENT_FOLDER), franchiseFolder);
+		FileUtils.forceMkdir(targetDir);
+		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(new File(targetDir, fullName + ".xml"))))) {
+			writer.println("<EquipItems>");
+			
+			boolean firstItem = true;
+			for(ItemDto item : items) {
+				writeItemToWriter(writer, item, bodyType, folderName, !firstItem);
+				firstItem = false;
+			}
+			
+			writer.println("</EquipItems>");
+		}
+	}
+
+	private void writeEquipmentToDeclaredFile(Collection<ItemDto> items, String bodyType, String folderName) throws FileNotFoundException, IOException {
+		
 			File targetXml = GameFileAccessor.getFileFromCharacterbuilderProperty(PropertyRepository.EQUIPMENT_TARGET_XML);
 			File tempFile = new File(targetXml.getParentFile(), targetXml.getName() + ".tmp");
 
@@ -447,34 +484,36 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 				String line;
 				while ((line = reader.readLine()) != null) {
 					if(line.contains("</EquipItems>")) {
-						String bodyType = determineBodyType(actor);
-						items.stream().forEach(i -> writeItemToWriter(writer, i, bodyType, folderName));
+						items.stream().forEach(i -> writeItemToWriter(writer, i, bodyType, folderName, true));
 					}
 					writer.println(line);
 				}
 			}
 			targetXml.delete();
 			tempFile.renameTo(targetXml);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
+		
 	}
-	
-	private void writeItemToWriter(PrintWriter writer, ItemDto item, String bodyType, String folderName) {
-		writer.println();
+
+	private void writeItemToWriter(PrintWriter writer, ItemDto item, String bodyType, String folderName, boolean startWithEmptyLine) {
+		if(startWithEmptyLine) {
+			writer.println();
+		}
 		writer.println("\t<Equipment><!--" + item.getName() + "-->");
 		writer.println("\t\t<Name>" + item.getName() + "</Name>");
 		writer.println("\t\t<Description>" + item.getDescription() + "</Description>");
 		writer.println("\t\t<Type>" + item.getEquipType() + "</Type>");
-		writer.println("\t\t<Price>" + ConfigReaderRepository.getCharacterbuilderConfigReader().readInt(PropertyRepository.EQUIPMENT_PRICE) + "</Price>");
+		writer.println("\t\t<Price>"
+				+ ConfigReaderRepository.getCharacterbuilderConfigReader().readInt(PropertyRepository.EQUIPMENT_PRICE)
+				+ "</Price>");
 		writer.println("\t\t<Availability>Character Unique</Availability>");
 		writer.println("\t\t<DynamicSprite>");
 		writer.println("\t\t\t<BodyModel>");
 		writer.println("\t\t\t\t<BodyType>" + bodyType + "</BodyType>");
-		
+
 		String spritePath = folderName + "/" + item.getEquipType();
 		writer.println("\t\t\t\t<Bitmap>" + spritePath + "</Bitmap>");
-		if(item.getExtraSprite() != null) {
+		if (item.getExtraSprite() != null) {
 			writer.println("\t\t\t\t<Bitmap>" + spritePath + ImageFileHolder.EXTRA_LAYER_SUFFIX + "</Bitmap>");
 		}
 
@@ -482,9 +521,9 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		writer.println("\t\t</DynamicSprite>");
 		writer.println("\t</Equipment>");
 	}
-	
+
 	private String determineBodyType(Actor actor) {
-		switch(actor.getBody().getType()) {
+		switch (actor.getBody().getType()) {
 		case FLAT_CHESTED:
 		case SMALL_BREASTS:
 			return SMALL_BREASTS;
@@ -496,19 +535,18 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		}
 		throw new IllegalArgumentException("Invalid BodyType: " + actor.getBody().getType());
 	}
-	
 
 	public boolean isEditingModeEnabled() {
 		return editingModeEnabled;
 	}
-	
+
 	private static class ItemDto {
 		private final String equipType;
 		private final String name;
 		private final String description;
 		private final File mainSprite;
 		private final File extraSprite;
-		
+
 		private boolean hidden = false;
 
 		ItemDto(String equipType, String name, String description, File mainSprite, File extraSprite) {

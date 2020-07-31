@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import simplecharacterbuilder.common.ErrorLogfileWriter;
+
 public class ConfigReader {
 	private final Properties prop = new Properties();
 
@@ -21,8 +23,7 @@ public class ConfigReader {
 		try (InputStream inputStream = new FileInputStream(configFile)) {
 			this.prop.load(inputStream);
 		} catch (Exception e) {
-			System.err.println("Error loading config");
-			e.printStackTrace();
+			ErrorLogfileWriter.logException(e);
 		}
 	}
 

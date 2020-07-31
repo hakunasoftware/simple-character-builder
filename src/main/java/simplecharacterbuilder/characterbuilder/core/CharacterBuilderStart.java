@@ -22,6 +22,7 @@ import simplecharacterbuilder.characterbuilder.util.holder.DrawIndexRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.EquipTypeRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.JFileChooserPool;
 import simplecharacterbuilder.characterbuilder.util.holder.TraitRepository;
+import simplecharacterbuilder.common.ErrorLogfileWriter;
 import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 
@@ -52,7 +53,7 @@ public class CharacterBuilderStart {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErrorLogfileWriter.logException(e);
 		}
 
 		JFileChooserPool.init();

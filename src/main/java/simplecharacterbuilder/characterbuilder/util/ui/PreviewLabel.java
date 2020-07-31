@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import simplecharacterbuilder.characterbuilder.util.holder.DrawIndexRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.EquipTypeRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
+import simplecharacterbuilder.common.ErrorLogfileWriter;
 import simplecharacterbuilder.common.generated.EquipTypeType;
 import simplecharacterbuilder.common.uicomponents.CharacterBuilderComponent;
 
@@ -68,7 +69,7 @@ public class PreviewLabel extends JPanel {
 		try {
 			return ImageIO.read(imageFile);
 		} catch (IOException e) {
-			e.printStackTrace();
+			ErrorLogfileWriter.logException(e);
 			throw new IllegalArgumentException(e);
 		}
 	}

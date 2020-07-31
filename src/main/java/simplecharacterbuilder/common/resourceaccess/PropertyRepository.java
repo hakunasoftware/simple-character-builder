@@ -45,4 +45,6 @@ public class PropertyRepository {
 	public static final String NON_RETRACTABLE_BODY_PARTS = "non_retractable_bodyparts";
 	public static final String COMMON_BEHAVIORS = "common_behaviors";
 	public static final String EQUIPMENT_LIST = "equipment_list";
+	public static final String CHARACTERSPECIFIC_EQUIPMENT_FOLDER = "characterspecific_equipment";
+	
 }

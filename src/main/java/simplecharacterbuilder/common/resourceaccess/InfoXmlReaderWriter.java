@@ -17,6 +17,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import simplecharacterbuilder.common.ErrorLogfileWriter;
+
 public class InfoXmlReaderWriter{
 	private final File xmlFile;
 	private final Document doc;
@@ -64,7 +66,7 @@ public class InfoXmlReaderWriter{
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			transformer.transform(new DOMSource(doc), new StreamResult(xmlFile));
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErrorLogfileWriter.logException(e);
 		}
 	}
 
@@ -73,7 +75,7 @@ public class InfoXmlReaderWriter{
 			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			return docBuilder.parse(xmlFile);
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErrorLogfileWriter.logException(e);
 			throw new IllegalArgumentException("Reading Document from file failed");
 		}
 	}

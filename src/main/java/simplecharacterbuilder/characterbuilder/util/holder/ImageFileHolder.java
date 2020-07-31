@@ -71,14 +71,14 @@ public class ImageFileHolder {
 	}
 	
 	private static void copySpriteMapToTargetDirectory(Map<String, File> spriteMap, File targetDir) {
-		spriteMap.keySet().stream().forEach(k -> copyFile(INSTANCE.equipSprites.get(k), new File(targetDir, k + ".png")));
+		spriteMap.keySet().stream().forEach(k -> copyFile(spriteMap.get(k), new File(targetDir, k + ".png")));
 	}
 
 	private static void copyFile(File origin, File target) {
 		try {
 			Files.copy(origin.toPath(), target.toPath());
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
