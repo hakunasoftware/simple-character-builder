@@ -93,12 +93,6 @@ class PersonalDataPanel extends ContentPanel {
 				"Add the character's middle name [optional]");
 		this.lastNameTextField = this.addTextField(LAST_NAME, YPOS_LAST_NAME,
 				"Add the character's last name [optional, but should always be set if the character has one]");
-		this.firstNameTextField.getDocument().addDocumentListener(new DocumentChangeListener(
-				() -> CharacterBuilderControlPanel.setFirstName(this.firstNameTextField.getText())));
-		this.middleNameTextField.getDocument().addDocumentListener(new DocumentChangeListener(
-				() -> CharacterBuilderControlPanel.setMiddleName(this.middleNameTextField.getText())));
-		this.lastNameTextField.getDocument().addDocumentListener(new DocumentChangeListener(
-				() -> CharacterBuilderControlPanel.setLastName(this.lastNameTextField.getText())));
 		this.addNicknameOptions();
 
 		this.addAsianCheckBox();
@@ -152,7 +146,6 @@ class PersonalDataPanel extends ContentPanel {
 	private void addAsianCheckBox() {
 		String tooltip = "<html>For Asian characters the last name will be displayed in front of the first name.<br/>This option is only about how the name is displayed.</html>";
 		this.asianCheckBox = createCheckBox(ASIAN, WIDTH - 80, YPOS_ASIAN_CHECKBOX, 60, tooltip);
-		this.asianCheckBox.addActionListener(e -> CharacterBuilderControlPanel.setIsAsian(this.asianCheckBox.isSelected()));
 	}
 
 	private void addLikesOptions() {
@@ -228,6 +221,10 @@ class PersonalDataPanel extends ContentPanel {
 		this.doesSexWorkCheckBox = createCheckBox(SEX_WORK, WIDTH - 130, YPOS_HIRED_STAFF_OPTIONS, 115, tooltip);
 
 		showHiredStaffOptions(false);
+	}
+	
+	void updateControlPanel() {
+		CharacterBuilderControlPanel.updateNameLabel(this.firstNameTextField.getText(),this.middleNameTextField.getText(), this.lastNameTextField.getText(), this.asianCheckBox.isSelected());
 	}
 
 	private void showHiredStaffOptions(boolean showOptions) {

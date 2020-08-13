@@ -82,6 +82,7 @@ public class PersonalDataMainComponent extends CharacterBuilderMainComponent {
 	public void disable() {
 		super.disable();
 		FranchiseCache.setFranchise(sourcePanel.getSelectedFranchise());
+		this.personalDataPanel.updateControlPanel();
 	}
 
 	private void setTypeSettings(Actor actor) {

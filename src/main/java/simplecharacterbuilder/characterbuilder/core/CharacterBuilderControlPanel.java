@@ -351,8 +351,8 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 		}
 	}
 
-	private void updateNameLabel() {
-		this.nameLabel.setText(ValueFormatter.formatFullName(firstName, middleName, lastName, isAsian));
+	public static void updateNameLabel(String firstName, String middleName, String lastName, boolean isAsian) {
+		INSTANCE.nameLabel.setText(ValueFormatter.formatFullName(firstName, middleName, lastName, isAsian));
 	}
 
 	private String addEmptyLinesAfterTags(String xml, String... tags) {
@@ -371,26 +371,6 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 		for (int i = 1; i < mainComponents.size(); i++) {
 			mainComponents.get(i).disable();
 		}
-	}
-
-	public static void setFirstName(String firstName) {
-		INSTANCE.firstName = firstName;
-		INSTANCE.updateNameLabel();
-	}
-
-	public static void setMiddleName(String middleName) {
-		INSTANCE.middleName = middleName;
-		INSTANCE.updateNameLabel();
-	}
-
-	public static void setLastName(String lastName) {
-		INSTANCE.lastName = lastName;
-		INSTANCE.updateNameLabel();
-	}
-
-	public static void setIsAsian(boolean isAsian) {
-		INSTANCE.isAsian = isAsian;
-		INSTANCE.updateNameLabel();
 	}
 
 	public Map<String, String> getCachedInstallments() {
