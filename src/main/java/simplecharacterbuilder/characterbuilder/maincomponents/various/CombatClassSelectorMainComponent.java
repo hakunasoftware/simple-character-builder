@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -47,11 +48,23 @@ public class CombatClassSelectorMainComponent extends CharacterBuilderMainCompon
 		}
 	}
 	private final List<JComboBox<String>> comboBoxes = new ArrayList<>();
+	private final List<JPanel> optionPanels = new ArrayList<>();
+	private final JButton addCombatClassButton;
 	
 
 	public CombatClassSelectorMainComponent() {
 		readRegularCombatClasses();
 		addCombatClassSelections();
+		
+		int buttonWidth = 150;
+		this.addCombatClassButton = UIComponentFactory.createButton("Add Combat Classes", (CharacterBuilderMainComponent.MAINPANEL_WIDTH - buttonWidth) / 2, 140, buttonWidth, 35);
+		this.addCombatClassButton.setToolTipText("Click this to open the menu to add (basic) combat classes to the character. Only do this if the character actually has fighting abilities in the source material!");
+		this.mainPanel.add(this.addCombatClassButton);
+		this.addCombatClassButton.addActionListener(e -> {
+			this.addCombatClassButton.setVisible(false);
+			this.optionPanels.stream().forEach(p -> p.setVisible(true));
+			this.optionPanels.clear();
+		});
 	}
 
 	@Override
@@ -147,6 +160,9 @@ public class CombatClassSelectorMainComponent extends CharacterBuilderMainCompon
 				}
 			}
 		});
+		
+		optionsPanel.setVisible(false);
+		this.optionPanels.add(optionsPanel);
 		this.mainPanel.add(optionsPanel);
 	}
 	

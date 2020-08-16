@@ -9,8 +9,9 @@ public class ValueFormatter {
 	public static final String FEMALES = "Females";
 	public static final String BOTH = "Both";
 	public static final String NEITHER = "Neither";
+	
+	private static final int MAX_ID = 1073741823;
 
-	private static final String HEXSTRING = "0123456789ABCDEF";
 
 	public static String nullEmptyString(String str) {
 		return isEmpty(str) ? null : str;
@@ -77,11 +78,7 @@ public class ValueFormatter {
 	}
 	
 	public static String formatListEntry(String entry) {
-		StringBuilder builder = new StringBuilder();
-		for(int i = 0; i < 8; i++) {
-			builder.append(HEXSTRING.charAt(new Random().nextInt(16)));
-		}
-		return builder.append(" : ").append(entry).toString();
+		return generateRandomId() + " : " + entry;
 	}
 	
 	public static String formatListWithCommas(List<String> list) {
@@ -106,4 +103,13 @@ public class ValueFormatter {
 			builder.append(name);
 		}
 	}
+	
+	private static String generateRandomId() {
+		String hexId = Integer.toHexString(new Random().nextInt(MAX_ID)).toUpperCase();
+		while(hexId.length() < 8) {
+			hexId = "0" + hexId;
+		}
+		return hexId;
+	}
+	
 }

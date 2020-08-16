@@ -42,11 +42,6 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 
 	private final Marshaller marshaller;
 
-	private String firstName = "";
-	private String middleName = "";
-	private String lastName = "";
-	private boolean isAsian;
-
 	private final JButton saveButton;
 
 	private Map<String, String> cachedInstallments;
@@ -380,5 +375,5 @@ public class CharacterBuilderControlPanel extends ControlPanel {
 	public void setCachedInstallments(Map<String, String> cachedInstallments) {
 		this.cachedInstallments = cachedInstallments;
 	}
-
+	
 }
