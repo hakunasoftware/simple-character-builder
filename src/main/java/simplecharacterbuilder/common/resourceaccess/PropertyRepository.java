@@ -46,5 +46,11 @@ public class PropertyRepository {
 	public static final String COMMON_BEHAVIORS = "common_behaviors";
 	public static final String EQUIPMENT_LIST = "equipment_list";
 	public static final String CHARACTERSPECIFIC_EQUIPMENT_FOLDER = "characterspecific_equipment";
-	
+
+	public static final String BODY_TEMPLATE_SMALL = "body_template_small";
+	public static final String BODY_TEMPLATE_MEDIUM = "body_template_medium";
+	public static final String BODY_TEMPLATE_BIG = "body_template_big";
+	public static final String BODY_TEMPLATE_DARK_SMALL = "body_template_dark_small";
+	public static final String BODY_TEMPLATE_DARK_MEDIUM = "body_template_dark_medium";
+	public static final String BODY_TEMPLATE_DARK_BIG = "body_template_dark_big";
 }

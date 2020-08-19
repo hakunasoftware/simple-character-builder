@@ -69,7 +69,7 @@ public class PictureLoader extends JLabel {
 		setHorizontalAlignment(CENTER);
 	}
 
-	private void selectPath() {
+	protected void selectPath() {
 		JFileChooser fileChooser = JFileChooserPool.getPngFileChooser(this.dialogTitle);
 		try {
 			fileChooser.setCurrentDirectory(startingDirectory);
@@ -82,7 +82,7 @@ public class PictureLoader extends JLabel {
 		}
 	}
 
-	private void setImage(File imgFile) {
+	public void setImage(File imgFile) {
 		Image image = new ImageIcon(imgFile.getAbsolutePath()).getImage();
 		if (!imgFile.getName().endsWith(".png") || image.getWidth(null) != imgWidth || image.getHeight(null) != imgHeight) {
 			JOptionPane.showMessageDialog(getApplicationFrame(), "The image must be " + imgWidth + "x" + imgHeight + "px and in png-format.", "Error", JOptionPane.ERROR_MESSAGE);

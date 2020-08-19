@@ -1,11 +1,5 @@
 package simplecharacterbuilder.characterbuilder.maincomponents.various;
 
-import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.FLAT_CHESTED;
-import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.LARGE_BREASTS;
-import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.MEDIUM_BREASTS;
-import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.SMALL_BREASTS;
-import static simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent.XL_BREASTS;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -37,6 +31,7 @@ import javax.swing.JTextField;
 import org.apache.commons.io.FileUtils;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
+import simplecharacterbuilder.characterbuilder.maincomponents.bodysprites.SpriteLoaderMainComponent;
 import simplecharacterbuilder.characterbuilder.util.holder.ApplicationFrameHolder;
 import simplecharacterbuilder.characterbuilder.util.holder.EquipTypeRepository;
 import simplecharacterbuilder.characterbuilder.util.holder.ImageFileHolder;
@@ -447,7 +442,7 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 			return;
 		}
 		try {
-			String bodyType = determineBodyType(actor);
+			String bodyType = SpriteLoaderMainComponent.determineSpriteTemplateFromBodyType(actor.getBody().getType());
 			if("default".equals(ConfigReaderRepository.getCharacterbuilderConfigReader().readString(PropertyRepository.EQUIPMENT_TARGET_XML))) {
 				writeEquipmentToCharacterSpecificFile(items, bodyType, folderName, franchiseFolder, fullName);
 			} else {
@@ -522,19 +517,6 @@ public class EquipmentCreatorMainComponent extends CharacterBuilderMainComponent
 		writer.println("\t</Equipment>");
 	}
 
-	private String determineBodyType(Actor actor) {
-		switch (actor.getBody().getType()) {
-		case FLAT_CHESTED:
-		case SMALL_BREASTS:
-			return SMALL_BREASTS;
-		case MEDIUM_BREASTS:
-			return MEDIUM_BREASTS;
-		case LARGE_BREASTS:
-		case XL_BREASTS:
-			return LARGE_BREASTS;
-		}
-		throw new IllegalArgumentException("Invalid BodyType: " + actor.getBody().getType());
-	}
 
 	public boolean isEditingModeEnabled() {
 		return editingModeEnabled;
