@@ -20,6 +20,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+import simplecharacterbuilder.common.resourceaccess.ConfigReaderRepository;
+import simplecharacterbuilder.common.resourceaccess.PropertyRepository;
 import simplecharacterbuilder.common.uicomponents.ContentPanel;
 
 @SuppressWarnings("serial")
@@ -130,12 +132,7 @@ class StatDisplayPanel extends ContentPanel {
 	}
 
 	private int getDefault(Stat stat) {
-		switch (stat) {
-		case SEX:
-			return 0;
-		default:
-			return statCalculator.getAverage(stat);
-		}
+		return statCalculator.getAverage(stat);
 	}
 
 	private class StatDisplay {
@@ -156,7 +153,7 @@ class StatDisplayPanel extends ContentPanel {
 		StatDisplay(Stat stat, int x, int y) {
 			this.stat = stat;
 
-			minValue = stat.equals(Stat.SEX) ? 0 : statCalculator.getMin(stat);
+			minValue = statCalculator.getMin(stat);
 			maxValue = statCalculator.getMax(stat);
 
 			JLabel statNameLabel = new JLabel();
@@ -204,7 +201,7 @@ class StatDisplayPanel extends ContentPanel {
 				differenceLabel = createLabel(x + 79, y, WIDTH + 14);
 
 				oldValueLabel.setHorizontalAlignment(JLabel.RIGHT);
-				arrowLabel.setText("=>");
+				arrowLabel.setText(ConfigReaderRepository.getCharacterbuilderConfigReader().readString(PropertyRepository.BALANCING_ARROW));
 				arrowLabel.setForeground(RegularStatSelectionPanel.HEADLINE_COLOR);
 
 				StatDisplayPanel.this.add(oldValueLabel);

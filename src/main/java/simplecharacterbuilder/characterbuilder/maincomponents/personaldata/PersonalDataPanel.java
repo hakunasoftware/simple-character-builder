@@ -25,7 +25,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.text.AbstractDocument;
 
 import simplecharacterbuilder.characterbuilder.core.CharacterBuilderControlPanel;
-import simplecharacterbuilder.characterbuilder.util.ui.DocumentChangeListener;
 import simplecharacterbuilder.characterbuilder.util.ui.NumberOnlyDocumentFilter;
 import simplecharacterbuilder.characterbuilder.util.ui.NumberOnlyDocumentFilter.Mode;
 import simplecharacterbuilder.characterbuilder.util.ui.UIComponentFactory;

@@ -53,14 +53,14 @@
 				<xs:element name="Stats">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="Con" type="xs:positiveInteger"/>
-							<xs:element name="Agi" type="xs:positiveInteger"/>
-							<xs:element name="Str" type="xs:positiveInteger"/>
-							<xs:element name="Int" type="xs:positiveInteger"/>
-							<xs:element name="Sex" type="xs:positiveInteger"/>
-							<xs:element name="Beauty" type="xs:positiveInteger"/>
-							<xs:element name="Charisma" type="xs:positiveInteger"/>
-							<xs:element name="Obedience" type="xs:positiveInteger"/>
+							<xs:element name="Con" type="xs:positiveInteger" minOccurs="0"/>
+							<xs:element name="Agi" type="xs:positiveInteger" minOccurs="0"/>
+							<xs:element name="Str" type="xs:positiveInteger" minOccurs="0"/>
+							<xs:element name="Int" type="xs:positiveInteger" minOccurs="0"/>
+							<xs:element name="Sex" type="xs:positiveInteger" minOccurs="0"/>
+							<xs:element name="Beauty" type="xs:positiveInteger" minOccurs="0"/>
+							<xs:element name="Charisma" type="xs:positiveInteger" minOccurs="0"/>
+							<xs:element name="Obedience" type="xs:positiveInteger" minOccurs="0"/>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>	

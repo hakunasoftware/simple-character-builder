@@ -132,14 +132,19 @@ public class StatGenerator extends CharacterBuilderMainComponent {
 	public void setValues(Actor actor) {
 		Map<Stat, Integer> selectedStats = getStats();
 		Actor.Stats stats = new Actor.Stats();
-		stats.setAgi(BigInteger.valueOf(selectedStats.get(Stat.AGILITY)));
-		stats.setBeauty(BigInteger.valueOf(selectedStats.get(Stat.BEAUTY)));
-		stats.setCharisma(BigInteger.valueOf(selectedStats.get(Stat.CHARISMA)));
-		stats.setCon(BigInteger.valueOf(selectedStats.get(Stat.CONSTITUTION)));
-		stats.setInt(BigInteger.valueOf(selectedStats.get(Stat.INTELLIGENCE)));
-		stats.setObedience(BigInteger.valueOf(selectedStats.get(Stat.OBEDIENCE)));
-		stats.setSex(BigInteger.valueOf(selectedStats.get(Stat.SEX)));
-		stats.setStr(BigInteger.valueOf(selectedStats.get(Stat.STRENGTH)));
+		stats.setAgi(mapSelectionToValue(selectedStats, Stat.AGILITY));
+		stats.setBeauty(mapSelectionToValue(selectedStats, Stat.BEAUTY));
+		stats.setCharisma(mapSelectionToValue(selectedStats, Stat.CHARISMA));
+		stats.setCon(mapSelectionToValue(selectedStats, Stat.CONSTITUTION));
+		stats.setInt(mapSelectionToValue(selectedStats, Stat.INTELLIGENCE));
+		stats.setObedience(mapSelectionToValue(selectedStats, Stat.OBEDIENCE));
+		stats.setSex(mapSelectionToValue(selectedStats, Stat.SEX));
+		stats.setStr(mapSelectionToValue(selectedStats, Stat.STRENGTH));
 		actor.setStats(stats);
+	}
+	
+	private BigInteger mapSelectionToValue(Map<Stat, Integer> selectedStats, Stat stat) {
+		Integer selectedValue = selectedStats.get(stat);
+		return selectedValue != 0 ? BigInteger.valueOf(selectedValue) : null;
 	}
 }

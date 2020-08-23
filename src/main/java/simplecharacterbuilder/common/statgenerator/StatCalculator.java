@@ -31,9 +31,6 @@ class StatCalculator {
 	}
 
 	int generateSelection(Stat stat, int value) {
-		if (stat.equals(Stat.SEX) && (value == 0 || value == 1)) {
-			return -1;
-		}
 		return getIndexFromBoundaries(getBoundaries(stat), value);
 	}
 
@@ -55,9 +52,6 @@ class StatCalculator {
 	}
 
 	int getMin(Stat stat) {
-		if (stat.equals(Stat.SEX)) {
-			return 0;
-		}
 		int[] boundaries = getBoundaries(stat);
 		return boundaries[0];
 	}
@@ -113,7 +107,7 @@ class StatCalculator {
 
 	private int generateSuggestion(Stat stat, int value) {
 		if (stat.equals(Stat.SEX) && value == 1) {
-			return 0;
+			return generateStatFromSelection(Stat.SEX, 0);
 		}
 		if (value > getMax(stat)) {
 			return generateMaxSuggestion(stat);

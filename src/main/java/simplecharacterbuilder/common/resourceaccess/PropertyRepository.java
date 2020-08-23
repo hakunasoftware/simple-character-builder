@@ -28,6 +28,8 @@ public class PropertyRepository {
 	public static final String BEA_STAT_PERFECT = "perfect";
 	public static final String BEA_STAT_DIVINE = "divine";
 	public static final String BEA_STAT_MAX = "beauty_max";
+	
+	public static final String BALANCING_ARROW = "balancing_arrow";
 
 	// pathvariables.config
 	public static final String GAME_ROOT_DIRECTORY = "game_root";
